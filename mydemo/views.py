@@ -105,7 +105,9 @@ def logout(request):
 
     request.session['timecard_hb_arr'] = '[]' 
 
-    request.session['invoice_arr'] = '[]'   
+    request.session['invoice_arr'] = '[]'  
+
+    request.session['invoice_batch_no'] = ''
 
     return redirect("/")
 
@@ -1187,7 +1189,7 @@ def payment_board(request):
             'recon_key',
 
             'check_amount'
-            
+
         ]
 
         payment_row = 1
