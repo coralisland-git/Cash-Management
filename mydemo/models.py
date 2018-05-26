@@ -200,9 +200,9 @@ class TimeCard_KT(models.Model):
 
 	payroll_batch_id = models.CharField(max_length=255, blank=True, null=True)
 
-	authorization = models.CharField(max_length=255, blank=True, null=True)
+	authorization_2 = models.CharField(max_length=255, blank=True, null=True)
 
-	bill_mode = models.CharField(max_length=255, blank=True, null=True)
+	bill_mode_2 = models.CharField(max_length=255, blank=True, null=True)
 
 	shift = models.CharField(max_length=255, blank=True, null=True)
 
@@ -297,6 +297,8 @@ class ReconKeys_KT(models.Model):
 	key_id = models.CharField(max_length=255, blank=True, null=True)
 
 	authorization = models.CharField(max_length=255, blank=True, null=True)
+
+	bill_mode = models.CharField(max_length=255, blank=True, null=True)
 
 	bill_rate = models.CharField(max_length=255, blank=True, null=True)
 

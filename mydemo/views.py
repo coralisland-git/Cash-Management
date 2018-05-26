@@ -571,8 +571,8 @@ def timecard_board(request):
             'miles',
             'visit_id',
             'payroll_batch_id',
-            'authorization',
-            'bill_mode',
+            'authorization_2',
+            'bill_mode_2',
             'shift',
             'uid'
         ]
@@ -629,7 +629,7 @@ def timecard_board(request):
 
                     timecard_kt_arr.append(data)
 
-                    check = TimeCard_KT.objects.filter(uid=data['uid'])
+                    check = TimeCard_KT.objects.filter(time_card_id=data['time_card_id'])
 
                     if len(check) == 0:
 
@@ -789,7 +789,7 @@ def timecard_hb_board(request):
 
                 timecard_hb_arr.append(data)
 
-                check = TimeCard_HB.objects.filter(uid=data['uid'])
+                check = TimeCard_HB.objects.filter(time_card_id=data['time_card_id'])
 
                 if len(check) == 0:
 
@@ -970,6 +970,7 @@ def reconkeys_board(request):
                     else :
 
                         check.update(**data)
+
 
                 kt_key_row += 1
 
@@ -1197,7 +1198,7 @@ def payment_board(request):
 
                     'recon_key' : str(payment[1].value),
 
-                    'check_amount' : str(payment[2].value),
+                    'check_amount' : str(payment[2].value).replace('$',''),
 
                 }
 
@@ -1281,7 +1282,6 @@ def matching_by_recon_key(request):
 
 
 
-
 def cash_post(request):
 
     # input_invoice_arr = json.loads(request.session.get('input_invoice_arr', '[]'))
@@ -1317,15 +1317,59 @@ def cash_post(request):
 
         unused_hb_key_data = []
 
-        invoice_data_arr = json.loads(request.session.get('invoice_arr', '[]'))
+        # invoice_data_arr = json.loads(request.session.get('invoice_arr', '[]'))
 
-        kt_tc_raw_arr = json.loads(request.session.get('timecard_kt_arr', '[]'))
+        # kt_tc_raw_arr = json.loads(request.session.get('timecard_kt_arr', '[]'))
 
-        kt_key_raw_arr = json.loads(request.session.get('reconkeys_arr', '[]'))
+        # kt_key_raw_arr = json.loads(request.session.get('reconkeys_arr', '[]'))
 
-        hb_tc_raw_arr = json.loads(request.session.get('timecard_hb_arr', '[]'))
+        # hb_tc_raw_arr = json.loads(request.session.get('timecard_hb_arr', '[]'))
 
-        hb_key_raw_arr = json.loads(request.session.get('reconkeys_hb_arr', '[]'))
+        # hb_key_raw_arr = json.loads(request.session.get('reconkeys_hb_arr', '[]'))
+
+        invoice_db = Invoice.objects.all()
+
+        invoice_data_arr = []
+
+        for invoice in invoice_db:
+
+            invoice_data_arr.append(model_to_dict(invoice))
+
+
+        timecard_kt_db = TimeCard_KT.objects.all()
+
+        kt_tc_raw_arr = []
+
+        for timecard_kt in timecard_kt_db:
+
+            kt_tc_raw_arr.append(model_to_dict(timecard_kt))
+
+
+        timecard_hb_db = TimeCard_HB.objects.all()
+
+        hb_tc_raw_arr = []
+
+        for timecard_hb in timecard_hb_db:
+
+            hb_tc_raw_arr.append(model_to_dict(timecard_hb))   
+
+
+        reconkeys_kt_db = ReconKeys_KT.objects.all()
+
+        kt_key_raw_arr = []
+
+        for reconkeys_kt in reconkeys_kt_db:
+
+            kt_key_raw_arr.append(model_to_dict(reconkeys_kt))   
+
+
+        reconkeys_hb_db = ReconKeys_HB.objects.all()
+
+        hb_key_raw_arr = []
+
+        for reconkeys_hb in reconkeys_hb_db:
+
+            hb_key_raw_arr.append(model_to_dict(reconkeys_hb))   
 
 
         for invoice_data in invoice_data_arr:
@@ -1341,7 +1385,6 @@ def cash_post(request):
                 res['invoice_amount'] = invoice_data['total_bill_amount']
 
                 recon_count = 0
-
 
                 for kt_tc_raw in kt_tc_raw_arr : 
 
@@ -1432,7 +1475,6 @@ def cash_post(request):
 
         request.session['input_invoice_arr'] = json.dumps(input_invoice_arr)
 
-    
     # start cash posting.
 
     input_invoice_arr = json.loads(request.session.get('input_invoice_arr', '[]'))
@@ -1550,7 +1592,6 @@ def cash_post(request):
 
         balance_on_recon_invoice = reconned_invoice_amount - reconned_payment_amount
 
-
         # calculation matching by recon key data
 
         for unique_recon in unique_recon_list:
@@ -1610,6 +1651,7 @@ def cash_post(request):
     # return redirect("/generated_invoice")
 
     return render(request, 'report/index.html',
+
         {
 
             'total_invoice_amount' : total_invoice_amount,
