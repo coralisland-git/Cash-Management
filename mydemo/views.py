@@ -1227,8 +1227,6 @@ def payment_board(request):
 
                 'input_payment_arr' : json.loads(request.session.get('input_payment_arr', '[]')),
 
-                'batch_no' : request.session['batch_no']
-
             })
 
 
