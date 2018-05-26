@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<!-- BEGIN PAGE LEVEL STYLES -->
+<link href="{% static 'pages/css/pricing.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- END PAGE LEVEL STYLES -->
+{% endblock %}
+
+
+{% block content %}
+<!-- BEGIN PAGE CONTENT INNER -->
+    <div class="page-content-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
+                    <div class="portlet-title">
+                        <div class="caption">
+                          <i class="fa fa-database font-red"></i>
+                          <span class="caption-subject font-red bold uppercase">
+                            KT Recon Keys Data
+                          </span>
+                        </div>
+                        <form action="{% url 'clear_data' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-default pull-right" name="refresh" value="reconkeys_kt_data"><i class="fa fa-refresh"></i></button>
+                        </form>
+                    </div>
+                    <div class="portlet-body form" id="content">
+                      {% if reconkeys_arr %}
+                          <div class="portlet light ">
+                            <div class="portlet-title">
+                                <div class="caption font-green">
+                                    <i class="icon-settings font-green"></i>
+                                    <span class="caption-subject bold uppercase">BATCH ID</span>
+                                </div>
+                                <div class="tools"> </div>
+                            </div>
+                            <div class="portlet-body">
+                                <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <td classname="all"> authorization </td>
+                                            <td classname="all"> bill_mode </td>
+                                            <td classname="all"> bill_rate </td>
+                                            <td classname="all"> billable </td>
+                                            <td classname="all"> case_manager_first_name </td>
+                                            <td classname="min-tablet"> case_manager_last_name </td>
+                                            <td classname="min-tablet"> checkin_time </td>
+                                            <td classname="none"> checkout_time </td>
+                                            <td classname="none"> client_first_name </td>
+                                            <td classname="none"> client_last_name </td>
+                                            <td classname="none"> client_dob </td>
+                                            <td classname="none"> clinician_first_name </td>
+                                            <td classname="none"> clinician_last_name </td>
+                                            <td classname="none"> clinician_id </td>
+                                            <td classname="none"> clinician_payroll_group </td>
+                                            <td classname="none"> clinician_payroll_id </td> 
+                                            <td classname="none"> clinician_payroll_rule </td>
+                                            <td classname="none"> clinician_skills </td>
+                                            <td classname="none"> clinician_ssn </td>
+                                            <td classname="none"> cosign_staff_first_name </td>
+                                            <td classname="none"> cosign_staff_last_name </td>
+                                            <td classname="none"> edited_hours </td>
+                                            <td classname="none"> episode_duration </td>
+                                            <td classname="none"> episode_number </td>
+                                            <td classname="none"> episode_start_date </td>
+                                            <td classname="none"> episode_end_date </td>
+                                            <td classname="none"> has_split_schedules </td>
+                                            <td classname="none"> hcpcs_code </td>
+                                            <td classname="none"> location </td>
+                                            <td classname="none"> material_status </td>
+                                            <td classname="none"> medicaid </td>
+                                            <td classname="none"> patient_id </td>
+                                            <td classname="none"> payroll </td>  
+                                            <td classname="none"> payroll_mode </td>
+                                            <td classname="none"> payroll_rate </td>
+                                            <td classname="none"> payrolled </td>
+                                            <td classname="none"> schedule_status </td>
+                                            <td classname="none"> units </td>
+                                            <td classname="none"> visit_date </td>
+                                            <td classname="none"> client_lob </td>
+                                            <td classname="none"> insurance_id </td>
+                                            <td classname="none"> payer </td>
+                                            <td classname="none"> clinician_discipline </td>
+                                            <td classname="none"> service </td>
+                                            <td classname="none"> employment_type </td>
+                                            <td classname="none"> invoice_no </td>
+                                            <td classname="none"> miles </td>
+                                            <td classname="none"> visit_id </td>
+                                            <td classname="none"> payroll_batch_id </td>
+                                            <td classname="none"> shift </td>
+                                            <td classname="none"> visit_split_id </td>
+                                            <td classname="none"> key_id </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for reconkey in reconkeys_arr %}
+                                          <tr>
+                                            <th></th>
+                                            <td classname="all"> {{ reconkey.authorization }} </td>
+                                            <td classname="all"> {{ reconkey.bill_mode }} </td>
+                                            <td classname="all"> {{ reconkey.bill_rate }} </td>
+                                            <td classname="all"> {{ reconkey.billable }} </td>
+                                            <td classname="all"> {{ reconkey.case_manager_first_name }} </td>
+                                            <td classname="min-tablet"> {{ reconkey.case_manager_last_name }} </td>
+                                            <td classname="min-tablet"> {{ reconkey.checkin_time }} </td>
+                                            <td classname="none"> {{ reconkey.checkout_time }} </td>
+                                            <td classname="none"> {{ reconkey.client_first_name }} </td>
+                                            <td classname="none"> {{ reconkey.client_last_name }} </td>
+                                            <td classname="none"> {{ reconkey.client_dob }} </td>
+                                            <td classname="none"> {{ reconkey.clinician_first_name }} </td>
+                                            <td classname="none"> {{ reconkey.clinician_last_name }} </td>
+                                            <td classname="none"> {{ reconkey.clinician_id }} </td>
+                                            <td classname="none"> {{ reconkey.clinician_payroll_group }} </td>
+                                            <td classname="none"> {{ reconkey.clinician_payroll_id }} </td> 
+                                            <td classname="none"> {{ reconkey.clinician_payroll_rule }} </td>
+                                            <td classname="none"> {{ reconkey.clinician_skills }} </td>
+                                            <td classname="none"> {{ reconkey.clinician_ssn }} </td>
+                                            <td classname="none"> {{ reconkey.cosign_staff_first_name }} </td>
+                                            <td classname="none"> {{ reconkey.cosign_staff_last_name }} </td>
+                                            <td classname="none"> {{ reconkey.edited_hours }} </td>
+                                            <td classname="none"> {{ reconkey.episode_duration }} </td>
+                                            <td classname="none"> {{ reconkey.episode_number }} </td>
+                                            <td classname="none"> {{ reconkey.episode_start_date }} </td>
+                                            <td classname="none"> {{ reconkey.episode_end_date }} </td>
+                                            <td classname="none"> {{ reconkey.has_split_schedules }} </td>
+                                            <td classname="none"> {{ reconkey.hcpcs_code }} </td>
+                                            <td classname="none"> {{ reconkey.location }} </td>
+                                            <td classname="none"> {{ reconkey.material_status }} </td>
+                                            <td classname="none"> {{ reconkey.medicaid }} </td>
+                                            <td classname="none"> {{ reconkey.patient_id }} </td>
+                                            <td classname="none"> {{ reconkey.payroll }} </td>  
+                                            <td classname="none"> {{ reconkey.payroll_mode }} </td>
+                                            <td classname="none"> {{ reconkey.payroll_rate }} </td>
+                                            <td classname="none"> {{ reconkey.payrolled }} </td>
+                                            <td classname="none"> {{ reconkey.schedule_status }} </td>
+                                            <td classname="none"> {{ reconkey.units }} </td>
+                                            <td classname="none"> {{ reconkey.visit_date }} </td>
+                                            <td classname="none"> {{ reconkey.client_lob }} </td>
+                                            <td classname="none"> {{ reconkey.insurance_id }} </td>
+                                            <td classname="none"> {{ reconkey.payer }} </td>
+                                            <td classname="none"> {{ reconkey.clinician_discipline }} </td>
+                                            <td classname="none"> {{ reconkey.service }} </td>
+                                            <td classname="none"> {{ reconkey.employment_type }} </td>
+                                            <td classname="none"> {{ reconkey.invoice_no }} </td>
+                                            <td classname="none"> {{ reconkey.miles }} </td>
+                                            <td classname="none"> {{ reconkey.visit_id }} </td>
+                                            <td classname="none"> {{ reconkey.payroll_batch_id }} </td>
+                                            <td classname="none"> {{ reconkey.shift }} </td>
+                                            <td classname="none"> {{ reconkey.visit_split_id }} </td>
+                                            <td classname="none"> {{ reconkey.key_id }} </td>
+                                          </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      {% else %}
+                          <div class="page-content-inner">
+                              <form action="{% url 'reconkeys_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
+                                  {% csrf_token %}
+                                  <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
+                                  <h4 classs="sbold" id="msg">{{ msg }}</h4>
+                              </form>
+                          </div>
+                      {% endif %}
+                    </div>
+                    
+                </div>   
+            </div>  
+        </div>
+    </div>      
+    <!-- END PAGE CONTENT INNER -->
+{% endblock %}
+{% block extra_js %}
+<script type="text/javascript">
+    $(document).ready( 
+        Dropzone.options.myDropzone = {
+            dictDefaultMessage: "",
+            init: function() {
+                this.on("addedfile", function(file) {
+                    // Create the remove button
+                    var removeButton = Dropzone.createElement("<a href='javascript:;'' class='btn red btn-sm btn-block'>Remove</a>");
+                    
+                    // Capture the Dropzone instance as closure.
+                    var _this = this;
+
+                    // Listen to the click event
+                    removeButton.addEventListener("click", function(e) {
+                      // Make sure the button click doesn't submit the form:
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      // Remove the file preview.
+                      _this.removeFile(file);
+                      // If you want to the delete the file on the server as well,
+                      // you can do the AJAX request here.
+                    });
+
+                    // Add the button to the file preview element.
+                    file.previewElement.appendChild(removeButton);
+                    // $("#my-dropzone").submit().delay(5000);
+                });
+
+                this.on("success", function(file, responseText) {
+                    console.log(responseText); // console should show the ID you pointed to
+                    // $("#content").html(responseText);
+                    location.reload();
+                    // do stuff with file.id ...
+                });
+            }            
+        }
+    );
+</script>
+{% endblock %}

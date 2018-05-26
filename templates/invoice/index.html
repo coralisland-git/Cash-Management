@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<!-- BEGIN PAGE LEVEL STYLES -->
+<link href="{% static 'pages/css/pricing.min.css' %}" rel="stylesheet" type="text/css" />
+<!-- END PAGE LEVEL STYLES -->
+{% endblock %}
+
+
+{% block content %}
+<!-- BEGIN PAGE CONTENT INNER -->
+    <div class="page-content-inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
+                    <div class="portlet-title">
+                        <div class="caption">
+                          <i class="fa fa-life-ring font-red"></i>
+                          <span class="caption-subject font-red bold uppercase">
+                            Invoice Data
+                          </span>
+                        </div>
+                        <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-md-3 pull-right">
+                                <div class="input-group select2-bootstrap-append">
+                                    <select id="single-append-text" class="form-control select2-allow-clear" name="selected_batch_no">
+                                        <option></option>
+                                        {% for batch in invoice_batch_no_arr%}
+                                            <option value="{{ batch}}">{{ batch }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                        <form action="{% url 'clear_data' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-default pull-right" name="refresh" value="invoice_raw_data"><i class="fa fa-refresh"></i></button>
+                        </form>
+                    </div>
+                      <div class="portlet-body form" id="content">
+                        {% if not invoice_arr %}
+                            <div class="page-content-inner">
+                                <form action="{% url 'invoice_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
+                                    {% csrf_token %}
+                                    <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
+                                </form>
+                            </div>
+                        {% endif %}
+                            <div class="portlet light ">
+                                <div class="portlet-title">
+                                    <div class="caption font-green">
+                                    <i class="icon-settings font-green"></i>
+                                    <span class="caption-subject bold uppercase">BATCH ID : {{ invoice_batch_no }}</span>
+                                    </div>
+                                    <div class="tools"></div>
+                                </div>
+                                <div class="portlet-body">
+                                    <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <td className="all">invoice_number</td>
+                                                <td className="all">total_bill_amount</td>
+                                                <td className="min-tablet">invoice_reference</td>
+                                                <td className="min-tablet">invoice_date</td>
+                                                <td className="none">company</td>
+                                                <td className="none">branch_id</td>
+                                                <td className="none">employee_short_name</td>
+                                                <td className="none">cust_alph</td>
+                                                <td className="none">customer_name</td>
+                                                <td className="none">straight_time_hours</td>
+                                                <td className="none">hourly_bill_rate</td>
+                                                <td className="none">overtime_hours</td>
+                                                <td className="none">sp_bill</td>
+                                                <td className="none">week_ending_date</td>
+                                                <td className="none">workers_comp_code</td>
+                                                <td className="none">job_description</td>
+                                                <td className="none">customer_po</td>
+                                                <td className="none">b_w_location_code</td>
+                                                <td className="none">address_1</td>
+                                                <td className="none">spcl_paybill_de_code</td>
+                                                <td className="none">special_paybill_qty</td>
+                                                <td className="none">special_bill_rate</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for invoice in invoice_arr %}
+                                              <tr>
+                                                <th></th>
+                                                <td> {{ invoice.invoice_number }} </td> 
+                                                <td> {{ invoice.total_bill_amount }} </td> 
+                                                <td> {{ invoice.invoice_reference }} </td> 
+                                                <td> {{ invoice.invoice_date }} </td> 
+                                                <td> {{ invoice.company }} </td> 
+                                                <td> {{ invoice.branch_id }} </td> 
+                                                <td> {{ invoice.employee_short_name }} </td> 
+                                                <td> {{ invoice.cust_alph }} </td> 
+                                                <td> {{ invoice.customer_name }} </td> 
+                                                <td> {{ invoice.straight_time_hours }} </td> 
+                                                <td> {{ invoice.hourly_bill_rate }} </td> 
+                                                <td> {{ invoice.overtime_hours }} </td> 
+                                                <td> {{ invoice.sp_bill }} </td> 
+                                                <td> {{ invoice.week_ending_date }} </td> 
+                                                <td> {{ invoice.workers_comp_code }} </td> 
+                                                <td> {{ invoice.job_description }} </td> 
+                                                <td> {{ invoice.customer_po }} </td> 
+                                                <td> {{ invoice.b_w_location_code }} </td> 
+                                                <td> {{ invoice.address_1 }} </td> 
+                                                <td> {{ invoice.spcl_paybill_de_code }} </td> 
+                                                <td> {{ invoice.special_paybill_qty }} </td> 
+                                                <td> {{ invoice.special_bill_rate }} </td> 
+                                              </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                      </div>
+                </div>   
+            </div>  
+        </div>
+    </div>      
+    <!-- END PAGE CONTENT INNER -->
+{% endblock %}
+{% block extra_js %}
+<script type="text/javascript">
+    $(document).ready( 
+        Dropzone.options.myDropzone = {
+            dictDefaultMessage: "",
+            init: function() {
+                this.on("addedfile", function(file) {
+                    // Create the remove button
+                    var removeButton = Dropzone.createElement("<a href='javascript:;'' class='btn red btn-sm btn-block'>Remove</a>");
+                    
+                    // Capture the Dropzone instance as closure.
+                    var _this = this;
+
+                    // Listen to the click event
+                    removeButton.addEventListener("click", function(e) {
+                      // Make sure the button click doesn't submit the form:
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      // Remove the file preview.
+                      _this.removeFile(file);
+                      // If you want to the delete the file on the server as well,
+                      // you can do the AJAX request here.
+                    });
+
+                    // Add the button to the file preview element.
+                    file.previewElement.appendChild(removeButton);
+                    // $("#my-dropzone").submit().delay(5000);
+                });
+
+                this.on("success", function(file, responseText) {
+                    console.log(responseText); // console should show the ID you pointed to
+                    // $("#content").html(responseText);    
+                    location.reload();
+                    // do stuff with file.id ...
+                });
+            }            
+        }
+    );
+</script>
+{% endblock %}
