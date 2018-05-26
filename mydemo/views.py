@@ -1181,9 +1181,13 @@ def payment_board(request):
         payment_arr = []
 
         payment_header = [
+
             'check',
+
             'recon_key',
+
             'check_amount'
+            
         ]
 
         payment_row = 1
