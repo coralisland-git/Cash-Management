@@ -21,19 +21,44 @@
                             Payment Data
                           </span>
                         </div>
+                        <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-md-3 pull-right">
+                                <div class="input-group select2-bootstrap-append">
+                                    <select id="single-append-text" class="form-control select2-allow-clear" name="payment_batch_no">
+                                        <option></option>
+                                        {% for batch in payment_batch_no_arr %}
+                                            <option value="{{ batch}}">{{ batch }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
                         <form action="{% url 'clear_data' %}" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-default pull-right" name="refresh" value="input_payment_data"><i class="fa fa-refresh"></i></button>
                         </form>
                     </div>
                     <div class="portlet-body form">
+                        {% if not input_payment_arr %}
+                            <div class="page-content-inner">
+                                <form action="{% url 'payment_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
+                                    {% csrf_token %}
+                                    <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
+                                </form>
+                            </div>
+                        {% endif %}
                         <div class="portlet-body form" id="content">
-                        {% if input_payment_arr %}
                            <div class="portlet light ">
                                 <div class="portlet-title">
                                     <div class="caption">
                                         <i class="icon-settings font-green"></i>
-                                        <span class="caption-subject bold uppercase font-green">BATCH ID : </span>
+                                        <span class="caption-subject bold uppercase font-green">BATCH ID : {{ payment_batch_no}}</span>
                                         <span class="caption-subject bold uppercase"></span>
                                     </div>
                                     <div class="tools"> </div>
@@ -43,6 +68,7 @@
                                         <thead>
                                             <tr>
                                                 <th></th>
+                                                <td classname="all"> payment_id </td>
                                                 <td classname="all"> check </td>
                                                 <td classname="all"> recon_key </td>
                                                 <td classname="min-tablet"> check_amount </td>
@@ -52,6 +78,7 @@
                                             {% for payment in input_payment_arr %}
                                               <tr>
                                                 <th></th>
+                                                <td classname="all"> {{ payment.payment_id }} </td>
                                                 <td classname="all"> {{ payment.check }} </td>
                                                 <td classname="all"> {{ payment.recon_key }} </td>
                                                 <td classname="min-tablet"> {{ payment.check_amount }} </td>
@@ -61,14 +88,6 @@
                                     </table>
                                 </div>
                             </div>
-                        {% else %}
-                            <div class="page-content-inner">
-                                <form action="{% url 'payment_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
-                                    {% csrf_token %}
-                                    <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
-                                </form>
-                            </div>
-                        {% endif %}
                       </div>
                     </div>
                 </div>   

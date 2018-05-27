@@ -82,7 +82,9 @@ def login(request):
             }
 
             return redirect("/home")
+
         else:
+
             error = 'block'
 
     return render(request, 'login.html', locals())
@@ -91,23 +93,9 @@ def login(request):
 
 def logout(request):
 
-    request.session['user'] = None
-
-    request.session['input_invoice_arr'] = '[]'
-
-    request.session['input_payment_arr'] = '[]'
-
-    request.session['reconkeys_arr'] = '[]'
-
-    request.session['reconkeys_hb_arr'] = '[]'
-
-    request.session['timecard_kt_arr'] = '[]'
-
-    request.session['timecard_hb_arr'] = '[]' 
-
-    request.session['invoice_arr'] = '[]'  
-
-    request.session['invoice_batch_no'] = ''
+    for key in list(request.session.keys()):
+        
+        del request.session[key]
 
     return redirect("/")
 
@@ -128,42 +116,57 @@ def clear_data(request):
 
         return redirect('/invoice_simple_board')
 
-    if 'refresh' in request.POST and request.POST['refresh'] == 'input_payment_data':
-
-        request.session['input_payment_arr'] = '[]'
-
-        return redirect('/payment_board')
-
-    if 'refresh' in request.POST and request.POST['refresh'] == 'reconkeys_kt_data':
-
-        request.session['reconkeys_arr'] = '[]'
-
-        return redirect('/reconkeys_board')
-
-    if 'refresh' in request.POST and request.POST['refresh'] == 'reconkeys_hb_data':
-
-        request.session['reconkeys_hb_arr'] = '[]'
-
-        return redirect('/reconkeys_hb_board')
 
     if 'refresh' in request.POST and request.POST['refresh'] == 'timecard_kt_data':
 
         request.session['timecard_kt_arr'] = '[]'
 
+        request.session['kt_tc_batch_no'] = ''
+
         return redirect('/timecard_board')
+        
 
     if 'refresh' in request.POST and request.POST['refresh'] == 'timecard_hb_data':
 
         request.session['timecard_hb_arr'] = '[]'
 
+        request.session['hb_tc_batch_no'] = ''
+
         return redirect('/timecard_hb_board')
+
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'reconkeys_kt_data':
+
+        request.session['reconkeys_arr'] = '[]'
+
+        request.session['kt_rk_batch_no'] = ''
+
+        return redirect('/reconkeys_board')
+
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'reconkeys_hb_data':
+
+        request.session['reconkeys_hb_arr'] = '[]'
+
+        request.session['hb_rk_batch_no'] = ''
+
+        return redirect('/reconkeys_hb_board')
+
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'input_payment_data':
+
+        request.session['input_payment_arr'] = '[]'
+
+        request.session['payment_batch_no'] = ''
+
+        return redirect('/payment_board')
 
 
 def search_batch_no(request):
 
-    if 'selected_batch_no' in request.POST:
+    if 'invoice_batch_no' in request.POST:
 
-        selected_invoices = Invoice.objects.filter(batch_no=str(request.POST['selected_batch_no']))
+        selected_invoices = Invoice.objects.filter(batch_no=str(request.POST['invoice_batch_no']))
 
         invoice_arr = []
 
@@ -173,10 +176,94 @@ def search_batch_no(request):
 
         request.session['invoice_arr'] = json.dumps(invoice_arr)
 
-        request.session['invoice_batch_no'] = str(request.POST['selected_batch_no'])
+        request.session['invoice_batch_no'] = str(request.POST['invoice_batch_no'])
             
-    return redirect('/invoice_board')
+        return redirect('/invoice_board')
 
+
+    if 'kt_tc_batch_no' in request.POST:
+
+        selected_kt_tcs = TimeCard_KT.objects.filter(batch_no=str(request.POST['kt_tc_batch_no']))
+
+        kt_tc_arr = []
+
+        for kt_tc in selected_kt_tcs:
+
+            kt_tc_arr.append(model_to_dict(kt_tc))
+
+        request.session['timecard_kt_arr'] = json.dumps(kt_tc_arr)
+
+        request.session['kt_tc_batch_no'] = str(request.POST['kt_tc_batch_no'])
+            
+        return redirect('/timecard_board')
+
+
+    if 'hb_tc_batch_no' in request.POST:
+
+        selected_hb_tcs = TimeCard_HB.objects.filter(batch_no=str(request.POST['hb_tc_batch_no']))
+
+        hb_tc_arr = []
+
+        for hb_tc in selected_hb_tcs:
+
+            hb_tc_arr.append(model_to_dict(hb_tc))
+
+        request.session['timecard_hb_arr'] = json.dumps(hb_tc_arr)
+
+        request.session['hb_tc_batch_no'] = str(request.POST['hb_tc_batch_no'])
+            
+        return redirect('/timecard_hb_board')
+
+
+    if 'kt_rk_batch_no' in request.POST:
+
+        selected_kt_rks = ReconKeys_KT.objects.filter(batch_no=str(request.POST['kt_rk_batch_no']))
+
+        kt_rk_arr = []
+
+        for kt_rk in selected_kt_rks:
+
+            kt_rk_arr.append(model_to_dict(kt_rk))
+
+        request.session['reconkeys_arr'] = json.dumps(kt_rk_arr)
+
+        request.session['kt_rk_batch_no'] = str(request.POST['kt_rk_batch_no'])
+            
+        return redirect('/reconkeys_board')
+
+
+    if 'hb_rk_batch_no' in request.POST:
+
+        selected_hb_rks = ReconKeys_HB.objects.filter(batch_no=str(request.POST['hb_rk_batch_no']))
+
+        hb_rk_arr = []
+
+        for hb_rk in selected_hb_rks:
+
+            hb_rk_arr.append(model_to_dict(hb_rk))
+
+        request.session['timecard_hb_arr'] = json.dumps(hb_rk_arr)
+
+        request.session['hb_rk_batch_no'] = str(request.POST['hb_rk_batch_no'])
+            
+        return redirect('/reconkeys_hb_board')
+
+
+    if 'payment_batch_no' in request.POST:
+
+        selected_payments = Payment.objects.filter(batch_no=str(request.POST['payment_batch_no']))
+
+        input_payment_arr = []
+
+        for payment in selected_payments:
+
+            input_payment_arr.append(model_to_dict(payment))
+
+        request.session['input_payment_arr'] = json.dumps(input_payment_arr)
+
+        request.session['payment_batch_no'] = str(request.POST['payment_batch_no'])
+            
+        return redirect('/payment_board')
 
 
 def post_data(request):
@@ -194,9 +281,6 @@ def post_data(request):
     #     batch.save()
 
 
-
-
-
 def main(request):
     # clients = Client.objects.all().order_by("-created_on")
     return render(request, 'black.html')
@@ -205,29 +289,8 @@ def main(request):
 
 def home(request):
 
-    # latest_batch = Batch.objects.filter().latest('batch_no')
-
-    # batch_no = 'BH'+str(int(latest_batch.batch_no.replace('BH',''))+1)
-
-    # request.session['batch_no'] = batch_no
-
-    # request.session['input_invoice_arr'] = '[]'
-
-    # request.session['input_payment_arr'] = '[]'
-
-    # request.session['reconkeys_arr'] = '[]'
-
-    # request.session['reconkeys_hb_arr'] = '[]'
-
-    # request.session['timecard_kt_arr'] = '[]'
-
-    # request.session['timecard_hb_arr'] = '[]' 
-
-    # request.session['invoice_arr'] = '[]'   
-
-
     return render(request, 'home.html')
-
+    
 
 def invoice_board(request):
 
@@ -381,10 +444,9 @@ def invoice_board(request):
 
                 'invoice_batch_no_arr' : request.session.get('invoice_batch_no_arr', '[]'),
 
-                'invoice_batch_no' : request.session.get('invoice_batch_no', '[]')
+                'invoice_batch_no' : request.session.get('invoice_batch_no', '')
 
             })
-
 
 
 def invoice_simple_board(request):
@@ -475,12 +537,18 @@ def invoice_simple_board(request):
             })
 
 
-
 def timecard_board(request):
 
-    # if 'refresh' in request.POST:
+    kt_tc_bhs = TimeCard_KT.objects.values('batch_no').annotate(count=Count('batch_no'))
 
-    #     request.session['timecard_kt_arr'] = '[]'           
+    kt_tc_batch_no_arr = []
+
+    for batch in kt_tc_bhs:
+
+        kt_tc_batch_no_arr.append(batch['batch_no'])
+
+    request.session['kt_tc_batch_no_arr'] = kt_tc_batch_no_arr
+
 
     if request.method == 'POST' and request.FILES:
 
@@ -492,7 +560,7 @@ def timecard_board(request):
 
         except:
 
-            latest_batch = 'BH-KT-TC-0000'
+            latest_batch = 'HB-KT-TC-0000'
 
         num = str(int(latest_batch.split('-')[3])+1)
 
@@ -503,6 +571,8 @@ def timecard_board(request):
                 num = '0'+num
 
         batch_no = '-'.join(latest_batch.split('-')[:3])+'-'+num
+
+        request.session['kt_tc_batch_no'] = batch_no
 
         myfile = request.FILES['file']
 
@@ -665,14 +735,25 @@ def timecard_board(request):
 
                 'timecard_kt_arr' : json.loads(request.session.get('timecard_kt_arr', '[]')),
 
+                'kt_tc_batch_no_arr' : request.session.get('kt_tc_batch_no_arr', '[]'),
+
+                'kt_tc_batch_no' : request.session.get('kt_tc_batch_no', '')
+
             })
 
 
 def timecard_hb_board(request):
 
-    # if 'refresh' in request.POST:
+    hb_tc_bhs = TimeCard_HB.objects.values('batch_no').annotate(count=Count('batch_no'))
 
-    #     request.session['timecard_kt_arr'] = '[]'           
+    hb_tc_batch_no_arr = []
+
+    for batch in hb_tc_bhs:
+
+        hb_tc_batch_no_arr.append(batch['batch_no'])
+
+    request.session['hb_tc_batch_no_arr'] = hb_tc_batch_no_arr
+
 
     if request.method == 'POST' and request.FILES:
 
@@ -696,6 +777,7 @@ def timecard_hb_board(request):
 
         batch_no = '-'.join(latest_batch.split('-')[:3])+'-'+num
 
+        request.session['hb_tc_batch_no'] = batch_no
 
         myfile = request.FILES['file']
 
@@ -821,14 +903,25 @@ def timecard_hb_board(request):
 
                 'timecard_hb_arr' : json.loads(request.session.get('timecard_hb_arr', '[]')),
 
+                'hb_tc_batch_no_arr' : request.session.get('hb_tc_batch_no_arr', '[]'),
+
+                'hb_tc_batch_no' : request.session.get('hb_tc_batch_no', '')
+
             })
 
 
 def reconkeys_board(request):
 
-    # if 'refresh' in request.POST:
+    kt_rk_bhs = ReconKeys_KT.objects.values('batch_no').annotate(count=Count('batch_no'))
 
-    #     request.session['reconkeys_arr'] = '[]'      
+    kt_rk_batch_no_arr = []
+
+    for batch in kt_rk_bhs:
+
+        kt_rk_batch_no_arr.append(batch['batch_no'])
+
+    request.session['kt_rk_batch_no_arr'] = kt_rk_batch_no_arr
+
 
     if request.method == 'POST' and request.FILES:
 
@@ -851,6 +944,8 @@ def reconkeys_board(request):
                 num = '0'+num
 
         batch_no = '-'.join(latest_batch.split('-')[:3])+'-'+num
+
+        request.session['kt_rk_batch_no'] = batch_no
 
         myfile = request.FILES['file']
 
@@ -953,6 +1048,8 @@ def reconkeys_board(request):
 
                 data['key_id'] = key_id.strip()
 
+                data['invoice_no'] = str(data['invoice_no']).replace(' ', '').replace('-', '').strip()
+
                 for header in reconkeys_header:
 
                     data[header] = str(data[header])
@@ -1005,16 +1102,25 @@ def reconkeys_board(request):
 
                 'reconkeys_arr' : json.loads(request.session.get('reconkeys_arr', '[]')),
 
-                'msg' : request.session.get('msg', '')
+                'kt_rk_batch_no_arr' : request.session.get('kt_rk_batch_no_arr', '[]'),
+
+                'kt_rk_batch_no' : request.session.get('kt_rk_batch_no', '')
 
             })
 
 
 def reconkeys_hb_board(request):
 
-    # if 'refresh' in request.POST:
+    hb_rk_bhs = ReconKeys_HB.objects.values('batch_no').annotate(count=Count('batch_no'))
 
-    #     request.session['reconkeys_arr'] = '[]'      
+    hb_rk_batch_no_arr = []
+
+    for batch in hb_rk_bhs:
+
+        hb_rk_batch_no_arr.append(batch['batch_no'])
+
+    request.session['hb_rk_batch_no_arr'] = hb_rk_batch_no_arr 
+
 
     if request.method == 'POST' and request.FILES:
 
@@ -1037,6 +1143,8 @@ def reconkeys_hb_board(request):
                 num = '0'+num
 
         batch_no = '-'.join(latest_batch.split('-')[:3])+'-'+num
+
+        request.session['hb_rk_batch_no'] = batch_no
 
         myfile = request.FILES['file']
 
@@ -1104,6 +1212,8 @@ def reconkeys_hb_board(request):
 
                 data['key_id'] = key_id.strip()
 
+                data['invoice'] = str(data['invoice']).replace(' ', '').replace('-', '').strip()
+
                 for header in reconkeys_header:
 
                     data[header] = str(data[header])
@@ -1154,19 +1264,70 @@ def reconkeys_hb_board(request):
 
                 'reconkeys_hb_arr' : json.loads(request.session.get('reconkeys_hb_arr', '[]')),
 
-                'msg' : request.session.get('msg', '')
+                'hb_rk_batch_no_arr' : request.session.get('hb_rk_batch_no_arr', '[]'),
+
+                'hb_rk_batch_no' : request.session.get('hb_rk_batch_no', '')
 
             })
 
 
-
 def payment_board(request):
 
-    # if 'refresh' in request.POST:
+    payment_bhs = Payment.objects.values('batch_no').annotate(count=Count('batch_no'))
 
-    #     request.session['payment_arr'] = '[]'           
+    payment_batch_no_arr = []
+
+    for batch in payment_bhs:
+
+        payment_batch_no_arr.append(batch['batch_no'])
+
+    request.session['payment_batch_no_arr'] = payment_batch_no_arr 
 
     if request.method == 'POST' and request.FILES:
+
+        latest_batch = ''
+
+        try:
+
+            latest_batch = Payment.objects.latest('batch_no').batch_no
+
+        except:
+
+            latest_batch = 'BH-PAY-0000'
+
+        num = str(int(latest_batch.split('-')[2])+1)
+
+        if len(num) < 4:
+
+            for ind in range(0, 4-len(num)):
+
+                num = '0'+num
+
+        batch_no = '-'.join(latest_batch.split('-')[:2])+'-'+num
+
+        request.session['payment_batch_no'] = batch_no
+
+
+        latest_payment_id = ''
+
+        try:
+
+            latest_payment_id = Payment.objects.latest('latest_payment_id').latest_payment_id
+
+        except:
+
+            latest_payment_id = 'EOB0000'
+
+        num = str(int(latest_payment_id[3:])+1)
+
+        if len(num) < 4:
+
+            for ind in range(0, 4-len(num)):
+
+                num = '0'+num
+
+        start_payment_id = latest_payment_id[:3]+num
+
 
         myfile = request.FILES['file']
 
@@ -1194,23 +1355,52 @@ def payment_board(request):
 
         payment_row = 1
 
+        payment_id = start_payment_id
+
         for payment in input_payment_data_sheet.rows:
 
             try:
 
-                item = {
-
-                    'check' : str(payment[0].value),
-
-                    'recon_key' : str(payment[1].value),
-
-                    'check_amount' : str(payment[2].value).replace('$',''),
-
-                }
-
                 if payment_row > 1:
 
-                    payment_arr.append( item )
+                    data = {
+
+                        'batch_no' : batch_no,
+
+                        'payment_id' : payment_id,
+
+                        'check' : str(payment[0].value),
+
+                        'recon_key' : str(payment[1].value).replace(' ', '').replace('-', '').strip(),
+
+                        'check_amount' : str(payment[2].value).replace('$',''),
+
+                    }
+
+                    payment_arr.append( data )
+
+                    num = str(int(payment_id[3:])+1)
+
+                    if len(num) < 4:
+
+                        for ind in range(0, 4-len(num)):
+
+                            num = '0'+num
+
+                    payment_id = payment_id[:3]+num
+
+
+                    # check = Payment.objects.filter(key_id=data['key_id'])
+
+                    # if len(check) == 0:
+
+                    payment_model = Payment(**data)
+
+                    payment_model.save()
+
+                    # else :
+
+                    #     check.update(**data)
 
                 payment_row += 1
 
@@ -1230,9 +1420,14 @@ def payment_board(request):
     else:
         
         return render(request, 'payment/index.html',
+
             {
 
                 'input_payment_arr' : json.loads(request.session.get('input_payment_arr', '[]')),
+
+                'payment_batch_no_arr' : request.session.get('payment_batch_no_arr', '[]'),
+
+                'payment_batch_no' : request.session.get('payment_batch_no', '')
 
             })
 

@@ -11,8 +11,8 @@ class InvoiceAdmin(admin.ModelAdmin):
     search_fields = ['batch_no', 'system', 'license', 'tc', 'invoice_number']
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ['batch_no','check', 'recon_key', 'check_amount']
-    search_fields = ['batch_no', 'recon_key', 'check_amount']
+    list_display = ['batch_no', 'payment_id','check', 'recon_key', 'check_amount']
+    search_fields = ['batch_no', 'payment_id', 'recon_key', 'check_amount']
 
 class TimeCard_KTAdmin(admin.ModelAdmin):
     list_display = ['batch_no', 'time_card_id', 'uid']

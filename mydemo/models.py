@@ -439,9 +439,9 @@ class ReconKeys_HB(models.Model):
 
 class Payment(models.Model):
 
-	# batch_id = models.CharField(max_length=255, blank=True, null=True)
+	batch_no = models.CharField(max_length=255, blank=True, null=True)
 
-	batch_no = models.ForeignKey(Batch, on_delete=models.CASCADE)
+	payment_id = models.CharField(max_length=255, blank=True, null=True)
 
 	check = models.CharField(max_length=255, blank=True, null=True)
 

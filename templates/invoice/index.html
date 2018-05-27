@@ -25,7 +25,7 @@
                             {% csrf_token %}
                             <div class="col-md-3 pull-right">
                                 <div class="input-group select2-bootstrap-append">
-                                    <select id="single-append-text" class="form-control select2-allow-clear" name="selected_batch_no">
+                                    <select id="single-append-text" class="form-control select2-allow-clear" name="invoice_batch_no">
                                         <option></option>
                                         {% for batch in invoice_batch_no_arr%}
                                             <option value="{{ batch}}">{{ batch }}</option>

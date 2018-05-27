@@ -21,19 +21,44 @@
                             KT Time Card Data {{ uploaded }}
                           </span>
                         </div>
+                        <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-md-3 pull-right">
+                                <div class="input-group select2-bootstrap-append">
+                                    <select id="single-append-text" class="form-control select2-allow-clear" name="kt_tc_batch_no">
+                                        <option></option>
+                                        {% for batch in kt_tc_batch_no_arr %}
+                                            <option value="{{ batch}}">{{ batch }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
                         <form action="{% url 'clear_data' %}" method="POST">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-default pull-right" name="refresh" value="timecard_kt_data"><i class="fa fa-refresh"></i></button>
                         </form>
                     </div>
                     <div class="portlet-body form">
+                        {% if not timecard_kt_arr %}
+                        <div class="page-content-inner">
+                            <form action="{% url 'timecard_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
+                                {% csrf_token %}
+                                <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
+                            </form>
+                        </div>
+                        {% endif %}
                         <div class="portlet-body form" id="content">
-                        {% if timecard_kt_arr %}
                            <div class="portlet light ">
                               <div class="portlet-title">
                                   <div class="caption font-green">
                                       <i class="icon-settings font-green"></i>
-                                      <span class="caption-subject bold uppercase">BATCH ID</span>
+                                      <span class="caption-subject bold uppercase">BATCH ID : {{ kt_tc_batch_no }}</span>
                                   </div>
                                   <div class="tools"> </div>
                               </div>
@@ -162,14 +187,6 @@
                                   </table>
                               </div>
                           </div>
-                        {% else %}
-                            <div class="page-content-inner">
-                                <form action="{% url 'timecard_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
-                                    {% csrf_token %}
-                                    <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
-                                </form>
-                            </div>
-                        {% endif %}
                       </div>
                     </div>
                 </div>   
