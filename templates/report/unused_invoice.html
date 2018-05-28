@@ -13,7 +13,8 @@
     <div class="page-content-inner">
         <div class="row">
             <div class="col-md-12">
-                <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
+                <div class="portlet-body form" id="content">
+                  <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
                     <div class="portlet-title">
                         <div class="caption">
                           <i class="fa fa-life-ring font-red"></i>
@@ -22,40 +23,30 @@
                           </span>
                         </div>
                     </div>
-                    <div class="portlet-body form" id="content">
-                      <div class="portlet light ">
-                        <div class="portlet-title">
-                            <div class="caption font-green">
-                                <i class="icon-settings font-green"></i>
-                                <span class="caption-subject bold uppercase">BATCH ID</span>
-                            </div>
-                            <div class="tools"> </div>
-                        </div>
-                        <div class="portlet-body">
-                            <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <td classname="all"> invoice </td>
-                                        <td classname="all"> amount </td>
-                                        <td classname="min-tablet"> recon_key  </td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for invoice in unused_invoice_arr %}
-                                      <tr>
-                                        <th></th>
-                                        <td classname="all"> {{ invoice.invoice }} </td>
-                                        <td classname="all"> {{ invoice.invoice_amount }} </td>
-                                        <td classname="min-tablet">{{ invoice.recon_key }}</td>
-                                       </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                      </div>
+                    <div class="portlet-body">
+                        <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <td classname="all"> invoice </td>
+                                    <td classname="all"> amount </td>
+                                    <td classname="min-tablet"> recon_key  </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for invoice in unused_invoice_arr %}
+                                  <tr>
+                                    <th></th>
+                                    <td classname="all"> {{ invoice.invoice }} </td>
+                                    <td classname="all"> {{ invoice.invoice_amount }} </td>
+                                    <td classname="min-tablet">{{ invoice.recon_key_view }}</td>
+                                   </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                </div>   
+                  </div>
+                </div>
             </div>  
         </div>
     </div>      

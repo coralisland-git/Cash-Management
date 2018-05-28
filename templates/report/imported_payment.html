@@ -13,7 +13,8 @@
     <div class="page-content-inner">
         <div class="row">
             <div class="col-md-12">
-                <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
+                <div class="portlet-body form" id="content">
+                  <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
                     <div class="portlet-title">
                         <div class="caption">
                           <i class="fa fa-credit-card font-red"></i>
@@ -22,40 +23,32 @@
                           </span>
                         </div>
                     </div>
-                    <div class="portlet-body form" id="content">
-                      <div class="portlet light ">
-                        <div class="portlet-title">
-                            <div class="caption font-green">
-                                <i class="icon-settings font-green"></i>
-                                <span class="caption-subject bold uppercase">BATCH ID</span>
-                            </div>
-                            <div class="tools"> </div>
-                        </div>
-                        <div class="portlet-body">
-                            <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <td classname="all"> invoice </td>
-                                        <td classname="all"> payment </td>
-                                        <td classname="min-tablet"> amount  </td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for payment in imported_payment_arr %}
-                                      <tr>
-                                        <th></th>
-                                        <td classname="all"> {{ payment.invoice }} </td>
-                                        <td classname="all"> {{ payment.payment }} </td>
-                                        <td classname="min-tablet">{{ payment.check_amount }}</td>
-                                       </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                      </div>
+                    <div class="portlet-body">
+                        <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <td classname="all"> invoice </td>
+                                    <td classname="all"> payment_id </td>
+                                    <td classname="all"> payment </td>
+                                    <td classname="min-tablet"> amount  </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in imported_payment_arr %}
+                                  <tr>
+                                    <th></th>
+                                    <td classname="all"> {{ payment.invoice }} </td>
+                                    <td classname="all"> {{ payment.payment_id }} </td>
+                                    <td classname="all"> {{ payment.payment }} </td>
+                                    <td classname="min-tablet">{{ payment.check_amount }}</td>
+                                   </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                </div>   
+                  </div>
+                </div>
             </div>  
         </div>
     </div>      

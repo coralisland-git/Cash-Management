@@ -380,13 +380,14 @@ def invoice_board(request):
 
                 data = {'batch_no' : batch_no}
 
-                for invoice_col in range(0, len(invoice)) :
+                for invoice_col in range(0, len(invoice_header)) :
 
                     data[invoice_header[invoice_col]] = str(invoice[invoice_col].value)
 
                 if invoice_row > 1:
 
                     items = data['invoice_reference'].split('@')
+
 
                     try:
 
@@ -656,7 +657,7 @@ def timecard_board(request):
 
                 data = { 'batch_no' : batch_no } 
 
-                for kt_tc_col in range(0, len(kt_tc_raw) ) :
+                for kt_tc_col in range(0, len(timecard_header) ) :
 
                     data[timecard_header[kt_tc_col]] = kt_tc_raw[kt_tc_col].value
                     
@@ -843,7 +844,7 @@ def timecard_hb_board(request):
 
             data = { 'batch_no' : batch_no } 
 
-            for hb_tc_col in range(0, len(hb_tc_raw) ) :
+            for hb_tc_col in range(0, len(timecard_header) ) :
 
                 data[timecard_header[hb_tc_col]] = hb_tc_raw[hb_tc_col].value
 
@@ -1026,7 +1027,7 @@ def reconkeys_board(request):
 
                 data = { 'batch_no' : batch_no } 
 
-                for kt_key_col in range(0, len(kt_key_raw) ) :
+                for kt_key_col in range(0, len(reconkeys_header) ) :
 
                     data[reconkeys_header[kt_key_col]] = kt_key_raw[kt_key_col].value
 
@@ -1190,7 +1191,7 @@ def reconkeys_hb_board(request):
 
                 data = { 'batch_no' : batch_no } 
 
-                for hb_key_col in range(0, len(hb_key_raw) ) :
+                for hb_key_col in range(0, len(reconkeys_header) ) :
 
                     data[reconkeys_header[hb_key_col]] = hb_key_raw[hb_key_col].value
 
@@ -1312,7 +1313,7 @@ def payment_board(request):
 
         try:
 
-            latest_payment_id = Payment.objects.latest('latest_payment_id').latest_payment_id
+            latest_payment_id = Payment.objects.latest('payment_id').payment_id
 
         except:
 
@@ -1483,7 +1484,7 @@ def matching_by_recon_key(request):
 
 
 
-def cash_post(request):
+def report(request):
 
     # input_invoice_arr = json.loads(request.session.get('input_invoice_arr', '[]'))
 
@@ -1666,6 +1667,8 @@ def cash_post(request):
 
                     max_recon_count = recon_count
 
+                res['recon_key_view'] = ', '.join(res['recon_key'])
+
                 input_invoice_arr.append(res)
 
             except :
@@ -1764,6 +1767,8 @@ def cash_post(request):
 
                     imported_payment = {
 
+                        'payment_id' : payment['payment_id'],
+
                         'invoice' : invoice['invoice'],
 
                         'payment' : payment['check'],
@@ -1795,6 +1800,8 @@ def cash_post(request):
 
         # calculation matching by recon key data
 
+        cash_posting_id = 'CP1000'
+
         for unique_recon in unique_recon_list:
 
             matching = {}
@@ -1803,13 +1810,22 @@ def cash_post(request):
 
             sub_payment = 0
 
+            sub_invoice_arr = []
+
+            sub_payment_arr = []
+
+            sub_check_arr = []
+
             multiple = []
+
 
             for invoice in imported_invoice_arr:            
 
                 if unique_recon in invoice['recon_key']:
 
                     sub_invoice += float(invoice['invoice_amount'])
+
+                    sub_invoice_arr.append(invoice['invoice'])
 
                     multiple = invoice['recon_key']
 
@@ -1821,9 +1837,33 @@ def cash_post(request):
 
                         sub_payment += float(payment['check_amount'])
 
+                        sub_payment_arr.append(str(payment['check_amount']) if '.' in str(payment['check_amount']) and len(str(payment['check_amount']).split('.')[1]) < 4 else  str(payment['check_amount']).split('.')[0] + '.' + str(payment['check_amount']).split('.')[1][:4] )
+
+                        sub_check_arr.append(payment['payment_id'])
+
+
+            num = str(int(cash_posting_id[2:])+1)
+
+            if len(num) < 4:
+
+                for ind in range(0, 4-len(num)):
+
+                    num = '0'+num
+
+            cash_posting_id = cash_posting_id[:2]+num
+
+
             matching = {
 
-                    'recon_key' : multiple,
+                    'cash_posting_id' : cash_posting_id,
+
+                    'recon_key' : ', '.join(multiple),
+
+                    'invoice' : ', '.join(sub_invoice_arr),
+
+                    'payment' : ', '.join(sub_payment_arr),
+
+                    'payment_id' : ', '.join(sub_check_arr),
 
                     'invoice_amount' : sub_invoice,
 

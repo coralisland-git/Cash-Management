@@ -13,49 +13,42 @@
     <div class="page-content-inner">
         <div class="row">
             <div class="col-md-12">
-                <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
-                    <div class="portlet-title">
-                        <div class="caption">
-                          <i class="fa fa-credit-card font-red"></i>
-                          <span class="caption-subject font-red bold uppercase">
-                            Unused Payment {{ uploaded }}
-                          </span>
-                        </div>
-                    </div>
-                    <div class="portlet-body form" id="content">
-                       <div class="portlet light ">
-                          <div class="portlet-title">
-                              <div class="caption font-green">
-                                  <i class="icon-settings font-green"></i>
-                                  <span class="caption-subject bold uppercase">BATCH ID</span>
-                              </div>
-                              <div class="tools"> </div>
+                <div class="portlet-body form" id="content">
+                   <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
+                      <div class="portlet-title">
+                          <div class="caption">
+                            <i class="fa fa-credit-card font-red"></i>
+                            <span class="caption-subject font-red bold uppercase">
+                              Unused Payment {{ uploaded }}
+                            </span>
                           </div>
-                          <div class="portlet-body">
-                              <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
-                                  <thead>
-                                      <tr>
-                                          <th></th>
-                                          <td classname="all"> check </td>
-                                          <td classname="all"> recok_key </td>
-                                          <td classname="min-tablet"> check_amount  </td>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                      {% for payment in unused_payment_arr %}
-                                        <tr>
-                                          <th></th>
-                                          <td classname="all"> {{ payment.check }} </td>
-                                          <td classname="all"> {{ payment.recon_key }} </td>
-                                          <td classname="min-tablet">{{ payment.check_amount }}</td>
-                                         </tr>
-                                      {% endfor %}
-                                  </tbody>
-                              </table>
-                          </div>
-                        </div>
+                      </div>
+                      <div class="portlet-body">
+                          <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
+                              <thead>
+                                  <tr>
+                                      <th></th>
+                                      <td classname="all"> payment_id </td>
+                                      <td classname="all"> check </td>
+                                      <td classname="all"> recok_key </td>
+                                      <td classname="min-tablet"> check_amount  </td>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {% for payment in unused_payment_arr %}
+                                    <tr>
+                                      <th></th>
+                                      <td classname="all"> {{ payment_id }} </td>
+                                      <td classname="all"> {{ payment.check }} </td>
+                                      <td classname="all"> {{ payment.recon_key }} </td>
+                                      <td classname="min-tablet">{{ payment.check_amount }}</td>
+                                     </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
                     </div>
-                </div>   
+                </div>
             </div>  
         </div>
     </div>      

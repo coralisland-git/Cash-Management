@@ -13,53 +13,40 @@
     <div class="page-content-inner">
         <div class="row">
             <div class="col-md-12">
-                <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
-                    <div class="portlet-title">
-                        <div class="caption">
-                          <i class="fa fa-life-ring font-red"></i>
-                          <span class="caption-subject font-red bold uppercase">
-                            Generated Invoices {{ uploaded }}
-                          </span>
-                        </div>
-                        <form action="{% url 'timecard_board' %}" method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-default pull-right" name="refresh" value="clear"><i class="fa fa-refresh"></i></button>
-                        </form>
-                    </div>
-                    <div class="portlet-body form" id="content">
-                       <div class="portlet light ">
-                          <div class="portlet-title">
-                              <div class="caption font-green">
-                                  <i class="icon-settings font-green"></i>
-                                  <span class="caption-subject bold uppercase">BATCH ID</span>
-                              </div>
-                              <div class="tools"> </div>
+                <div class="portlet-body form" id="content">
+                   <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
+                      <div class="portlet-title">
+                          <div class="caption">
+                            <i class="fa fa-life-ring font-red"></i>
+                            <span class="caption-subject font-red bold uppercase">
+                              Generated Invoices {{ uploaded }}
+                            </span>
                           </div>
-                          <div class="portlet-body">
-                              <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
-                                  <thead>
-                                      <tr>
-                                          <th></th>
-                                          <td classname="all"> invoice </td>
-                                          <td classname="all"> amount </td>
-                                          <td classname="min-tablet"> RK  </td>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                      {% for cash_posting in input_invoice_arr %}
-                                        <tr>
-                                          <th></th>
-                                          <td classname="all"> {{ cash_posting.invoice }} </td>
-                                          <td classname="all"> {{ cash_posting.invoice_amount }} </td>
-                                          <td classname="min-tablet">{{ cash_posting.recon_key }}</td>
-                                         </tr>
-                                      {% endfor %}
-                                  </tbody>
-                              </table>
-                          </div>
-                        </div>
+                      </div>
+                      <div class="portlet-body">
+                          <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
+                              <thead>
+                                  <tr>
+                                      <th></th>
+                                      <td classname="all"> invoice </td>
+                                      <td classname="all"> amount </td>
+                                      <td classname="min-tablet"> RK  </td>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {% for cash_posting in input_invoice_arr %}
+                                    <tr>
+                                      <th></th>
+                                      <td classname="all"> {{ cash_posting.invoice }} </td>
+                                      <td classname="all"> {{ cash_posting.invoice_amount }} </td>
+                                      <td classname="min-tablet">{{ cash_posting.recon_key_view }}</td>
+                                    </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
                     </div>
-                </div>   
+                </div>
             </div>  
         </div>
     </div>      

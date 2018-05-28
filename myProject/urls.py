@@ -38,7 +38,7 @@ urlpatterns = [
     url(r'^unused_paymenet/$', views.unused_payment, name='unused_payment'),
     url(r'^unused_invoice/$', views.unused_invoice, name='unused_invoice'),
     url(r'^matching_by_recon_key/$', views.matching_by_recon_key, name='matching_by_recon_key'),
-    url(r'^cash_post/$', views.cash_post, name='cash_post'),
+    url(r'^report/$', views.report, name='report'),
     url(r'^clear_data/$', views.clear_data, name='clear_data'),
     url(r'^search_batch_no/$', views.search_batch_no, name='search_batch_no'),
 ]
