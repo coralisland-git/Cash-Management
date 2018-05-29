@@ -363,6 +363,12 @@ def main(request):
 
 def home(request):
 
+    for key in list(request.session.keys()):
+
+        if key !='user' :
+
+            del request.session[key]
+
     return render(request, 'home.html')
     
 
@@ -635,7 +641,7 @@ def timecard_board(request):
 
         except:
 
-            latest_batch = 'HB-KT-TC-0000'
+            latest_batch = 'BH-KT-TC-0000'
 
         num = str(int(latest_batch.split('-')[3])+1)
 
