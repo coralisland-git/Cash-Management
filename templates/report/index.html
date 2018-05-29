@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% load humanize %}
+
 {% block extra_css %}
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link href="{% static 'pages/css/pricing.min.css' %}" rel="stylesheet" type="text/css" />
@@ -38,43 +40,43 @@
                                   <th></th>
                                   <td classname="min-tablet"> 1 </td>
                                   <td classname="all"> total amount </td>
-                                  <td classname="all"> {{ total_invoice_amount }} </td>
+                                  <td classname="all"> ${{ total_invoice_amount  | intcomma }} </td>
                                 </tr>
                                 <tr>
                                   <th></th>
                                   <td classname="min-tablet"> 2 </td>
                                   <td classname="all"> reconned invoice amount </td>
-                                  <td classname="all"> {{ reconned_invoice_amount }} </td>
+                                  <td classname="all"> ${{ reconned_invoice_amount | intcomma }} </td>
                                 </tr>
                                 <tr>
                                   <th></th>
                                   <td classname="min-tablet"> 3 </td>
                                   <td classname="all"> unused invoice amount </td>
-                                  <td classname="all"> {{ unused_invoice_amount }} </td>
+                                  <td classname="all"> ${{ unused_invoice_amount | intcomma  }} </td>
                                 </tr>
                                 <tr>
                                   <th></th>
                                   <td classname="min-tablet"> 4 </td>
                                   <td classname="all"> total payment amount </td>
-                                  <td classname="all"> {{ total_payment_amount }} </td>
+                                  <td classname="all"> ${{ total_payment_amount | intcomma  }} </td>
                                 </tr>
                                 <tr>
                                   <th></th>
                                   <td classname="min-tablet"> 5 </td>
                                   <td classname="all"> reconned payment amount </td>
-                                  <td classname="all"> {{ reconned_payment_amount }} </td>
+                                  <td classname="all"> ${{ reconned_payment_amount | intcomma  }} </td>
                                 </tr>
                                 <tr>
                                   <th></th>
                                   <td classname="min-tablet"> 6 </td>
                                   <td classname="all"> unused payment amount </td>
-                                  <td classname="all"> {{ unused_payment_amount }} </td>
+                                  <td classname="all"> ${{ unused_payment_amount | intcomma  }} </td>
                                 </tr>
                                 <tr>
                                   <th></th>
                                   <td classname="min-tablet"> 7 </td>
                                   <td classname="all"> balance on recon invoice </td>
-                                  <td classname="all"> {{ balance_on_recon_invoice }} </td>
+                                  <td classname="all"> ${{ balance_on_recon_invoice | intcomma  }} </td>
                                 </tr>
                               </tbody>
                           </table>

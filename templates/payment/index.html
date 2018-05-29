@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block extra_css %}
+{% load humanize %}
+
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link href="{% static 'pages/css/pricing.min.css' %}" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL STYLES -->
@@ -81,7 +83,7 @@
                                                 <td classname="all"> {{ payment.payment_id }} </td>
                                                 <td classname="all"> {{ payment.check }} </td>
                                                 <td classname="all"> {{ payment.recon_key }} </td>
-                                                <td classname="min-tablet"> {{ payment.check_amount }} </td>
+                                                <td classname="min-tablet"> ${{ payment.check_amount  | intcomma   }} </td>
                                               </tr>
                                             {% endfor %}
                                         </tbody>

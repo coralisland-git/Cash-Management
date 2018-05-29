@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block extra_css %}
+{% load humanize %}
+
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link href="{% static 'pages/css/pricing.min.css' %}" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL STYLES -->
@@ -38,7 +40,7 @@
                                   <tr>
                                     <th></th>
                                     <td classname="all"> {{ invoice.invoice }} </td>
-                                    <td classname="all"> {{ invoice.invoice_amount }} </td>
+                                    <td classname="all"> ${{ invoice.invoice_amount | intcomma   }} </td>
                                     <td classname="min-tablet">{{ invoice.recon_key_view }}</td>
                                    </tr>
                                 {% endfor %}

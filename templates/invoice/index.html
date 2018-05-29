@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block extra_css %}
+{% load humanize %}
+
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link href="{% static 'pages/css/pricing.min.css' %}" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL STYLES -->
@@ -95,7 +97,7 @@
                                               <tr>
                                                 <th></th>
                                                 <td> {{ invoice.invoice_number }} </td> 
-                                                <td> {{ invoice.total_bill_amount }} </td> 
+                                                <td> ${{ invoice.total_bill_amount | intcomma   }} </td> 
                                                 <td> {{ invoice.invoice_reference }} </td> 
                                                 <td> {{ invoice.invoice_date }} </td> 
                                                 <td> {{ invoice.company }} </td> 
