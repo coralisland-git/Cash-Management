@@ -840,11 +840,12 @@ def timecard_hb_board(request):
             'uid'
         ]
 
+
         for hb_tc_raw in hb_tc_raw_sheet.rows:
 
             data = { 'batch_no' : batch_no } 
 
-            for hb_tc_col in range(0, len(timecard_header) ) :
+            for hb_tc_col in range(0, len(hb_tc_raw) ) :
 
                 data[timecard_header[hb_tc_col]] = hb_tc_raw[hb_tc_col].value
 
@@ -1027,7 +1028,7 @@ def reconkeys_board(request):
 
                 data = { 'batch_no' : batch_no } 
 
-                for kt_key_col in range(0, len(reconkeys_header) ) :
+                for kt_key_col in range(0, len(kt_key_raw) ) :
 
                     data[reconkeys_header[kt_key_col]] = kt_key_raw[kt_key_col].value
 
@@ -1191,7 +1192,7 @@ def reconkeys_hb_board(request):
 
                 data = { 'batch_no' : batch_no } 
 
-                for hb_key_col in range(0, len(reconkeys_header) ) :
+                for hb_key_col in range(0, len(hb_key_raw) ) :
 
                     data[reconkeys_header[hb_key_col]] = hb_key_raw[hb_key_col].value
 
