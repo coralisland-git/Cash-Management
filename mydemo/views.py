@@ -162,6 +162,80 @@ def clear_data(request):
         return redirect('/payment_board')
 
 
+def remove_data(request):
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'invoice_raw_data':
+
+        request.session['invoice_arr'] = '[]'
+
+        Invoice.objects.filter(batch_no=request.session['invoice_batch_no']).delete()
+
+        request.session['invoice_batch_no'] = ''
+
+        return redirect('/invoice_board')
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'invoice_simple_data':
+
+        request.session['input_invoice_arr'] = '[]'
+
+        return redirect('/invoice_simple_board')
+
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'timecard_kt_data':
+
+        request.session['timecard_kt_arr'] = '[]'
+
+        TimeCard_KT.objects.filter(batch_no=request.session['kt_tc_batch_no']).delete()
+
+        request.session['kt_tc_batch_no'] = ''
+
+        return redirect('/timecard_board')
+        
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'timecard_hb_data':
+
+        request.session['timecard_hb_arr'] = '[]'
+
+        TimeCard_HB.objects.filter(batch_no=request.session['hb_tc_batch_no']).delete()
+
+        request.session['hb_tc_batch_no'] = ''
+
+        return redirect('/timecard_hb_board')
+
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'reconkeys_kt_data':
+
+        request.session['reconkeys_arr'] = '[]'
+
+        ReconKeys_KT.objects.filter(batch_no=request.session['kt_rk_batch_no']).delete()
+
+        request.session['kt_rk_batch_no'] = ''
+
+        return redirect('/reconkeys_board')
+
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'reconkeys_hb_data':
+
+        request.session['reconkeys_hb_arr'] = '[]'
+
+        ReconKeys_HB.objects.filter(batch_no=request.session['hb_rk_batch_no']).delete()
+
+        request.session['hb_rk_batch_no'] = ''
+
+        return redirect('/reconkeys_hb_board')
+
+
+    if 'refresh' in request.POST and request.POST['refresh'] == 'input_payment_data':
+
+        request.session['input_payment_arr'] = '[]'
+
+        Payment.objects.filter(batch_no=request.session['payment_batch_no']).delete()
+
+        request.session['payment_batch_no'] = ''
+
+        return redirect('/payment_board')
+
+
 def search_batch_no(request):
 
     if 'invoice_batch_no' in request.POST:
@@ -657,7 +731,7 @@ def timecard_board(request):
 
                 data = { 'batch_no' : batch_no } 
 
-                for kt_tc_col in range(0, len(timecard_header) ) :
+                for kt_tc_col in range(0, len(timecard_header)-1 ) :
 
                     data[timecard_header[kt_tc_col]] = kt_tc_raw[kt_tc_col].value
                     
@@ -843,52 +917,57 @@ def timecard_hb_board(request):
 
         for hb_tc_raw in hb_tc_raw_sheet.rows:
 
-            data = { 'batch_no' : batch_no } 
-
-            for hb_tc_col in range(0, len(hb_tc_raw) ) :
-
-                data[timecard_header[hb_tc_col]] = hb_tc_raw[hb_tc_col].value
-
-            temp = datetime.datetime(1899, 12, 30)    # Note, not 31st Dec but 30th!
-
-            date = ''
-
             try:
 
-                delta = data['service_date'] - temp
+                data = { 'batch_no' : batch_no } 
 
-                date = str(int(float(delta.days) + (float(delta.seconds) / 86400)))
+                for hb_tc_col in range(0, len(timecard_header)-1 ) :
 
-            except : 
+                    data[timecard_header[hb_tc_col]] = hb_tc_raw[hb_tc_col].value
 
-                date = '0'
+                temp = datetime.datetime(1899, 12, 30)    # Note, not 31st Dec but 30th!
 
-            uid = str(data['client_branch']) + '@' + date + '@' + str(data['service_type']) + '@' + str(data['client_name']).replace(' ', '').replace('.', '').strip()
+                date = ''
 
-            data['uid'] = uid.strip()
+                try:
 
-            for header in timecard_header:
+                    delta = data['service_date'] - temp
 
-                data[header] = str(data[header])
+                    date = str(int(float(delta.days) + (float(delta.seconds) / 86400)))
 
-            if hb_tc_row > 1 and data['time_card_id'] != '' :
+                except : 
 
-                timecard_hb_arr.append(data)
+                    date = '0'
 
-                check = TimeCard_HB.objects.filter(time_card_id=data['time_card_id'])
+                uid = str(data['client_branch']) + '@' + date + '@' + str(data['service_type']) + '@' + str(data['client_name']).replace(' ', '').replace('.', '').strip()
 
-                if len(check) == 0:
+                data['uid'] = uid.strip()
 
-                    timecard_hb_model = TimeCard_HB(**data)
+                for header in timecard_header:
 
-                    timecard_hb_model.save()
+                    data[header] = str(data[header])
 
-                else :
+                if hb_tc_row > 1 and data['time_card_id'] != '' :
 
-                    check.update(**data)
+                    timecard_hb_arr.append(data)
 
-            hb_tc_row += 1
+                    check = TimeCard_HB.objects.filter(time_card_id=data['time_card_id'])
 
+                    if len(check) == 0:
+
+                        timecard_hb_model = TimeCard_HB(**data)
+
+                        timecard_hb_model.save()
+
+                    else :
+
+                        check.update(**data)
+
+                hb_tc_row += 1
+
+            except:
+
+                pass
 
         request.session['timecard_hb_arr'] = json.dumps(timecard_hb_arr)
 
@@ -1028,7 +1107,7 @@ def reconkeys_board(request):
 
                 data = { 'batch_no' : batch_no } 
 
-                for kt_key_col in range(0, len(kt_key_raw) ) :
+                for kt_key_col in range(0, len(reconkeys_header)-1 ) :
 
                     data[reconkeys_header[kt_key_col]] = kt_key_raw[kt_key_col].value
 
@@ -1192,7 +1271,7 @@ def reconkeys_hb_board(request):
 
                 data = { 'batch_no' : batch_no } 
 
-                for hb_key_col in range(0, len(hb_key_raw) ) :
+                for hb_key_col in range(0, len(reconkeys_header)-1 ) :
 
                     data[reconkeys_header[hb_key_col]] = hb_key_raw[hb_key_col].value
 
@@ -1390,7 +1469,6 @@ def payment_board(request):
                             num = '0'+num
 
                     payment_id = payment_id[:3]+num
-
 
                     # check = Payment.objects.filter(key_id=data['key_id'])
 
@@ -1801,7 +1879,7 @@ def report(request):
 
         # calculation matching by recon key data
 
-        cash_posting_id = 'CP1000'
+        cash_post_id = 'CP1000'
 
         for unique_recon in unique_recon_list:
 
@@ -1843,7 +1921,7 @@ def report(request):
                         sub_check_arr.append(payment['payment_id'])
 
 
-            num = str(int(cash_posting_id[2:])+1)
+            num = str(int(cash_post_id[2:])+1)
 
             if len(num) < 4:
 
@@ -1851,12 +1929,12 @@ def report(request):
 
                     num = '0'+num
 
-            cash_posting_id = cash_posting_id[:2]+num
+            cash_post_id = cash_post_id[:2]+num
 
 
             matching = {
 
-                    'cash_posting_id' : cash_posting_id,
+                    'cash_post_id' : cash_post_id,
 
                     'recon_key' : ', '.join(multiple),
 
@@ -1873,6 +1951,12 @@ def report(request):
                     'difference' : float(sub_invoice - sub_payment)
 
                 }
+
+            for imported_payment in imported_payment_arr:
+
+                if unique_recon in imported_payment['recon_key']:
+
+                    imported_payment['cash_post_id_memo'] = cash_post_id +'^'+imported_payment['recon_key']
 
             matching_by_recon_key_arr.append(matching)
 

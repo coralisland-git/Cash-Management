@@ -40,5 +40,6 @@ urlpatterns = [
     url(r'^matching_by_recon_key/$', views.matching_by_recon_key, name='matching_by_recon_key'),
     url(r'^report/$', views.report, name='report'),
     url(r'^clear_data/$', views.clear_data, name='clear_data'),
+    url(r'^remove_data/$', views.remove_data, name='remove_data'),
     url(r'^search_batch_no/$', views.search_batch_no, name='search_batch_no'),
 ]

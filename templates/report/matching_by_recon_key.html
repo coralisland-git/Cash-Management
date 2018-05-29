@@ -31,7 +31,7 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <td class="all"> cash_posting_id </td>
+                                    <td class="all"> cash_post_id </td>
                                     <td class="all"> recon_key </td>
                                     <td class="all"> invoice_amount </td>
                                     <td class="all"> payment_amount  </td>
@@ -45,7 +45,7 @@
                                 {% for matching in matching_by_recon_key_arr %}
                                   <tr>
                                     <th></th>
-                                    <td class="all"> {{ matching.cash_posting_id }} </td>
+                                    <td class="all"> {{ matching.cash_post_id }} </td>
                                     <td class="all"> {{ matching.recon_key }} </td>
                                     <td class="all"> ${{ matching.invoice_amount  | intcomma  }} </td>
                                     <td class="all"> ${{ matching.payment_amount  | intcomma  }}</td>
