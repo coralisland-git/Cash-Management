@@ -1476,17 +1476,17 @@ def payment_board(request):
 
                     payment_id = payment_id[:3]+num
 
-                    # check = Payment.objects.filter(key_id=data['key_id'])
+                    check = Payment.objects.filter(check=data['check'], recon_key=data['recon_key'], check_amount=data['check_amount'])
 
-                    # if len(check) == 0:
+                    if len(check) == 0:
 
-                    payment_model = Payment(**data)
+                        payment_model = Payment(**data)
 
-                    payment_model.save()
+                        payment_model.save()
 
-                    # else :
+                    else :
 
-                    #     check.update(**data)
+                        check.update(**data)
 
                 payment_row += 1
 
