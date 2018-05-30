@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block extra_css %}
+{% load humanize %}
+
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link href="{% static 'pages/css/pricing.min.css' %}" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL STYLES -->
@@ -14,205 +16,238 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
-                    <div class="portlet-title">
-                        <div class="caption">
-                          <i class="fa fa-tasks font-red"></i>
-                          <span class="caption-subject font-red bold uppercase">
-                            KT Time Card Data {{ uploaded }}
-                          </span>
-                        </div>
-                        <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="col-md-3 pull-right">
-                                <div class="input-group select2-bootstrap-append">
-                                    <select id="single-append-text" class="form-control select2-allow-clear" name="kt_tc_batch_no">
-                                        <option></option>
-                                        {% for batch in kt_tc_batch_no_arr %}
-                                            <option value="{{ batch}}">{{ batch }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="submit">
-                                            <span class="glyphicon glyphicon-search"></span>
-                                        </button>
-                                    </span>
+                    <div class="portlet-body">
+                        <ul class="nav nav-tabs">
+                            <li style="margin-right: 30px; top: 10px;">
+                                <div class="caption">
+                                  <i class="fa fa-life-ring font-red"></i>
+                                  <span class="caption-subject font-red bold uppercase">
+                                    KT TimeCard Data
+                                  </span>
                                 </div>
-                            </div>
-                        </form>
-                        {% if kt_tc_batch_no %}
-                            <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 15px;"> <i class="fa fa-trash"></i></a>
-                            <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-                                <div class="modal-body" style="text-align: center;">
-                                    <p style="font-size: 18px;"> Are you sure? </p>
-                                </div>
-                                <div class="modal-footer" style="text-align: center;" >
-                                    <form action="{% url 'remove_data' %}" method="POST">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn green" name="refresh" value="timecard_kt_data" style="width : 80px ;">Yes</button>
-                                        <button type="button" data-dismiss="modal" class="btn btn-default" style="width : 80px ;">No</button>
-                                    </form>
-                                </div>
-                            </div>
-                        {% else %}
-                            <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 15px;"> <i class="fa fa-trash"></i></a>
-                            <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-                                <div class="modal-body" style="text-align: center;">
-                                    <p style="font-size: 18px;"> No Available Data </p>
-                                </div>
-                                <div class="modal-footer" style="text-align: center;">
-                                    <button type="button" data-dismiss="modal" class="btn btn-default" style="width : 80px ;">OK</button>
-                                </div>
-                            </div>
-                        {% endif %}
-                        <form action="{% url 'clear_data' %}" method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-default pull-right" name="refresh" value="timecard_kt_data"><i class="fa fa-plus"></i></button>
-                        </form>
-                    </div>
-                    <div class="portlet-body form">
-                        {% if not timecard_kt_arr %}
-                        <div class="page-content-inner">
-                            <form action="{% url 'timecard_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
+                            </li>
+                            <li class="{% ifequal view 'batch' %} active{% else %} '' {% endifequal %}">
+                                <a href="#tab_1_1" data-toggle="tab"> Batches </a>
+                            </li>
+                            <li class="{% ifequal view 'detail' %} active{% else %} '' {% endifequal %}">
+                                <a href="#tab_1_2" data-toggle="tab"> TimeCards </a>
+                            </li>
+                        </ul>
+                        <div style="position: relative;top: -56px;">
+                            <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
-                                <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
+                                <div class="col-md-3 pull-right">
+                                    <div class="input-group select2-bootstrap-append">
+                                        <select id="single-append-text" class="form-control select2-allow-clear" name="kt_tc_batch_no">
+                                            <option></option>
+                                            {% for batch in kt_tc_batch_no_arr %}
+                                                <option value="{{ batch.batch_no}}">{{ batch.batch_no }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">
+                                                <span class="glyphicon glyphicon-search"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+                            <form action="{% url 'clear_data' %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-default pull-right" name="refresh" value="timecard_kt_data"><i class="fa fa-plus"></i></button>
                             </form>
                         </div>
-                        {% endif %}
-                        <div class="portlet-body form" id="content">
-                           <div class="portlet light ">
-                              <div class="portlet-title">
-                                  <div class="caption font-green">
-                                      <i class="icon-settings font-green"></i>
-                                      <span class="caption-subject bold uppercase">BATCH ID : {{ kt_tc_batch_no }}</span>
-                                  </div>
-                                  <div class="tools"> </div>
-                              </div>
-                              <div class="portlet-body">
-                                  <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_2">
-                                      <thead>
-                                          <tr>
-                                              <th></th>
-                                              <td classname="all"> time_card_id </td>
-                                              <td classname="all"> authorization </td>
-                                              <td classname="all"> bill_mode </td>
-                                              <td classname="min-tablet"> bill_rate </td>
-                                              <td classname="min-tablet"> billable </td>
-                                              <td classname="none"> case_manager_first_name </td>
-                                              <td classname="none"> case_manager_last_name </td>
-                                              <td classname="none"> checkin_time </td>
-                                              <td classname="none"> checkout_time </td>
-                                              <td classname="none"> client_first_name </td>
-                                              <td classname="none"> client_last_name </td>
-                                              <td classname="none"> client_dob </td>
-                                              <td classname="none"> clinician_first_name </td>
-                                              <td classname="none"> clinician_last_name </td>
-                                              <td classname="none"> clinician_id </td>
-                                              <td classname="none"> clinician_payroll_group </td>
-                                              <td classname="none"> clinician_payroll_id </td>
-                                              <td classname="none"> clinician_payroll_rule </td>
-                                              <td classname="none"> clinician_skills </td>
-                                              <td classname="none"> clinician_ssn </td>
-                                              <td classname="none"> cosign_staff_first_name </td>
-                                              <td classname="none"> cosign_staff_last_name </td>
-                                              <td classname="none"> edited_hours </td>
-                                              <td classname="none"> episode_duration </td>
-                                              <td classname="none"> episode_number </td>
-                                              <td classname="none"> episode_start_date </td>
-                                              <td classname="none"> episode_end_date </td>
-                                              <td classname="none"> has_split_schedules </td>
-                                              <td classname="none"> hcpcs_code </td>
-                                              <td classname="none"> location </td>
-                                              <td classname="none"> marital_status </td>
-                                              <td classname="none"> medicaid </td>
-                                              <td classname="none"> patient_id </td>
-                                              <td classname="none"> payroll </td>
-                                              <td classname="none"> payroll_mode </td>
-                                              <td classname="none"> payroll_rate </td>
-                                              <td classname="none"> payrolled </td>
-                                              <td classname="none"> schedule_status </td>
-                                              <td classname="none"> units </td>
-                                              <td classname="none"> visit_date </td>
-                                              <td classname="none"> client_lob </td>
-                                              <td classname="none"> insurance_id </td>
-                                              <td classname="none"> payer </td>
-                                              <td classname="none"> clinician_discipline </td>
-                                              <td classname="none"> service </td>
-                                              <td classname="none"> employment_type </td>
-                                              <td classname="none"> invoice_no </td>
-                                              <td classname="none"> miles </td>
-                                              <td classname="none"> visit_id </td>
-                                              <td classname="none"> payroll_batch_id </td>
-                                              <td classname="none"> authorization </td>
-                                              <td classname="none"> bill_mode </td>
-                                              <td classname="none"> shift </td>
-                                              <td classname="none"> uid </td>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                                          {% for timecard in timecard_kt_arr %}
-                                            <tr>
-                                              <th></th>
-                                               <td classname="all"> {{ timecard.time_card_id }} </td>
-                                               <td classname="all"> {{ timecard.authorization }} </td>
-                                               <td classname="all"> {{ timecard.bill_mode }} </td>
-                                               <td classname="min-tablet"> {{ timecard.bill_rate }} </td>
-                                               <td classname="min-tablet"> {{ timecard.billable }} </td>
-                                               <td classname="none"> {{ timecard.case_manager_first_name }} </td>
-                                               <td classname="none"> {{ timecard.case_manager_last_name }} </td>
-                                               <td classname="none"> {{ timecard.checkin_time }} </td>
-                                               <td classname="none"> {{ timecard.checkout_time }} </td>
-                                               <td classname="none"> {{ timecard.client_first_name }} </td>
-                                               <td classname="none"> {{ timecard.client_last_name }} </td>
-                                               <td classname="none"> {{ timecard.client_dob }} </td>
-                                               <td classname="none"> {{ timecard.clinician_first_name }} </td>
-                                               <td classname="none"> {{ timecard.clinician_last_name }} </td>
-                                               <td classname="none"> {{ timecard.clinician_id }} </td>
-                                               <td classname="none"> {{ timecard.clinician_payroll_group }} </td>
-                                               <td classname="none"> {{ timecard.clinician_payroll_id }} </td>
-                                               <td classname="none"> {{ timecard.clinician_payroll_rule }} </td>
-                                               <td classname="none"> {{ timecard.clinician_skills }} </td>
-                                               <td classname="none"> {{ timecard.clinician_ssn }} </td>
-                                               <td classname="none"> {{ timecard.cosign_staff_first_name }} </td>
-                                               <td classname="none"> {{ timecard.cosign_staff_last_name }} </td>
-                                               <td classname="none"> {{ timecard.edited_hours }} </td>
-                                               <td classname="none"> {{ timecard.episode_duration }} </td>
-                                               <td classname="none"> {{ timecard.episode_number }} </td>
-                                               <td classname="none"> {{ timecard.episode_start_date }} </td>
-                                               <td classname="none"> {{ timecard.episode_end_date }} </td>
-                                               <td classname="none"> {{ timecard.has_split_schedules }} </td>
-                                               <td classname="none"> {{ timecard.hcpcs_code }} </td>
-                                               <td classname="none"> {{ timecard.location }} </td>
-                                               <td classname="none"> {{ timecard.marital_status }} </td>
-                                               <td classname="none"> {{ timecard.medicaid }} </td>
-                                               <td classname="none"> {{ timecard.patient_id }} </td>
-                                               <td classname="none"> {{ timecard.payroll }} </td>
-                                               <td classname="none"> {{ timecard.payroll_mode }} </td>
-                                               <td classname="none"> {{ timecard.payroll_rate }} </td>
-                                               <td classname="none"> {{ timecard.payrolled }} </td>
-                                               <td classname="none"> {{ timecard.schedule_status }} </td>
-                                               <td classname="none"> {{ timecard.units }} </td>
-                                               <td classname="none"> {{ timecard.visit_date }} </td>
-                                               <td classname="none"> {{ timecard.client_lob }} </td>
-                                               <td classname="none"> {{ timecard.insurance_id }} </td>
-                                               <td classname="none"> {{ timecard.payer }} </td>
-                                               <td classname="none"> {{ timecard.clinician_discipline }} </td>
-                                               <td classname="none"> {{ timecard.service }} </td>
-                                               <td classname="none"> {{ timecard.employment_type }} </td>
-                                               <td classname="none"> {{ timecard.invoice_no }} </td>
-                                               <td classname="none"> {{ timecard.miles }} </td>
-                                               <td classname="none"> {{ timecard.visit_id }} </td>
-                                               <td classname="none"> {{ timecard.payroll_batch_id }} </td>
-                                               <td classname="none"> {{ timecard.authorization }} </td>
-                                               <td classname="none"> {{ timecard.bill_mode }} </td>
-                                               <td classname="none"> {{ timecard.shift }} </td>
-                                               <td classname="none"> {{ timecard.uid }} </td>
-                                            </tr>
-                                          {% endfor %}
-                                      </tbody>
-                                  </table>
-                              </div>
-                          </div>
-                      </div>
+                        <div class="tab-content">
+                            <div class="tab-pane fade {% ifequal view 'batch' %} active in{% else %} '' {% endifequal %} in" id="tab_1_1">
+                                <div class="portlet light ">
+                                    <div class="portlet-title">
+                                        <div class="tools"></div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_4">
+                                            <thead>
+                                                <tr>
+                                                    <td class="all"> batch_no</td>
+                                                    <td class="all"> count </td>
+                                                    <td class="min-tablet"> date/time created </td>
+                                                    <td class="min-tablet"> Actions </td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for batch in kt_tc_batch_no_arr %}
+                                                  <tr>
+                                                    <td  class="all"> {{ batch.batch_no }} </td> 
+                                                    <td class="all"> {{ batch.count }} </td> 
+                                                    <td class="all"> {{ batch.uploaded_date }} </td> 
+                                                    <td  class="all"> 
+                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> <i class="fa fa-trash"></i></a>
+                                                        <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+                                                            <div class="modal-body" style="text-align: center;">
+                                                                <p style="font-size: 18px;"> Are you sure? </p>
+                                                            </div>
+                                                            <div class="modal-footer" style="text-align: center;" >
+                                                                <form action="{% url 'remove_data' %}" method="POST">
+                                                                    {% csrf_token %}
+                                                                     <input type="hidden" name="batch_no" value="{{ batch.batch_no }}">
+                                                                    <button type="submit" class="btn green" name="refresh" value="timecard_kt_data" style="width : 80px ;">Yes</button>
+                                                                    <button type="button" data-dismiss="modal" class="btn btn-default" style="width : 80px ;">No</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        <form action="{% url 'search_batch_no' %}" method="POST">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-default pull-right" name="kt_tc_batch_no" value={{ batch.batch_no }} ><i class="fa fa-eye"></i></button>
+                                                        </form>
+                                                    </td> 
+                                                  </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                           <div class="tab-pane fade {% ifequal view 'detail' %} active in{% else %} '' {% endifequal %} " id="tab_1_2">
+                                <div class="portlet-body form" id="content">
+                                    {% if not timecard_kt_arr %}
+                                        <div class="page-content-inner">
+                                            <form action="{% url 'timecard_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
+                                                {% csrf_token %}
+                                                <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                        <div class="portlet light ">
+                                            <div class="portlet-title">
+                                                <div class="tools"></div>
+                                            </div>
+                                            <div class="portlet-body">
+                                                <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_3">
+                                                    <thead>
+                                                      <tr>
+                                                          <td class="all"> batch_no </td>
+                                                          <td class="all"> time_card_id </td>
+                                                          <td class="all"> authorization </td>
+                                                          <td class="all"> bill_mode </td>
+                                                          <td class="min-tablet"> bill_rate </td>
+                                                          <td class="min-tablet"> billable </td>
+                                                          <td class="none"> case_manager_first_name </td>
+                                                          <td class="none"> case_manager_last_name </td>
+                                                          <td class="none"> checkin_time </td>
+                                                          <td class="none"> checkout_time </td>
+                                                          <td class="none"> client_first_name </td>
+                                                          <td class="none"> client_last_name </td>
+                                                          <td class="none"> client_dob </td>
+                                                          <td class="none"> clinician_first_name </td>
+                                                          <td class="none"> clinician_last_name </td>
+                                                          <td class="none"> clinician_id </td>
+                                                          <td class="none"> clinician_payroll_group </td>
+                                                          <td class="none"> clinician_payroll_id </td>
+                                                          <td class="none"> clinician_payroll_rule </td>
+                                                          <td class="none"> clinician_skills </td>
+                                                          <td class="none"> clinician_ssn </td>
+                                                          <td class="none"> cosign_staff_first_name </td>
+                                                          <td class="none"> cosign_staff_last_name </td>
+                                                          <td class="none"> edited_hours </td>
+                                                          <td class="none"> episode_duration </td>
+                                                          <td class="none"> episode_number </td>
+                                                          <td class="none"> episode_start_date </td>
+                                                          <td class="none"> episode_end_date </td>
+                                                          <td class="none"> has_split_schedules </td>
+                                                          <td class="none"> hcpcs_code </td>
+                                                          <td class="none"> location </td>
+                                                          <td class="none"> marital_status </td>
+                                                          <td class="none"> medicaid </td>
+                                                          <td class="none"> patient_id </td>
+                                                          <td class="none"> payroll </td>
+                                                          <td class="none"> payroll_mode </td>
+                                                          <td class="none"> payroll_rate </td>
+                                                          <td class="none"> payrolled </td>
+                                                          <td class="none"> schedule_status </td>
+                                                          <td class="none"> units </td>
+                                                          <td class="none"> visit_date </td>
+                                                          <td class="none"> client_lob </td>
+                                                          <td class="none"> insurance_id </td>
+                                                          <td class="none"> payer </td>
+                                                          <td class="none"> clinician_discipline </td>
+                                                          <td class="none"> service </td>
+                                                          <td class="none"> employment_type </td>
+                                                          <td class="none"> invoice_no </td>
+                                                          <td class="none"> miles </td>
+                                                          <td class="none"> visit_id </td>
+                                                          <td class="none"> payroll_batch_id </td>
+                                                          <td class="none"> authorization </td>
+                                                          <td class="none"> bill_mode </td>
+                                                          <td class="none"> shift </td>
+                                                          <td class="none"> uid </td>
+                                                      </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                      {% for timecard in timecard_kt_arr %}
+                                                        <tr>
+                                                          <td class="all"> {{ timecard.batch_no }} </td>
+                                                           <td class="all"> {{ timecard.time_card_id }} </td>
+                                                           <td class="all"> {{ timecard.authorization }} </td>
+                                                           <td class="all"> {{ timecard.bill_mode }} </td>
+                                                           <td class="min-tablet"> {{ timecard.bill_rate }} </td>
+                                                           <td class="min-tablet"> {{ timecard.billable }} </td>
+                                                           <td class="none"> {{ timecard.case_manager_first_name }} </td>
+                                                           <td class="none"> {{ timecard.case_manager_last_name }} </td>
+                                                           <td class="none"> {{ timecard.checkin_time }} </td>
+                                                           <td class="none"> {{ timecard.checkout_time }} </td>
+                                                           <td class="none"> {{ timecard.client_first_name }} </td>
+                                                           <td class="none"> {{ timecard.client_last_name }} </td>
+                                                           <td class="none"> {{ timecard.client_dob }} </td>
+                                                           <td class="none"> {{ timecard.clinician_first_name }} </td>
+                                                           <td class="none"> {{ timecard.clinician_last_name }} </td>
+                                                           <td class="none"> {{ timecard.clinician_id }} </td>
+                                                           <td class="none"> {{ timecard.clinician_payroll_group }} </td>
+                                                           <td class="none"> {{ timecard.clinician_payroll_id }} </td>
+                                                           <td class="none"> {{ timecard.clinician_payroll_rule }} </td>
+                                                           <td class="none"> {{ timecard.clinician_skills }} </td>
+                                                           <td class="none"> {{ timecard.clinician_ssn }} </td>
+                                                           <td class="none"> {{ timecard.cosign_staff_first_name }} </td>
+                                                           <td class="none"> {{ timecard.cosign_staff_last_name }} </td>
+                                                           <td class="none"> {{ timecard.edited_hours }} </td>
+                                                           <td class="none"> {{ timecard.episode_duration }} </td>
+                                                           <td class="none"> {{ timecard.episode_number }} </td>
+                                                           <td class="none"> {{ timecard.episode_start_date }} </td>
+                                                           <td class="none"> {{ timecard.episode_end_date }} </td>
+                                                           <td class="none"> {{ timecard.has_split_schedules }} </td>
+                                                           <td class="none"> {{ timecard.hcpcs_code }} </td>
+                                                           <td class="none"> {{ timecard.location }} </td>
+                                                           <td class="none"> {{ timecard.marital_status }} </td>
+                                                           <td class="none"> {{ timecard.medicaid }} </td>
+                                                           <td class="none"> {{ timecard.patient_id }} </td>
+                                                           <td class="none"> {{ timecard.payroll }} </td>
+                                                           <td class="none"> {{ timecard.payroll_mode }} </td>
+                                                           <td class="none"> {{ timecard.payroll_rate }} </td>
+                                                           <td class="none"> {{ timecard.payrolled }} </td>
+                                                           <td class="none"> {{ timecard.schedule_status }} </td>
+                                                           <td class="none"> {{ timecard.units }} </td>
+                                                           <td class="none"> {{ timecard.visit_date }} </td>
+                                                           <td class="none"> {{ timecard.client_lob }} </td>
+                                                           <td class="none"> {{ timecard.insurance_id }} </td>
+                                                           <td class="none"> {{ timecard.payer }} </td>
+                                                           <td class="none"> {{ timecard.clinician_discipline }} </td>
+                                                           <td class="none"> {{ timecard.service }} </td>
+                                                           <td class="none"> {{ timecard.employment_type }} </td>
+                                                           <td class="none"> {{ timecard.invoice_no }} </td>
+                                                           <td class="none"> {{ timecard.miles }} </td>
+                                                           <td class="none"> {{ timecard.visit_id }} </td>
+                                                           <td class="none"> {{ timecard.payroll_batch_id }} </td>
+                                                           <td class="none"> {{ timecard.authorization }} </td>
+                                                           <td class="none"> {{ timecard.bill_mode }} </td>
+                                                           <td class="none"> {{ timecard.shift }} </td>
+                                                           <td class="none"> {{ timecard.uid }} </td>
+                                                        </tr>
+                                                      {% endfor %}
+                                                  </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>   
             </div>  
@@ -252,7 +287,7 @@
 
                 this.on("success", function(file, responseText) {
                     console.log(responseText); // console should show the ID you pointed to
-                    // $("#content").html(responseText);
+                    // $("#content").html(responseText);    
                     location.reload();
                     // do stuff with file.id ...
                 });

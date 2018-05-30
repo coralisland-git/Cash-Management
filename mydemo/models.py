@@ -36,6 +36,8 @@ class Invoice(models.Model):
 
 	batch_no = models.CharField(max_length=255, blank=True, null=True)
 
+	uploaded_date = models.CharField(max_length=255, blank=True, null=True)
+
 	system = models.CharField(max_length=255, blank=True, null=True)
 
 	license = models.CharField(max_length=255, blank=True, null=True)
@@ -97,6 +99,8 @@ class Invoice(models.Model):
 class TimeCard_KT(models.Model):
 
 	batch_no = models.CharField(max_length=255, blank=True, null=True)
+
+	uploaded_date = models.CharField(max_length=255, blank=True, null=True)
 
 	uid = models.CharField(max_length=255, blank=True, null=True)
 
@@ -211,6 +215,8 @@ class TimeCard_HB(models.Model):
 
 	batch_no = models.CharField(max_length=255, blank=True, null=True, default="")
 
+	uploaded_date = models.CharField(max_length=255, blank=True, null=True)
+
 	time_card_id = models.CharField(max_length=255, blank=True, null=True, default="")
 
 	batch = models.CharField(max_length=255, blank=True, null=True, default="")
@@ -293,6 +299,8 @@ class TimeCard_HB(models.Model):
 class ReconKeys_KT(models.Model):
 
 	batch_no = models.CharField(max_length=255, blank=True, null=True)
+
+	uploaded_date = models.CharField(max_length=255, blank=True, null=True)
 
 	key_id = models.CharField(max_length=255, blank=True, null=True)
 
@@ -402,6 +410,8 @@ class ReconKeys_HB(models.Model):
 
 	batch_no = models.CharField(max_length=255, blank=True, null=True)
 
+	uploaded_date = models.CharField(max_length=255, blank=True, null=True)
+
 	key_id = models.CharField(max_length=255, blank=True, null=True)
 
 	row_id = models.CharField(max_length=255, blank=True, null=True)
@@ -440,6 +450,8 @@ class ReconKeys_HB(models.Model):
 class Payment(models.Model):
 
 	batch_no = models.CharField(max_length=255, blank=True, null=True)
+
+	uploaded_date = models.CharField(max_length=255, blank=True, null=True)
 
 	payment_id = models.CharField(max_length=255, blank=True, null=True)
 

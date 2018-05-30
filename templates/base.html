@@ -65,23 +65,15 @@
                      {% if request.session.user != None %}
                     <!-- BEGIN HEADER -->
                     <div class="page-header" style="height: inherit;">
-                        <!-- BEGIN HEADER TOP -->
-                        <div class="page-header-top" style="height: inherit;">
+                        <!-- END HEADER TOP -->
+                        <!-- BEGIN HEADER MENU -->
+                        <div class="page-header-menu">
                             <div class="container">
-                                <!-- BEGIN LOGO -->
-                                  
-                                <div class="page-logo" style="width: 400px;">
-                                    <a href="{% url 'home' %}" style="text-decoration: none;">
-                                        <h2 class="caption-subject font-green bold uppercase">CASH MANAGEMENT</h2>
-                                    </a>
-                                </div>
-                                <!-- END LOGO -->
-                                <!-- BEGIN TOP NAVIGATION MENU -->
-                                <div class="top-menu">                                   
-                                    <ul class="nav navbar-nav pull-right">
+                                <div class="top-menu pull-right" >                                   
+                                    <ul class="nav navbar-nav">
                                         <li class="dropdown dropdown-user dropdown-dark">
-                                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                                <img alt="" class="img-circle" src="{% static 'pages/img/avatars/team16.jpg' %}">
+                                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" style="padding: 5px;">
+                                                <img alt="" class="img-circle" src="{% static 'pages/img/avatars/team16.jpg' %}" style="width: 40px;">
                                                 <span class="username username-hide-mobile">{{request.session.user.firstname}} {{request.session.user.firstname }}</span>
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-default">
@@ -100,14 +92,8 @@
                                                 </li>
                                             </ul>
                                         </li> 
-                                 </ul>
+                                    </ul>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- END HEADER TOP -->
-                        <!-- BEGIN HEADER MENU -->
-                        <div class="page-header-menu">
-                            <div class="container">
                                 <form action="#" method="GET">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-default pull-right" name="refresh" value="clear" style="position: relative; top: 10px; ">POST</button>
@@ -226,8 +212,8 @@
                             <!-- BEGIN CONTENT BODY -->
                             
                             <!-- BEGIN PAGE CONTENT BODY -->
-                            <div class="page-content">
-                                <div class="container">
+                            <div class="page-content" style="padding: 1px">
+                                <div class="container" style="padding: 1px;">
                                     {% block content %}{% endblock %}
                                 </div>
                             </div>
@@ -237,23 +223,6 @@
                         <!-- END CONTENT -->
                     </div>
                     <!-- END CONTAINER -->
-                </div>
-            </div>
-            <div class="page-wrapper-row">
-                <div class="page-wrapper-bottom">
-                    <!-- BEGIN FOOTER -->
-                    
-                    <!-- BEGIN INNER FOOTER -->
-                    <div class="page-footer">
-                        <div class="container"> 2018 &copy; CASH MANAGEMENT
-                            
-                        </div>
-                    </div>
-                    <div class="scroll-to-top">
-                        <i class="icon-arrow-up"></i>
-                    </div>
-                    <!-- END INNER FOOTER -->
-                    <!-- END FOOTER -->
                 </div>
             </div>
         </div>
