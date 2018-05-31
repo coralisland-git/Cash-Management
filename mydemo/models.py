@@ -462,12 +462,25 @@ class Payment(models.Model):
 	check_amount = models.CharField(max_length=255, blank=True, null=True)
 
 
+class Cash_Post(models.Model):
 
+	cash_post_id = models.CharField(max_length=255, blank=True, null=True)
 
-	
+	recon_key = models.CharField(max_length=255, blank=True, null=True)
 
+	invoice = models.CharField(max_length=255, blank=True, null=True)
 
+	payment = models.CharField(max_length=255, blank=True, null=True)
 
+	payment_id = models.CharField(max_length=255, blank=True, null=True)
+
+	invoice_amount = models.CharField(max_length=255, blank=True, null=True)
+
+	payment_amount = models.CharField(max_length=255, blank=True, null=True)
+
+	difference = models.CharField(max_length=255, blank=True, null=True)
+
+	posted_date = models.CharField(max_length=255, blank=True, null=True)
 
 
 

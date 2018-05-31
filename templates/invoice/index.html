@@ -16,47 +16,45 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
+                    <div class="portlet-title" style="border : none;">
+                        <div class="caption col-md-4 col-sm-5 col-xs-12">
+                          <i class="fa fa-life-ring font-red"></i>
+                          <span class="caption-subject font-red bold uppercase">
+                            Invoice Data
+                          </span>
+                        </div>
+                        <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-md-3 col-sm-4 col-xs-10 pull-right">
+                                <div class="input-group select2-bootstrap-append">
+                                    <select id="single-append-text" class="form-control select2-allow-clear" name="invoice_batch_no">
+                                        <option></option>
+                                        {% for batch in invoice_batch_no_arr%}
+                                            <option value="{{ batch.batch_no}}">{{ batch.batch_no }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                        <form action="{% url 'clear_data' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-default pull-right" name="refresh" value="invoice_raw_data"><i class="fa fa-plus"></i></button>
+                        </form>
+                    </div>
                     <div class="portlet-body">
                         <ul class="nav nav-tabs">
-                            <li style="margin-right: 30px; top: 10px;">
-                                <div class="caption">
-                                  <i class="fa fa-life-ring font-red"></i>
-                                  <span class="caption-subject font-red bold uppercase">
-                                    Invoice Data
-                                  </span>
-                                </div>
-                            </li>
                             <li class="{% ifequal view 'batch' %} active{% else %} '' {% endifequal %}">
-                                <a href="#tab_1_1" data-toggle="tab"> Batches </a>
+                                <a href="#tab_1_1" data-toggle="tab" class="caption-subject font-green bold uppercase"> Batches </a>
                             </li>
                             <li class="{% ifequal view 'detail' %} active{% else %} '' {% endifequal %}">
-                                <a href="#tab_1_2" data-toggle="tab"> Invoices </a>
+                                <a href="#tab_1_2" data-toggle="tab" class="caption-subject font-green bold uppercase"> Invoices </a>
                             </li>
-                        </ul>
-                        <div style="position: relative;top: -56px;">
-                            <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="col-md-3 pull-right">
-                                    <div class="input-group select2-bootstrap-append">
-                                        <select id="single-append-text" class="form-control select2-allow-clear" name="invoice_batch_no">
-                                            <option></option>
-                                            {% for batch in invoice_batch_no_arr%}
-                                                <option value="{{ batch.batch_no}}">{{ batch.batch_no }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="submit">
-                                                <span class="glyphicon glyphicon-search"></span>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </form>
-                            <form action="{% url 'clear_data' %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-default pull-right" name="refresh" value="invoice_raw_data"><i class="fa fa-plus"></i></button>
-                            </form>
-                        </div>
+                        </ul>                        
                         <div class="tab-content">
                             <div class="tab-pane fade {% ifequal view 'batch' %} active in{% else %} '' {% endifequal %} in" id="tab_1_1">
                                 <div class="portlet light ">
@@ -68,17 +66,17 @@
                                             <thead>
                                                 <tr>
                                                     <td class="all"> batch_no</td>
-                                                    <td class="all"> count </td>
+                                                    <td class="min-tablet"> count </td>
                                                     <td class="min-tablet"> date/time created </td>
-                                                    <td class="min-tablet"> Actions </td>
+                                                    <td class="all"> Actions </td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for batch in invoice_batch_no_arr %}
                                                   <tr>
                                                     <td  class="all"> {{ batch.batch_no }} </td> 
-                                                    <td class="all"> {{ batch.count }} </td> 
-                                                    <td class="all"> {{ batch.uploaded_date }} </td> 
+                                                    <td class="min-tablet"> {{ batch.count }} </td> 
+                                                    <td class="min-tablet"> {{ batch.uploaded_date }} </td> 
                                                     <td  class="all"> 
                                                         <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> <i class="fa fa-trash"></i></a>
                                                         <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
@@ -109,8 +107,8 @@
                             <div class="tab-pane fade {% ifequal view 'detail' %} active in{% else %} '' {% endifequal %} " id="tab_1_2">
                                 <div class="portlet-body form" id="content">
                                     {% if not invoice_arr %}
-                                        <div class="page-content-inner">
-                                            <form action="{% url 'invoice_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
+                                        <div class="page-content-inner" style="display: flex;">
+                                            <form action="{% url 'invoice_board' %}" class="dropzone dropzone-file-area col-md-4 col-xs-5" method="POST" enctype="multipart/form-data" id="my-dropzone" style="margin-top : 20px;margin-bottom : 20px;">
                                                 {% csrf_token %}
                                                 <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
                                             </form>
@@ -126,9 +124,9 @@
                                                         <tr>
                                                             <td class="all">batch_no</td>
                                                             <td class="all">invoice_number</td>
-                                                            <td class="all">total_bill_amount</td>
+                                                            <td class="min-tablet">total_bill_amount</td>
                                                             <td class="min-tablet">invoice_reference</td>
-                                                            <td class="min-tablet">invoice_date</td>
+                                                            <td class="none">invoice_date</td>
                                                             <td class="none">company</td>
                                                             <td class="none">branch_id</td>
                                                             <td class="none">employee_short_name</td>
@@ -152,29 +150,29 @@
                                                     <tbody>
                                                         {% for invoice in invoice_arr %}
                                                           <tr>
-                                                            <td> {{ invoice.batch_no }} </td> 
-                                                            <td> {{ invoice.invoice_number }} </td> 
-                                                            <td> ${{ invoice.total_bill_amount | intcomma   }} </td> 
-                                                            <td> {{ invoice.invoice_reference }} </td> 
-                                                            <td> {{ invoice.invoice_date }} </td> 
-                                                            <td> {{ invoice.company }} </td> 
-                                                            <td> {{ invoice.branch_id }} </td> 
-                                                            <td> {{ invoice.employee_short_name }} </td> 
-                                                            <td> {{ invoice.cust_alph }} </td> 
-                                                            <td> {{ invoice.customer_name }} </td> 
-                                                            <td> {{ invoice.straight_time_hours }} </td> 
-                                                            <td> {{ invoice.hourly_bill_rate }} </td> 
-                                                            <td> {{ invoice.overtime_hours }} </td> 
-                                                            <td> {{ invoice.sp_bill }} </td> 
-                                                            <td> {{ invoice.week_ending_date }} </td> 
-                                                            <td> {{ invoice.workers_comp_code }} </td> 
-                                                            <td> {{ invoice.job_description }} </td> 
-                                                            <td> {{ invoice.customer_po }} </td> 
-                                                            <td> {{ invoice.b_w_location_code }} </td> 
-                                                            <td> {{ invoice.address_1 }} </td> 
-                                                            <td> {{ invoice.spcl_paybill_de_code }} </td> 
-                                                            <td> {{ invoice.special_paybill_qty }} </td> 
-                                                            <td> {{ invoice.special_bill_rate }} </td> 
+                                                            <td class="all"> {{ invoice.batch_no }} </td> 
+                                                            <td class="all"> {{ invoice.invoice_number }} </td> 
+                                                            <td class="min-tablet"> ${{ invoice.total_bill_amount | intcomma   }} </td> 
+                                                            <td class="min-tablet"> {{ invoice.invoice_reference }} </td> 
+                                                            <td class="none"> {{ invoice.invoice_date }} </td> 
+                                                            <td class="none"> {{ invoice.company }} </td> 
+                                                            <td class="none"> {{ invoice.branch_id }} </td> 
+                                                            <td class="none"> {{ invoice.employee_short_name }} </td> 
+                                                            <td class="none"> {{ invoice.cust_alph }} </td> 
+                                                            <td class="none"> {{ invoice.customer_name }} </td> 
+                                                            <td class="none"> {{ invoice.straight_time_hours }} </td> 
+                                                            <td class="none"> {{ invoice.hourly_bill_rate }} </td> 
+                                                            <td class="none"> {{ invoice.overtime_hours }} </td> 
+                                                            <td class="none"> {{ invoice.sp_bill }} </td> 
+                                                            <td class="none"> {{ invoice.week_ending_date }} </td> 
+                                                            <td class="none"> {{ invoice.workers_comp_code }} </td> 
+                                                            <td class="none"> {{ invoice.job_description }} </td> 
+                                                            <td class="none"> {{ invoice.customer_po }} </td> 
+                                                            <td class="none"> {{ invoice.b_w_location_code }} </td> 
+                                                            <td class="none"> {{ invoice.address_1 }} </td> 
+                                                            <td class="none"> {{ invoice.spcl_paybill_de_code }} </td> 
+                                                            <td class="none"> {{ invoice.special_paybill_qty }} </td> 
+                                                            <td class="none"> {{ invoice.special_bill_rate }} </td> 
                                                           </tr>
                                                         {% endfor %}
                                                     </tbody>

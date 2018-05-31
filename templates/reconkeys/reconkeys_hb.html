@@ -16,47 +16,45 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
+                    <div class="portlet-title" style="border : none;">
+                        <div class="caption col-md-4 col-sm-5 col-xs-12">
+                          <i class="fa fa-life-ring font-red"></i>
+                          <span class="caption-subject font-red bold uppercase">
+                            HB Recon Keys Data
+                          </span>
+                        </div>
+                        <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-md-3 col-sm-4 col-xs-10 pull-right">
+                                <div class="input-group select2-bootstrap-append">
+                                    <select id="single-append-text" class="form-control select2-allow-clear" name="hb_rk_batch_no">
+                                        <option></option>
+                                        {% for batch in hb_rk_batch_no_arr%}
+                                            <option value="{{ batch.batch_no}}">{{ batch.batch_no }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                        <form action="{% url 'clear_data' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-default pull-right" name="refresh" value="reconkeys_hb_data"><i class="fa fa-plus"></i></button>
+                        </form>
+                    </div>
                     <div class="portlet-body">
                         <ul class="nav nav-tabs">
-                            <li style="margin-right: 30px; top: 10px;">
-                                <div class="caption">
-                                  <i class="fa fa-life-ring font-red"></i>
-                                  <span class="caption-subject font-red bold uppercase">
-                                    HB Recon Keys Data
-                                  </span>
-                                </div>
-                            </li>
                             <li class="{% ifequal view 'batch' %} active{% else %} '' {% endifequal %}">
-                                <a href="#tab_1_1" data-toggle="tab"> Batches </a>
+                                <a href="#tab_1_1" data-toggle="tab" class="caption-subject font-green bold uppercase"> Batches </a>
                             </li>
                             <li class="{% ifequal view 'detail' %} active{% else %} '' {% endifequal %}">
-                                <a href="#tab_1_2" data-toggle="tab"> Recon Keys </a>
+                                <a href="#tab_1_2" data-toggle="tab" class="caption-subject font-green bold uppercase"> Recon Keys </a>
                             </li>
-                        </ul>
-                        <div style="position: relative;top: -56px;">
-                            <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="col-md-3 pull-right">
-                                    <div class="input-group select2-bootstrap-append">
-                                        <select id="single-append-text" class="form-control select2-allow-clear" name="hb_rk_batch_no">
-                                            <option></option>
-                                            {% for batch in hb_rk_batch_no_arr%}
-                                                <option value="{{ batch.batch_no}}">{{ batch.batch_no }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="submit">
-                                                <span class="glyphicon glyphicon-search"></span>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </form>
-                            <form action="{% url 'clear_data' %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-default pull-right" name="refresh" value="reconkeys_hb_data"><i class="fa fa-plus"></i></button>
-                            </form>
-                        </div>
+                        </ul>  
                         <div class="tab-content">
                             <div class="tab-pane fade {% ifequal view 'batch' %} active in{% else %} '' {% endifequal %} in" id="tab_1_1">
                                 <div class="portlet light ">
@@ -109,8 +107,8 @@
                            <div class="tab-pane fade {% ifequal view 'detail' %} active in{% else %} '' {% endifequal %} " id="tab_1_2">
                                 <div class="portlet-body form" id="content">
                                     {% if not reconkeys_hb_arr %}
-                                        <div class="page-content-inner">
-                                            <form action="{% url 'reconkeys_hb_board' %}" class="dropzone dropzone-file-area" method="POST" enctype="multipart/form-data" id="my-dropzone" style="width: 500px; margin-top : 50px;margin-bottom : 50px;">
+                                        <div class="page-content-inner" style="display: flex;">
+                                            <form action="{% url 'reconkeys_hb_board' %}" class="dropzone dropzone-file-area col-md-4 col-xs-5" method="POST" enctype="multipart/form-data" id="my-dropzone" style="margin-top : 20px;margin-bottom : 20px;">
                                                 {% csrf_token %}
                                                 <h3 class="sbold" id="file_upload">Drop files here or click here</h3>
                                             </form>
