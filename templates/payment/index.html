@@ -66,17 +66,17 @@
                                             <thead>
                                                 <tr>
                                                     <td class="all"> batch_no</td>
-                                                    <td class="all"> count </td>
+                                                    <td class="min-tablet"> count </td>
                                                     <td class="min-tablet"> date/time created </td>
-                                                    <td class="min-tablet"> Actions </td>
+                                                    <td class="all"> Actions </td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for batch in payment_batch_no_arr %}
                                                   <tr>
                                                     <td  class="all"> {{ batch.batch_no }} </td> 
-                                                    <td class="all"> {{ batch.count }} </td> 
-                                                    <td class="all"> {{ batch.uploaded_date }} </td> 
+                                                    <td class="min-tablet"> {{ batch.count }} </td> 
+                                                    <td class="min-tablet"> {{ batch.uploaded_date }} </td> 
                                                     <td  class="all"> 
                                                         <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> <i class="fa fa-trash"></i></a>
                                                         <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
@@ -124,8 +124,8 @@
                                                         <tr>
                                                             <td classname="all"> batch_no </td>
                                                             <td classname="all"> payment_id </td>
-                                                            <td classname="all"> check </td>
-                                                            <td classname="all"> recon_key </td>
+                                                            <td classname="min-tablet"> check </td>
+                                                            <td classname="min-tablet"> recon_key </td>
                                                             <td classname="min-tablet"> check_amount </td>
                                                         </tr>
                                                     </thead>
@@ -134,8 +134,8 @@
                                                           <tr>
                                                             <td classname="all"> {{ payment.batch_no }} </td>
                                                             <td classname="all"> {{ payment.payment_id }} </td>
-                                                            <td classname="all"> {{ payment.check }} </td>
-                                                            <td classname="all"> {{ payment.recon_key }} </td>
+                                                            <td classname="min-tablet"> {{ payment.check }} </td>
+                                                            <td classname="min-tablet"> {{ payment.recon_key }} </td>
                                                             <td classname="min-tablet"> ${{ payment.check_amount  | intcomma   }} </td>
                                                           </tr>
                                                         {% endfor %}

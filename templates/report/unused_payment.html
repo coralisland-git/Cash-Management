@@ -31,7 +31,7 @@
                                   <tr>
                                       <td classname="all"> payment_id </td>
                                       <td classname="all"> check </td>
-                                      <td classname="all"> recok_key </td>
+                                      <td classname="min-tablet"> recok_key </td>
                                       <td classname="min-tablet"> check_amount  </td>
                                   </tr>
                               </thead>
@@ -40,7 +40,7 @@
                                     <tr>
                                       <td classname="all"> {{ payment_id }} </td>
                                       <td classname="all"> {{ payment.check }} </td>
-                                      <td classname="all"> {{ payment.recon_key }} </td>
+                                      <td classname="min-tablet"> {{ payment.recon_key }} </td>
                                       <td classname="min-tablet"> ${{ payment.check_amount | intcomma   }}</td>
                                      </tr>
                                   {% endfor %}

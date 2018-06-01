@@ -66,17 +66,17 @@
                                             <thead>
                                                 <tr>
                                                     <td class="all"> batch_no</td>
-                                                    <td class="all"> count </td>
+                                                    <td class="min-tablet"> count </td>
                                                     <td class="min-tablet"> date/time created </td>
-                                                    <td class="min-tablet"> Actions </td>
+                                                    <td class="all"> Actions </td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for batch in hb_rk_batch_no_arr %}
                                                   <tr>
                                                     <td  class="all"> {{ batch.batch_no }} </td> 
-                                                    <td class="all"> {{ batch.count }} </td> 
-                                                    <td class="all"> {{ batch.uploaded_date }} </td> 
+                                                    <td class="min-tablet"> {{ batch.count }} </td> 
+                                                    <td class="min-tablet"> {{ batch.uploaded_date }} </td> 
                                                     <td  class="all"> 
                                                         <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> <i class="fa fa-trash"></i></a>
                                                         <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
@@ -124,7 +124,7 @@
                                                         <tr>
                                                             <td class="all"> batch_no </td>
                                                             <td class="all"> row_id </td>
-                                                            <td class="all"> branch </td>
+                                                            <td class="min-tablet"> branch </td>
                                                             <td class="min-tablet"> funding_source </td>
                                                             <td class="min-tablet"> post_date </td>
                                                             <td class="none"> date_created </td>
@@ -147,7 +147,7 @@
                                                           <tr>
                                                             <td class="all"> {{ reconkey.batch_no }}</td>
                                                             <td class="all"> {{ reconkey.row_id }}</td>
-                                                            <td class="all"> {{ reconkey.branch }}</td>
+                                                            <td class="min-tablet"> {{ reconkey.branch }}</td>
                                                             <td class="min-tablet"> {{ reconkey.funding_source }}</td>
                                                             <td class="min-tablet"> {{ reconkey.post_date }}</td>
                                                             <td class="none"> {{ reconkey.date_created }}</td>

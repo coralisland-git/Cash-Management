@@ -31,8 +31,8 @@
                                 <tr>
                                     <td classname="all"> invoice </td>
                                     <td classname="all"> payment_id </td>
-                                    <td classname="all"> cash_post_id_memo </td>
-                                    <td classname="all"> payment </td>
+                                    <td classname="min-tablet"> cash_post_id_memo </td>
+                                    <td classname="min-tablet"> payment </td>
                                     <td classname="min-tablet"> amount  </td>
                                 </tr>
                             </thead>
@@ -41,8 +41,8 @@
                                   <tr>
                                     <td classname="all"> {{ payment.invoice }} </td>
                                     <td classname="all"> {{ payment.payment_id }} </td>
-                                    <td classname="all"> {{ payment.cash_post_id_memo }} </td>
-                                    <td classname="all"> {{ payment.payment }} </td>
+                                    <td classname="min-tablet"> {{ payment.cash_post_id_memo }} </td>
+                                    <td classname="min-tablet"> {{ payment.payment }} </td>
                                     <td classname="min-tablet">${{ payment.check_amount  | intcomma  }}</td>
                                    </tr>
                                 {% endfor %}

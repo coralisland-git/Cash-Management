@@ -35,8 +35,8 @@
                                 <tr>
                                     <td class="all"> cash_post_id </td>
                                     <td class="all"> recon_key </td>
-                                    <td class="all"> invoice_amount </td>
-                                    <td class="all"> payment_amount  </td>
+                                    <td class="min-tablet"> invoice_amount </td>
+                                    <td class="min-tablet"> payment_amount  </td>
                                     <td class="min-tablet"> difference  </td>
                                     <td class="none"> invoice </td>
                                     <td class="none"> payment </td>
@@ -48,8 +48,8 @@
                                   <tr>
                                     <td class="all"> {{ matching.cash_post_id }} </td>
                                     <td class="all"> {{ matching.recon_key }} </td>
-                                    <td class="all"> ${{ matching.invoice_amount  | intcomma  }} </td>
-                                    <td class="all"> ${{ matching.payment_amount  | intcomma  }}</td>
+                                    <td class="min-tablet"> ${{ matching.invoice_amount  | intcomma  }} </td>
+                                    <td class="min-tablet"> ${{ matching.payment_amount  | intcomma  }}</td>
                                     <td class="min-tablet"> ${{ matching.difference | intcomma   }}</td>
                                     <td class="none"> {{ matching.invoice }} </td>
                                     <td class="none"> {{ matching.payment }}</td>

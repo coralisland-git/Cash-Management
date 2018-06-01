@@ -66,17 +66,17 @@
                                             <thead>
                                                 <tr>
                                                     <td class="all"> batch_no</td>
-                                                    <td class="all"> count </td>
+                                                    <td class="min-tablet"> count </td>
                                                     <td class="min-tablet"> date/time created </td>
-                                                    <td class="min-tablet"> Actions </td>
+                                                    <td class="all"> Actions </td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for batch in kt_tc_batch_no_arr %}
                                                   <tr>
                                                     <td  class="all"> {{ batch.batch_no }} </td> 
-                                                    <td class="all"> {{ batch.count }} </td> 
-                                                    <td class="all"> {{ batch.uploaded_date }} </td> 
+                                                    <td class="min-tablet"> {{ batch.count }} </td> 
+                                                    <td class="min-tablet"> {{ batch.uploaded_date }} </td> 
                                                     <td  class="all"> 
                                                         <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> <i class="fa fa-trash"></i></a>
                                                         <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
@@ -124,8 +124,8 @@
                                                       <tr>
                                                           <td class="all"> batch_no </td>
                                                           <td class="all"> time_card_id </td>
-                                                          <td class="all"> authorization </td>
-                                                          <td class="all"> bill_mode </td>
+                                                          <td class="min-tablet"> authorization </td>
+                                                          <td class="min-tablet"> bill_mode </td>
                                                           <td class="min-tablet"> bill_rate </td>
                                                           <td class="min-tablet"> billable </td>
                                                           <td class="none"> case_manager_first_name </td>
@@ -184,8 +184,8 @@
                                                         <tr>
                                                           <td class="all"> {{ timecard.batch_no }} </td>
                                                            <td class="all"> {{ timecard.time_card_id }} </td>
-                                                           <td class="all"> {{ timecard.authorization }} </td>
-                                                           <td class="all"> {{ timecard.bill_mode }} </td>
+                                                           <td class="min-tablet"> {{ timecard.authorization }} </td>
+                                                           <td class="min-tablet"> {{ timecard.bill_mode }} </td>
                                                            <td class="min-tablet"> {{ timecard.bill_rate }} </td>
                                                            <td class="min-tablet"> {{ timecard.billable }} </td>
                                                            <td class="none"> {{ timecard.case_manager_first_name }} </td>
