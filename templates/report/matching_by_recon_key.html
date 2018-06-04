@@ -392,7 +392,7 @@
                                                                     </div>
                                                                 <div class="portlet-body">
                                                                     <div class="mt-comments">
-                                                                        {% for payment in matching.child_payment %}
+                                                                        {% for payment in matching.child_ori_payment %}
                                                                         <div class="mt-comment" style="padding : 0px;">
                                                                             <div class="mt-comment-body" style="padding-left: 0px;">
                                                                                 <div class="mt-comment-text">
@@ -437,7 +437,73 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </li> 
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption-subject font-green bold uppercase">
+                                                                        Payment Imports
+                                                                    </div>
+                                                                </div>
+                                                                <div class="data-header">
+                                                                        <div class="property-name col-xs-4">
+                                                                            Batch Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-3">
+                                                                            Payment Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-5">
+                                                                            Check Amount
+                                                                        </div>
+                                                                    </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="mt-comments">
+                                                                        {% for payment in matching.child_payment %}
+                                                                        <div class="mt-comment" style="padding : 0px;">
+                                                                            <div class="mt-comment-body" style="padding-left: 0px;">
+                                                                                <div class="mt-comment-text">
+                                                                                    <div class="col-xs-4">
+                                                                                        {{ payment.batch_no}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-3">
+                                                                                        {{ payment.payment_id}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-4">
+                                                                                        ${{ payment.check_amount}}
+                                                                                    </div>
+                                                                                    <div class="mt-comment-details col-xs-1">
+                                                                                        <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px;">
+                                                                                            <li data-target="#modal-detail-ori{{ payment.payment_id }}" data-toggle="modal">
+                                                                                                <a href="#">View</a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                    <div class="modal right fade" id="modal-detail-ori{{ payment.payment_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                                                        <div class="modal-dialog" role="document">
+                                                                                            <div class="modal-content">
+                                                                                                <div class="modal-header">
+                                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                                    <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Payment : {{ payment.payment_id }}</h4>
+                                                                                                </div>
+                                                                                                <div class="modal-body">
+                                                                                                   <ul class="list-group">
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Bacth Id : </span>  {{ payment.batch_no }} </li> 
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Payment Check : </span>  {{ payment.check }} </li> 
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Recon Key : </span>  {{ payment.recon_key }} </li> 
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Payment Check Amount : </span>  ${{ payment.check_amount }} </li> 
+                                                                                                    </ul>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </div><!-- modal-content -->

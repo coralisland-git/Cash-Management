@@ -2175,6 +2175,8 @@ def calculate(request):
 
             child_payment = []
 
+            child_ori_payment = []
+
 
             for invoice in imported_invoice_arr:            
 
@@ -2201,6 +2203,12 @@ def calculate(request):
                         sub_check_arr.append(payment['payment_id'])
 
                         child_payment.append(payment)
+
+                for payment in input_payment_arr:
+
+                    if recon in payment['recon_key'] and payment not in child_ori_payment:
+
+                        child_ori_payment.append(payment)
 
             # num = str(int(cash_post_id[2:])+1)
 
@@ -2235,7 +2243,9 @@ def calculate(request):
 
                 'child_invoice' : child_invoice,
 
-                'child_payment' : child_payment
+                'child_payment' : child_payment,
+
+                'child_ori_payment' : child_ori_payment
 
             }
 
