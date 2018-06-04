@@ -131,7 +131,7 @@
                                                     </thead>
                                                     <tbody>
                                                         {% for payment in input_payment_arr %}
-                                                          <tr>
+                                                          <tr data-target="#modal{{ payment.payment_id  }}" data-toggle="modal">
                                                             <td classname="all"> {{ payment.batch_no }} </td>
                                                             <td classname="all"> {{ payment.payment_id }} </td>
                                                             <td classname="min-tablet"> {{ payment.check }} </td>

@@ -29,6 +29,7 @@
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="{% static 'global/css/components-md.min.css' %}" rel="stylesheet" id="style_components" type="text/css" />
+        <link href="{% static 'global/css/components.min.css' %}" rel="stylesheet" id="style_components" type="text/css" />
         <link href="{% static 'global/css/plugins-md.min.css' %}" rel="stylesheet" type="text/css" />
         <!-- END THEME GLOBAL STYLES -->
 
@@ -170,12 +171,12 @@
                                                 <span class="arrow"></span>
                                             </a>
                                             <ul class="dropdown-menu pull-left">
-                                                <li aria-haspopup="true" class=" ">
+                                                <li aria-haspopup="true" class=" active">
                                                     <a href="{% url 'report' %}" class="nav-link  ">
                                                         <i class="icon-graph"></i> Summary
                                                     </a>
                                                 </li>
-                                                <li aria-haspopup="true" class=" active">
+                                                <li aria-haspopup="true" class=" ">
                                                     <a href="{% url 'generated_invoice' %}" class="nav-link  active">
                                                         <i class="fa fa-life-ring"></i>Generated Invoices
                                                     </a>

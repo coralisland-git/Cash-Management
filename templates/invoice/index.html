@@ -116,7 +116,9 @@
                                     {% endif %}
                                         <div class="portlet light ">
                                             <div class="portlet-title">
-                                                <div class="tools"></div>
+                                              <!--   <div class="actions" style="padding : 0px; position: relative; top : 2px;">
+                                                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;"> </a>
+                                                </div> -->
                                             </div>
                                             <div class="portlet-body">
                                                 <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_3">
@@ -149,7 +151,43 @@
                                                     </thead>
                                                     <tbody>
                                                         {% for invoice in invoice_arr %}
-                                                          <tr>
+                                                          <tr data-target="#modal{{ invoice.invoice_number }}" data-toggle="modal">
+                                                            <div class="modal right fade" id="modal{{ invoice.invoice_number }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                            <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Invoice : {{ invoice.invoice_number }}</h4>
+                                                                        </div>
+
+                                                                        <div class="modal-body">
+                                                                           <ul class="list-group">
+                                                                                <li class="list-group-item"> <span class="property-name"> invoice_date : </span>  {{ invoice.invoice_date }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> total_bill_amount : </span>  ${{ invoice.total_bill_amount }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> company : </span> {{ invoice.company }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> branch_id : </span>  {{ invoice.branch_id }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> employee_short_name : </span>  {{ invoice.employee_short_name }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> cust_alph : </span>  {{ invoice.cust_alph }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> customer_name : </span>{{ invoice.customer_name }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> straight_time_hours : </span> {{ invoice.straight_time_hours }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> hourly_bill_rate : </span> {{ invoice.hourly_bill_rate }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> overtime_hours : </span>{{ invoice.overtime_hours }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> sp_bill : </span> {{ invoice.sp_bill }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> week_ending_date : </span> {{ invoice.week_ending_date }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> workers_comp_code : </span>{{ invoice.workers_comp_code }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> job_description : </span>  {{ invoice.job_description }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> customer_po : </span> {{ invoice.customer_po }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> b_w_location_code : </span>  {{ invoice.b_w_location_code }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> address_1 : </span> {{ invoice.address_1 }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> spcl_paybill_de_code : </span>{{ invoice.spcl_paybill_de_code }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> special_paybill_qty : </span>{{ invoice.special_paybill_qty }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> special_bill_rate : </span> {{ invoice.special_bill_rate }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> invoice_reference : </span>  {{ invoice.invoice_reference }} </li> 
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div><!-- modal-content -->
+                                                                </div>
+                                                            </div>
                                                             <td class="all"> {{ invoice.batch_no }} </td> 
                                                             <td class="all"> {{ invoice.invoice_number }} </td> 
                                                             <td class="min-tablet"> ${{ invoice.total_bill_amount | intcomma   }} </td> 

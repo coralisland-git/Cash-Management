@@ -16,50 +16,262 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet-body form" id="content">
-                  <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
-                    <div class="portlet-title">
-                        <div class="caption">
-                          <i class="fa fa-tasks font-red"></i>
-                          <span class="caption-subject font-red bold uppercase">
-                            Cash Posting {{ uploaded }}
-                          </span>
+                    <div class="portlet light " id="form_wizard_1" style="margin-bottom : 0px;">
+                        <div class="portlet-title">
+                            <div class="caption">
+                              <i class="fa fa-tasks font-red"></i>
+                              <span class="caption-subject font-red bold uppercase">
+                                Cash Posting {{ uploaded }}
+                              </span>
+                            </div>
+                            <form action="{% url 'cash_post' %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-default pull-right" name="refresh" value="clear" id="" style="position: relative; right : 65px;">POST</button>
+                            </form>
+                            <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="col-md-3 col-sm-4 col-xs-10 pull-right" style="position: relative; right : 65px;">
+                                    <div class="input-group select2-bootstrap-append">
+                                        <select id="single-append-text" class="form-control select2-allow-clear" name="selected_cash_post_id">
+                                            <option></option>
+                                            <option value="ALL">ALL</option>
+                                            {% for batch in cash_post_batch_no_arr %}
+                                                <option value="{{ batch.cash_post_id}}">{{ batch.cash_post_id }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">
+                                                <span class="glyphicon glyphicon-search"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <form action="{% url 'cash_post' %}" method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-default pull-right" name="refresh" value="clear" id="" style="position: relative; right : 65px;">POST</button>
-                        </form>
+                        <div class="portlet-body">
+                            <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_3">
+                                <thead>
+                                    <tr>
+                                        <td class="all"> cash_post_id </td>
+                                        <td class="all"> recon_key </td>
+                                        <td class="min-tablet"> invoice_amount </td>
+                                        <td class="min-tablet"> payment_amount  </td>
+                                        <td class="min-tablet"> difference  </td>
+                                        <td class="none"> invoice </td>
+                                        <td class="none"> payment </td>
+                                        <td class="none"> payment_id </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for matching in matching_by_recon_key_arr %}
+                                      <tr data-target="#modal{{ matching.recon_key }}" data-toggle="modal">
+                                        <td class="all"> {{ matching.cash_post_id }} </td>
+                                        <td class="all"> {{ matching.recon_key }} </td>
+                                        <td class="min-tablet"> ${{ matching.invoice_amount  | intcomma  }} </td>
+                                        <td class="min-tablet"> ${{ matching.payment_amount  | intcomma  }}</td>
+                                        <td class="min-tablet"> ${{ matching.difference | intcomma   }}</td>
+                                        <td class="none"> {{ matching.invoice }} </td>
+                                        <td class="none"> {{ matching.payment }}</td>
+                                        <td class="none"> {{ matching.payment_id }} </td>
+                                       </tr>
+                                       <div class="modal right fade" id="modal{{ matching.recon_key }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-tasks font-red"></i> 
+                                                    Cash Posting ID : {{ matching.cash_post_id }}</h4>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                   <ul class="list-group">
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <span class="caption-subject font-green bold uppercase" style="margin-right: 30px;">Recon Keys</span> {{ matching.recon_key }}
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption-subject font-green bold uppercase">
+                                                                        Invoice Data
+                                                                    </div>
+                                                                </div>
+                                                                <div class="data-header">
+                                                                        <div class="property-name col-xs-4">
+                                                                            Batch Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-3">
+                                                                            Invoice Number
+                                                                        </div>
+                                                                        <div class="property-name col-xs-5">
+                                                                            Total Bill Amount
+                                                                        </div>
+                                                                    </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="mt-comments">
+                                                                        {% for invoice in matching.child_invoice %}
+                                                                        <div class="mt-comment" data-target="#modal-detail{{ invoice.invoice_number }}" data-toggle="modal" style="padding : 0px;">
+                                                                            <div class="mt-comment-body" style="padding-left: 0px;">
+                                                                                <div class="mt-comment-text">
+                                                                                    <div class="col-xs-4">
+                                                                                        {{ invoice.batch_no}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-3">
+                                                                                        {{ invoice.invoice_number}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-4">
+                                                                                        ${{ invoice.total_bill_amount}}
+                                                                                    </div>
+                                                                                    <div class="mt-comment-details col-xs-1">
+                                                                                        <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px">
+                                                                                            <li>
+                                                                                                <a href="#"><i class="fa fa-eye"></i></a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption-subject font-green bold uppercase">
+                                                                        TimeCard Data
+                                                                    </div>
+                                                                </div>
+                                                                <div class="data-header">
+                                                                        <div class="property-name col-xs-4">
+                                                                            Batch Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-3">
+                                                                            TimeCard Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-4">
+                                                                            Date
+                                                                        </div>
+                                                                    </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="mt-comments">
+                                                                        {% for invoice in matching.child_invoice %}
+                                                                            {% for timecard in invoice.timecard_kt %}
+                                                                            <div class="mt-comment" data-target="#modal-detail{{ invoice.invoice_number }}" data-toggle="modal" style="padding : 0px;">
+                                                                                <div class="mt-comment-body" style="padding-left: 0px;">
+                                                                                    <div class="mt-comment-text">
+                                                                                        <div class="col-xs-4">
+                                                                                            {{ timecard.batch_no}}
+                                                                                        </div>
+                                                                                        <div class="col-xs-3">
+                                                                                            {{ timecard.time_card_id}}
+                                                                                        </div>
+                                                                                        <div class="col-xs-4">
+                                                                                            {{ timecard.visit_date}}
+                                                                                        </div>
+                                                                                        <div class="mt-comment-details col-xs-1">
+                                                                                            <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px">
+                                                                                                <li>
+                                                                                                    <a href="#"><i class="fa fa-eye"></i></a>
+                                                                                                </li>
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            {% endfor%}
+                                                                        {% endfor %}
+                                                                         {% for invoice in matching.child_invoice %}
+                                                                            {% for timecard in invoice.timecard_hb %}
+                                                                        <div class="mt-comment" data-target="#modal-detail{{ invoice.invoice_number }}" data-toggle="modal" style="padding : 0px;">
+                                                                            <div class="mt-comment-body" style="padding-left: 0px;">
+                                                                                <div class="mt-comment-text">
+                                                                                    <div class="col-xs-4">
+                                                                                        {{ timecard.batch_no}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-3">
+                                                                                        {{ timecard.time_card_id}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-4">
+                                                                                        {{ timecard.service_date}}
+                                                                                    </div>
+                                                                                    <div class="mt-comment-details col-xs-1">
+                                                                                        <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px">
+                                                                                            <li>
+                                                                                                <a href="#"><i class="fa fa-eye"></i></a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endfor%}
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption-subject font-green bold uppercase">
+                                                                        Payment Data
+                                                                    </div>
+                                                                </div>
+                                                                <div class="data-header">
+                                                                        <div class="property-name col-xs-4">
+                                                                            Batch Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-3">
+                                                                            Payment Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-5">
+                                                                            Check Amount
+                                                                        </div>
+                                                                    </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="mt-comments">
+                                                                        {% for payment in matching.child_payment %}
+                                                                        <div class="mt-comment" data-target="#modal-detail{{ payment.payment_id }}" data-toggle="modal" style="padding : 0px;">
+                                                                            <div class="mt-comment-body" style="padding-left: 0px;">
+                                                                                <div class="mt-comment-text">
+                                                                                    <div class="col-xs-4">
+                                                                                        {{ payment.batch_no}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-3">
+                                                                                        {{ payment.payment_id}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-4">
+                                                                                        ${{ payment.check_amount}}
+                                                                                    </div>
+                                                                                    <div class="mt-comment-details col-xs-1">
+                                                                                        <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px;">
+                                                                                            <li>
+                                                                                                <a href="#"><i class="fa fa-eye"></i></a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li> 
+                                                    </ul>
+                                                </div>
+                                            </div><!-- modal-content -->
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="portlet-body">
-                        <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_3">
-                            <thead>
-                                <tr>
-                                    <td class="all"> cash_post_id </td>
-                                    <td class="all"> recon_key </td>
-                                    <td class="min-tablet"> invoice_amount </td>
-                                    <td class="min-tablet"> payment_amount  </td>
-                                    <td class="min-tablet"> difference  </td>
-                                    <td class="none"> invoice </td>
-                                    <td class="none"> payment </td>
-                                    <td class="none"> payment_id </td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for matching in matching_by_recon_key_arr %}
-                                  <tr>
-                                    <td class="all"> {{ matching.cash_post_id }} </td>
-                                    <td class="all"> {{ matching.recon_key }} </td>
-                                    <td class="min-tablet"> ${{ matching.invoice_amount  | intcomma  }} </td>
-                                    <td class="min-tablet"> ${{ matching.payment_amount  | intcomma  }}</td>
-                                    <td class="min-tablet"> ${{ matching.difference | intcomma   }}</td>
-                                    <td class="none"> {{ matching.invoice }} </td>
-                                    <td class="none"> {{ matching.payment }}</td>
-                                    <td class="none"> {{ matching.payment_id }} </td>
-                                   </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                  </div>
                 </div>
             </div>  
         </div>

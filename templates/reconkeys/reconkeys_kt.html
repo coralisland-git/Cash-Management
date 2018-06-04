@@ -179,7 +179,7 @@
                                                     </thead>
                                                     <tbody>
                                                         {% for reconkey in reconkeys_arr %}
-                                                          <tr>
+                                                          <tr data-target="#modal{{ invoice.invoice_number }}" data-toggle="modal">
                                                             <td class="all"> {{ reconkey.batch_no }} </td>
                                                             <td class="all"> {{ reconkey.authorization }} </td>
                                                             <td class="min-tablet"> {{ reconkey.case_manager_first_name }} </td>

@@ -186,11 +186,15 @@ def remove_data(request):
 
         request.session['invoice_view'] = 'batch'
 
+        calculate(request)
+
         return redirect('/invoice_board')
 
     if 'refresh' in request.POST and request.POST['refresh'] == 'invoice_simple_data':
 
         request.session['input_invoice_arr'] = '[]'
+
+        calculate(request)
 
         return redirect('/invoice_simple_board')
 
@@ -205,6 +209,8 @@ def remove_data(request):
 
         request.session['kt_tc_view'] = 'batch'
 
+        calculate(request)
+
         return redirect('/timecard_board')
         
 
@@ -217,6 +223,8 @@ def remove_data(request):
         request.session['hb_tc_batch_no'] = ''
 
         request.session['hb_tc_view'] = 'batch'
+
+        calculate(request)
 
         return redirect('/timecard_hb_board')
 
@@ -231,6 +239,8 @@ def remove_data(request):
 
         request.session['kt_rk_view'] = 'batch'
 
+        calculate(request)
+
         return redirect('/reconkeys_board')
 
 
@@ -244,6 +254,8 @@ def remove_data(request):
 
         request.session['hb_rk_view'] = 'batch'
 
+        calculate(request)
+
         return redirect('/reconkeys_hb_board')
 
 
@@ -256,6 +268,8 @@ def remove_data(request):
         request.session['payment_batch_no'] = ''
 
         request.session['payment_view'] = 'batch'
+
+        calculate(request)
 
         return redirect('/payment_board')
 
@@ -376,6 +390,32 @@ def search_batch_no(request):
         return redirect('/payment_board')
 
 
+    if 'selected_cash_post_id' in request.POST:
+
+        cash_response = str(request.POST['selected_cash_post_id'])
+
+        selected_cash_posts = []
+
+        if 'ALL' in cash_response :
+
+            selected_cash_posts = Cash_Post.objects.all()
+        else :
+
+            selected_cash_posts = Cash_Post.objects.filter(cash_post_id=cash_response)
+
+        matching_by_recon_key_arr = []
+
+        for matching in selected_cash_posts:
+
+            matching_by_recon_key_arr.append(model_to_dict(matching))
+
+        request.session['matching_by_recon_key_arr'] = json.dumps(matching_by_recon_key_arr)
+
+        request.session['selected_cash_post_id'] = str(request.POST['selected_cash_post_id'])
+            
+        return redirect('/matching_by_recon_key')
+
+
 def cash_post(request):
 
     cash_post_arr = json.loads(request.session.get('matching_by_recon_key_arr', '[]'))
@@ -394,6 +434,7 @@ def cash_post(request):
 
             check.update(**cash_post)
 
+
     return redirect('/matching_by_recon_key')
 
 
@@ -405,11 +446,13 @@ def main(request):
 
 def home(request):
 
-    for key in list(request.session.keys()):
+    calculate(request)
 
-        if key !='user' :
+    # for key in list(request.session.keys()):
 
-            del request.session[key]
+    #     if key !='user' :
+
+    #         del request.session[key]
 
     return render(request, 'home.html')
     
@@ -558,7 +601,10 @@ def invoice_board(request):
 
                     else :
 
+                        data['batch_no'] = check[0].batch_no
+
                         check.update(**data)
+
 
                 invoice_row += 1
 
@@ -567,6 +613,8 @@ def invoice_board(request):
                 pass
 
         request.session['invoice_arr'] = json.dumps(invoice_arr)
+
+        calculate(request)
 
         # data_table = Template("""
         #     """)
@@ -868,6 +916,8 @@ def timecard_board(request):
 
                     else :
 
+                        data['batch_no'] = check[0].batch_no
+
                         check.update(**data)
 
                 kt_tc_row += 1
@@ -878,6 +928,8 @@ def timecard_board(request):
 
 
         request.session['timecard_kt_arr'] = json.dumps(timecard_kt_arr)
+
+        calculate(request)
 
         # data_table = Template("""
         #     """)
@@ -1061,6 +1113,8 @@ def timecard_hb_board(request):
 
                     else :
 
+                        data['batch_no'] = check[0].batch_no
+                        
                         check.update(**data)
 
                 hb_tc_row += 1
@@ -1070,6 +1124,8 @@ def timecard_hb_board(request):
                 pass
 
         request.session['timecard_hb_arr'] = json.dumps(timecard_hb_arr)
+
+        calculate(request)
 
         # data_table = Template("""
         #     """)
@@ -1268,6 +1324,8 @@ def reconkeys_board(request):
 
                     else :
 
+                        data['batch_no'] = check[0].batch_no
+
                         check.update(**data)
 
 
@@ -1279,6 +1337,8 @@ def reconkeys_board(request):
                 pass
 
         request.session['reconkeys_arr'] = json.dumps(reconkeys_arr)
+
+        calculate(request)
 
         # data_table = Template("""
         #     """)
@@ -1451,6 +1511,8 @@ def reconkeys_hb_board(request):
 
                     else :
 
+                        data['batch_no'] = check[0].batch_no
+
                         check.update(**data)
 
                 hb_key_row += 1
@@ -1460,6 +1522,8 @@ def reconkeys_hb_board(request):
                 pdb.set_trace()
 
         request.session['reconkeys_hb_arr'] = json.dumps(reconkeys_hb_arr)
+
+        calculate(request)
 
         # data_table = Template("""
         #     """)
@@ -1634,6 +1698,8 @@ def payment_board(request):
 
                     else :
 
+                        data['batch_no'] = check[0].batch_no
+
                         check.update(**data)
 
                 payment_row += 1
@@ -1644,6 +1710,8 @@ def payment_board(request):
                 pass
 
         request.session['input_payment_arr'] = json.dumps(payment_arr)
+
+        calculate(request)
 
         # data_table = Template("""
         # """)
@@ -1710,6 +1778,29 @@ def unused_invoice(request):
 
 def calculate(request):
 
+    # input_invoice_arr = json.loads(request.session.get('input_invoice_arr', '[]'))
+
+    cash_post_bhs = Cash_Post.objects.all().values('cash_post_id', 'posted_date').annotate(count=Count('cash_post_id'))
+
+    cash_post_batch_no_arr = []
+
+    for batch in cash_post_bhs:
+
+        data = {
+
+            'cash_post_id' : batch['cash_post_id'],
+
+            'count': batch['count'],
+
+            'posted_date' : batch['posted_date']
+        }
+
+
+        cash_post_batch_no_arr.append(data)
+
+    request.session['cash_post_batch_no_arr'] = cash_post_batch_no_arr
+
+
     input_invoice_arr = []
 
     if len(input_invoice_arr) == 0:
@@ -1809,13 +1900,17 @@ def calculate(request):
 
             try:
 
-                res = { }
+                res = invoice_data
 
                 res['invoice'] = invoice_data['invoice_number']
 
                 res['recon_key'] = []
 
                 res['invoice_amount'] = invoice_data['total_bill_amount']
+
+                res['timecard_kt'] = []
+
+                res['timecard_hb'] = []
 
                 recon_count = 0
 
@@ -1843,6 +1938,8 @@ def calculate(request):
                                         if kt_tc_raw not in used_kt_tc_data:
 
                                             used_kt_tc_data.append(kt_tc_raw)
+
+                                        res['timecard_kt'].append(kt_tc_raw)
 
                                         recon_count += 1
 
@@ -1876,6 +1973,8 @@ def calculate(request):
 
                                             used_hb_tc_data.append(hb_tc_raw)
 
+                                        res['timecard_hb'].append(hb_tc_raw)
+
                                         recon_count += 1
                                 except : 
 
@@ -1899,6 +1998,7 @@ def calculate(request):
                     max_recon_count = recon_count
 
                 res['recon_key_view'] = ', '.join(res['recon_key'])
+
 
                 input_invoice_arr.append(res)
 
@@ -1943,6 +2043,7 @@ def calculate(request):
 
     balance_on_recon_invoice = 0
 
+
     try:
 
         for invoice in input_invoice_arr:
@@ -1968,7 +2069,6 @@ def calculate(request):
                 reconned_invoice_amount += float(invoice['invoice_amount'])
 
             total_invoice_amount += float(invoice['invoice_amount'])
-
 
         unique_recon_list = []
 
@@ -1997,6 +2097,8 @@ def calculate(request):
                 if payment['recon_key'] in invoice['recon_key']:
 
                     imported_payment = {
+
+                        'batch_no' : payment['batch_no'],
 
                         'payment_id' : payment['payment_id'],
 
@@ -2051,7 +2153,6 @@ def calculate(request):
 
         latest_cash_post_id = latest_cash_post_id[:2] + num
 
-
         now = datetime.datetime.now()
 
         for unique_recon in unique_recon_list:
@@ -2070,6 +2171,10 @@ def calculate(request):
 
             multiple = []
 
+            child_invoice = []
+
+            child_payment = []
+
 
             for invoice in imported_invoice_arr:            
 
@@ -2078,6 +2183,8 @@ def calculate(request):
                     sub_invoice += float(invoice['invoice_amount'])
 
                     sub_invoice_arr.append(invoice['invoice'])
+
+                    child_invoice.append(invoice)
 
                     multiple = invoice['recon_key']
 
@@ -2093,6 +2200,8 @@ def calculate(request):
 
                         sub_check_arr.append(payment['payment_id'])
 
+                        child_payment.append(payment)
+
             # num = str(int(cash_post_id[2:])+1)
 
             # if len(num) < 4:
@@ -2103,34 +2212,47 @@ def calculate(request):
 
             # cash_post_id = cash_post_id[:2]+num
 
-
+            
             matching = {
 
-                    'cash_post_id' : latest_cash_post_id,
+                'cash_post_id' : latest_cash_post_id,
 
-                    'recon_key' : ', '.join(multiple),
+                'recon_key' : ', '.join(multiple),
 
-                    'invoice' : ', '.join(sub_invoice_arr),
+                'invoice' : ', '.join(sub_invoice_arr),
 
-                    'payment' : ', '.join(sub_payment_arr),
+                'payment' : ', '.join(sub_payment_arr),
 
-                    'payment_id' : ', '.join(sub_check_arr),
+                'payment_id' : ', '.join(sub_check_arr),
 
-                    'invoice_amount' : str(sub_invoice),
+                'invoice_amount' : str(sub_invoice),
 
-                    'payment_amount' : str(sub_payment),
+                'payment_amount' : str(sub_payment),
 
-                    'difference' : str(float(sub_invoice - sub_payment)),
+                'difference' : str(float(sub_invoice - sub_payment)),
 
-                    'posted_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now)
+                'posted_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now),
 
-                }
+                'child_invoice' : child_invoice,
+
+                'child_payment' : child_payment
+
+            }
+
+            check = Cash_Post.objects.filter(recon_key = ', '.join(multiple))
+
+            if len(check) > 0:
+
+                matching['cash_post_id'] = check[0].cash_post_id
+
 
             for imported_payment in imported_payment_arr:
 
                 if unique_recon in imported_payment['recon_key']:
 
                     imported_payment['cash_post_id_memo'] = latest_cash_post_id +'^'+imported_payment['recon_key']
+
+            # pdb.set_trace()
 
             matching_by_recon_key_arr.append(matching)
 
@@ -2147,6 +2269,19 @@ def calculate(request):
 
     request.session['matching_by_recon_key_arr'] = json.dumps(matching_by_recon_key_arr)
 
+    request.session['total_invoice_amount'] = total_invoice_amount
+
+    request.session['reconned_invoice_amount'] = reconned_invoice_amount
+
+    request.session['unused_invoice_amount'] = unused_invoice_amount
+
+    request.session['total_payment_amount'] = total_payment_amount
+
+    request.session['reconned_payment_amount'] = reconned_payment_amount
+
+    request.session['unused_payment_amount'] = unused_payment_amount
+
+    request.session['balance_on_recon_invoice'] = balance_on_recon_invoice
 
 
 def matching_by_recon_key(request):
@@ -2158,470 +2293,36 @@ def matching_by_recon_key(request):
 
             'matching_by_recon_key_arr' : json.loads(request.session.get('matching_by_recon_key_arr', '[]')),
 
+            'cash_post_batch_no_arr' : request.session.get('cash_post_batch_no_arr', '[]'),
+
+            'selected_cash_post_id' : request.session.get('selected_cash_post_id', ''),
+
         })
 
 
 def report(request):
-
-    # input_invoice_arr = json.loads(request.session.get('input_invoice_arr', '[]'))
-
-    input_invoice_arr = []
-
-    if len(input_invoice_arr) == 0:
-
-        input_invoice_arr = []
-
-        max_recon_count = 0
-
-        invoices_with_rks_count = 0
-
-        invoices_without_rks_count = 0
-
-
-        used_kt_tc_data = []
-
-        unused_kt_tc_data = []
-
-
-        used_kt_key_data = []
-
-        unused_kt_key_data = []
-
-
-        used_hb_tc_data = []
-
-        unused_hb_tc_data = []
-
-        used_hb_key_data = []
-
-        unused_hb_key_data = []
-
-        # invoice_data_arr = json.loads(request.session.get('invoice_arr', '[]'))
-
-        # kt_tc_raw_arr = json.loads(request.session.get('timecard_kt_arr', '[]'))
-
-        # kt_key_raw_arr = json.loads(request.session.get('reconkeys_arr', '[]'))
-
-        # hb_tc_raw_arr = json.loads(request.session.get('timecard_hb_arr', '[]'))
-
-        # hb_key_raw_arr = json.loads(request.session.get('reconkeys_hb_arr', '[]'))
-
-        invoice_db = Invoice.objects.all()
-
-        invoice_data_arr = []
-
-        for invoice in invoice_db:
-
-            invoice_data_arr.append(model_to_dict(invoice))
-
-
-        timecard_kt_db = TimeCard_KT.objects.all()
-
-        kt_tc_raw_arr = []
-
-        for timecard_kt in timecard_kt_db:
-
-            kt_tc_raw_arr.append(model_to_dict(timecard_kt))
-
-
-        timecard_hb_db = TimeCard_HB.objects.all()
-
-        hb_tc_raw_arr = []
-
-        for timecard_hb in timecard_hb_db:
-
-            hb_tc_raw_arr.append(model_to_dict(timecard_hb))   
-
-
-        reconkeys_kt_db = ReconKeys_KT.objects.all()
-
-        kt_key_raw_arr = []
-
-        for reconkeys_kt in reconkeys_kt_db:
-
-            kt_key_raw_arr.append(model_to_dict(reconkeys_kt))   
-
-
-        reconkeys_hb_db = ReconKeys_HB.objects.all()
-
-        hb_key_raw_arr = []
-
-        for reconkeys_hb in reconkeys_hb_db:
-
-            hb_key_raw_arr.append(model_to_dict(reconkeys_hb))
-
-
-        payment_db = Payment.objects.all()
-
-        input_payment_arr = []
-
-        for payment in payment_db:
-
-            input_payment_arr.append(model_to_dict(payment))
-
-
-        for invoice_data in invoice_data_arr:
-
-            try:
-
-                res = { }
-
-                res['invoice'] = invoice_data['invoice_number']
-
-                res['recon_key'] = []
-
-                res['invoice_amount'] = invoice_data['total_bill_amount']
-
-                recon_count = 0
-
-                for kt_tc_raw in kt_tc_raw_arr : 
-
-                    try:
-
-                        if str(invoice_data['system']) + str(invoice_data['tc']) == str(kt_tc_raw['time_card_id']):
-
-
-                            for kt_key_raw in kt_key_raw_arr : 
-
-                                try:
-
-                                    if kt_tc_raw['uid'] == kt_key_raw['key_id'] and kt_key_raw['invoice_no'] not in res['recon_key']: 
-
-                                        # pdb.set_trace()
-
-                                        res['recon_key'].append(kt_key_raw['invoice_no'])
-
-                                        if kt_key_raw not in used_kt_key_data:
-
-                                            used_kt_key_data.append(kt_key_raw)
-
-                                        if kt_tc_raw not in used_kt_tc_data:
-
-                                            used_kt_tc_data.append(kt_tc_raw)
-
-                                        recon_count += 1
-
-                                except : 
-
-                                    pdb.set_trace()
-
-                    except :
-
-                        pass
-
-                for hb_tc_raw in hb_tc_raw_arr : 
-
-                    try:
-
-                        if str(invoice_data['system']) + str(invoice_data['tc']) == str(hb_tc_raw['time_card_id']) :
-
-                            for hb_key_raw in hb_key_raw_arr : 
-
-                                try:
-
-                                    if hb_tc_raw['uid'] == hb_key_raw['key_id'] and hb_key_raw['invoice'] not in res['recon_key']: 
-
-                                        res['recon_key'].append(hb_key_raw['invoice'])
-
-                                        if hb_key_raw not in used_hb_key_data:
-
-                                            used_hb_key_data.append(hb_key_raw)
-
-                                        if hb_tc_raw not in used_hb_tc_data:
-
-                                            used_hb_tc_data.append(hb_tc_raw)
-
-                                        recon_count += 1
-                                except : 
-
-                                    pass
-
-                    except : 
-
-                        pass
-
-                if recon_count != 0:
-
-                    invoices_with_rks_count += 1
-
-                else :
-
-                    invoices_without_rks_count += 1
-
-
-                if max_recon_count < recon_count :
-
-                    max_recon_count = recon_count
-
-                res['recon_key_view'] = ', '.join(res['recon_key'])
-
-                input_invoice_arr.append(res)
-
-            except :
-
-                print('something went wrong')
-
-                pdb.set_trace()
-
-        request.session['input_invoice_arr'] = json.dumps(input_invoice_arr)
-
-    # start cash posting.
-
-    input_invoice_arr = json.loads(request.session.get('input_invoice_arr', '[]'))
-
-    # input_payment_arr = json.loads(request.session.get('input_payment_arr', '[]'))
-
-    # calculating unused invoices 
-
-    unused_invoice_arr = []
-
-    imported_invoice_arr = []
-
-    imported_payment_arr = []
-
-    unused_payment_arr = []
-
-    matching_by_recon_key_arr = []
-
-
-    total_invoice_amount = 0
-
-    reconned_invoice_amount = 0
-
-    unused_invoice_amount = 0
-
-    total_payment_amount = 0
-
-    reconned_payment_amount = 0
-
-    unused_payment_amount = 0
-
-    balance_on_recon_invoice = 0
-
-    try:
-
-        for invoice in input_invoice_arr:
-
-            flag = 0
-
-            for payment in input_payment_arr:
-
-                if payment['recon_key'] in invoice['recon_key']:
-
-                    flag += 1
-
-            if flag == 0:
-
-                unused_invoice_arr.append(invoice)
-
-                unused_invoice_amount += float(invoice['invoice_amount'])
-
-            else :
-
-                imported_invoice_arr.append(invoice)
-
-                reconned_invoice_amount += float(invoice['invoice_amount'])
-
-            total_invoice_amount += float(invoice['invoice_amount'])
-
-
-        unique_recon_list = []
-
-        for invoice in imported_invoice_arr:
-
-            if invoice['recon_key'][0] not in unique_recon_list:
-
-                unique_recon_list.append(invoice['recon_key'][0])
-
-        # calculating imported payment and unused payment
-
-        for payment in input_payment_arr:
-
-            flag = 0
-
-            sub_invoice_amt = 0
-
-            for invoice in input_invoice_arr:
-
-                if payment['recon_key'] in invoice['recon_key']:
-
-                    sub_invoice_amt += float(invoice['invoice_amount'])
-
-            for invoice in input_invoice_arr:
-
-                if payment['recon_key'] in invoice['recon_key']:
-
-                    imported_payment = {
-
-                        'payment_id' : payment['payment_id'],
-
-                        'invoice' : invoice['invoice'],
-
-                        'payment' : payment['check'],
-
-                        'check_amount' : float(payment['check_amount']) * float(invoice['invoice_amount']) / sub_invoice_amt ,
-
-                        'recon_key' : payment['recon_key']
-
-                    }
-
-                    imported_payment_arr.append(imported_payment)
-
-                    flag += 1
-
-            if flag == 0:
-
-                unused_payment_arr.append(payment)
-
-                unused_payment_amount += float(payment['check_amount'])
-
-            else :
-
-                reconned_payment_amount += float(payment['check_amount'])
-
-            total_payment_amount += float(payment['check_amount'])
-
-
-        balance_on_recon_invoice = reconned_invoice_amount - reconned_payment_amount
-
-        # calculation matching by recon key data
-
-        latest_cash_post_id = ''
-
-        try:
-
-            latest_cash_post_id = Cash_Post.objects.latest('cash_post_id').batch_no
-
-        except:
-
-            latest_cash_post_id = 'CP0000'
-
-        num = str(int(latest_cash_post_id[2:])+1)
-
-        if len(num) < 4:
-
-            for ind in range(0, 4-len(num)):
-
-                num = '0'+num
-
-        latest_cash_post_id = latest_cash_post_id[:2] + num
-
-
-        now = datetime.datetime.now()
-
-        for unique_recon in unique_recon_list:
-
-            matching = {}
-
-            sub_invoice = 0
-
-            sub_payment = 0
-
-            sub_invoice_arr = []
-
-            sub_payment_arr = []
-
-            sub_check_arr = []
-
-            multiple = []
-
-
-            for invoice in imported_invoice_arr:            
-
-                if unique_recon in invoice['recon_key']:
-
-                    sub_invoice += float(invoice['invoice_amount'])
-
-                    sub_invoice_arr.append(invoice['invoice'])
-
-                    multiple = invoice['recon_key']
-
-            for recon in multiple:
-
-                for payment in imported_payment_arr:
-
-                    if recon in payment['recon_key']:
-
-                        sub_payment += float(payment['check_amount'])
-
-                        sub_payment_arr.append(str(payment['check_amount']) if '.' in str(payment['check_amount']) and len(str(payment['check_amount']).split('.')[1]) < 4 else  str(payment['check_amount']).split('.')[0] + '.' + str(payment['check_amount']).split('.')[1][:4] )
-
-                        sub_check_arr.append(payment['payment_id'])
-
-            # num = str(int(cash_post_id[2:])+1)
-
-            # if len(num) < 4:
-
-            #     for ind in range(0, 4-len(num)):
-
-            #         num = '0'+num
-
-            # cash_post_id = cash_post_id[:2]+num
-
-
-            matching = {
-
-                    'cash_post_id' : latest_cash_post_id,
-
-                    'recon_key' : ', '.join(multiple),
-
-                    'invoice' : ', '.join(sub_invoice_arr),
-
-                    'payment' : ', '.join(sub_payment_arr),
-
-                    'payment_id' : ', '.join(sub_check_arr),
-
-                    'invoice_amount' : str(sub_invoice),
-
-                    'payment_amount' : str(sub_payment),
-
-                    'difference' : str(float(sub_invoice - sub_payment)),
-
-                    'posted_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now)
-
-                }
-
-            for imported_payment in imported_payment_arr:
-
-                if unique_recon in imported_payment['recon_key']:
-
-                    imported_payment['cash_post_id_memo'] = latest_cash_post_id +'^'+imported_payment['recon_key']
-
-            matching_by_recon_key_arr.append(matching)
-
-    except:
-
-        pass
-
-
-    request.session['imported_payment_arr'] = json.dumps(imported_payment_arr)
-
-    request.session['unused_payment_arr'] = json.dumps(unused_payment_arr)
-
-    request.session['unused_invoice_arr'] = json.dumps(unused_invoice_arr)
-
-    request.session['matching_by_recon_key_arr'] = json.dumps(matching_by_recon_key_arr)
-
     
     # return redirect("/generated_invoice")
+
+    calculate(request)
 
     return render(request, 'report/index.html',
 
         {
 
-            'total_invoice_amount' : total_invoice_amount,
+            'total_invoice_amount' : request.session.get('total_invoice_amount', ''),
 
-            'reconned_invoice_amount' : reconned_invoice_amount,
+            'reconned_invoice_amount' : request.session.get('reconned_invoice_amount', ''),
 
-            'unused_invoice_amount' : unused_invoice_amount,
+            'unused_invoice_amount' : request.session.get('unused_invoice_amount', ''),
 
-            'total_payment_amount' : total_payment_amount,
+            'total_payment_amount' : request.session.get('total_payment_amount', ''),
 
-            'reconned_payment_amount' : reconned_payment_amount,
+            'reconned_payment_amount' : request.session.get('reconned_payment_amount', ''),
 
-            'unused_payment_amount' : unused_payment_amount,
+            'unused_payment_amount' : request.session.get('unused_payment_amount', ''),
 
-            'balance_on_recon_invoice' : balance_on_recon_invoice
+            'balance_on_recon_invoice' : request.session.get('balance_on_recon_invoice', '')
 
         })
 

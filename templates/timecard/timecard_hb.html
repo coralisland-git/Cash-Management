@@ -166,7 +166,7 @@
                                                 </thead>
                                                 <tbody>
                                                   {% for timecard in timecard_hb_arr %}
-                                                    <tr>
+                                                    <tr data-target="#modal{{ invoice.invoice_number }}" data-toggle="modal">
                                                       <td class="all"> {{ timecard.batch_no }} </td>
                                                       <td class="all"> {{ timecard.time_card_id  }} </td>
                                                       <td class="min-tablet"> {{ timecard.batch  }} </td>
