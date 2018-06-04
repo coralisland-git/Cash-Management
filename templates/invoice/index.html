@@ -78,7 +78,7 @@
                                                     <td class="min-tablet"> {{ batch.count }} </td> 
                                                     <td class="min-tablet"> {{ batch.uploaded_date }} </td> 
                                                     <td  class="all"> 
-                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> <i class="fa fa-trash"></i></a>
+                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> Delete</a>
                                                         <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
                                                             <div class="modal-body" style="text-align: center;">
                                                                 <p style="font-size: 18px;"> Are you sure? </p>
@@ -94,7 +94,7 @@
                                                         </div>
                                                         <form action="{% url 'search_batch_no' %}" method="POST">
                                                             {% csrf_token %}
-                                                            <button type="submit" class="btn btn-default pull-right" name="invoice_batch_no" value={{ batch.batch_no }} ><i class="fa fa-eye"></i></button>
+                                                            <button type="submit" class="btn btn-default pull-right" name="invoice_batch_no" value={{ batch.batch_no }} >View</button>
                                                         </form>
                                                     </td> 
                                                   </tr>
@@ -147,12 +147,38 @@
                                                             <td class="none">spcl_paybill_de_code</td>
                                                             <td class="none">special_paybill_qty</td>
                                                             <td class="none">special_bill_rate</td>
+                                                            <td class="all"></td>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {% for invoice in invoice_arr %}
-                                                          <tr data-target="#modal{{ invoice.invoice_number }}" data-toggle="modal">
-                                                            <div class="modal right fade" id="modal{{ invoice.invoice_number }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                          <tr>
+                                                            <td class="all"> {{ invoice.batch_no }} </td> 
+                                                            <td class="all"> {{ invoice.invoice_number }} </td> 
+                                                            <td class="min-tablet"> ${{ invoice.total_bill_amount | intcomma   }} </td> 
+                                                            <td class="min-tablet"> {{ invoice.invoice_reference }} </td> 
+                                                            <td class="none"> {{ invoice.invoice_date }} </td> 
+                                                            <td class="none"> {{ invoice.company }} </td> 
+                                                            <td class="none"> {{ invoice.branch_id }} </td> 
+                                                            <td class="none"> {{ invoice.employee_short_name }} </td> 
+                                                            <td class="none"> {{ invoice.cust_alph }} </td> 
+                                                            <td class="none"> {{ invoice.customer_name }} </td> 
+                                                            <td class="none"> {{ invoice.straight_time_hours }} </td> 
+                                                            <td class="none"> {{ invoice.hourly_bill_rate }} </td> 
+                                                            <td class="none"> {{ invoice.overtime_hours }} </td> 
+                                                            <td class="none"> {{ invoice.sp_bill }} </td> 
+                                                            <td class="none"> {{ invoice.week_ending_date }} </td> 
+                                                            <td class="none"> {{ invoice.workers_comp_code }} </td> 
+                                                            <td class="none"> {{ invoice.job_description }} </td> 
+                                                            <td class="none"> {{ invoice.customer_po }} </td> 
+                                                            <td class="none"> {{ invoice.b_w_location_code }} </td> 
+                                                            <td class="none"> {{ invoice.address_1 }} </td> 
+                                                            <td class="none"> {{ invoice.spcl_paybill_de_code }} </td> 
+                                                            <td class="none"> {{ invoice.special_paybill_qty }} </td> 
+                                                            <td class="none"> {{ invoice.special_bill_rate }} </td> 
+                                                            <td class="all"><a class="pull-right btn" data-target="#modal{{ invoice.invoice_number }}" data-toggle="modal">view</a></td>
+                                                          </tr>
+                                                          <div class="modal right fade" id="modal{{ invoice.invoice_number }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
                                                                 <div class="modal-dialog" role="document">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header">
@@ -188,30 +214,6 @@
                                                                     </div><!-- modal-content -->
                                                                 </div>
                                                             </div>
-                                                            <td class="all"> {{ invoice.batch_no }} </td> 
-                                                            <td class="all"> {{ invoice.invoice_number }} </td> 
-                                                            <td class="min-tablet"> ${{ invoice.total_bill_amount | intcomma   }} </td> 
-                                                            <td class="min-tablet"> {{ invoice.invoice_reference }} </td> 
-                                                            <td class="none"> {{ invoice.invoice_date }} </td> 
-                                                            <td class="none"> {{ invoice.company }} </td> 
-                                                            <td class="none"> {{ invoice.branch_id }} </td> 
-                                                            <td class="none"> {{ invoice.employee_short_name }} </td> 
-                                                            <td class="none"> {{ invoice.cust_alph }} </td> 
-                                                            <td class="none"> {{ invoice.customer_name }} </td> 
-                                                            <td class="none"> {{ invoice.straight_time_hours }} </td> 
-                                                            <td class="none"> {{ invoice.hourly_bill_rate }} </td> 
-                                                            <td class="none"> {{ invoice.overtime_hours }} </td> 
-                                                            <td class="none"> {{ invoice.sp_bill }} </td> 
-                                                            <td class="none"> {{ invoice.week_ending_date }} </td> 
-                                                            <td class="none"> {{ invoice.workers_comp_code }} </td> 
-                                                            <td class="none"> {{ invoice.job_description }} </td> 
-                                                            <td class="none"> {{ invoice.customer_po }} </td> 
-                                                            <td class="none"> {{ invoice.b_w_location_code }} </td> 
-                                                            <td class="none"> {{ invoice.address_1 }} </td> 
-                                                            <td class="none"> {{ invoice.spcl_paybill_de_code }} </td> 
-                                                            <td class="none"> {{ invoice.special_paybill_qty }} </td> 
-                                                            <td class="none"> {{ invoice.special_bill_rate }} </td> 
-                                                          </tr>
                                                         {% endfor %}
                                                     </tbody>
                                                 </table>

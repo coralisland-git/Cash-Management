@@ -78,7 +78,7 @@
                                                     <td class="min-tablet"> {{ batch.count }} </td> 
                                                     <td class="min-tablet"> {{ batch.uploaded_date }} </td> 
                                                     <td  class="all"> 
-                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> <i class="fa fa-trash"></i></a>
+                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;">Delete</a>
                                                         <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
                                                             <div class="modal-body" style="text-align: center;">
                                                                 <p style="font-size: 18px;"> Are you sure? </p>
@@ -94,7 +94,7 @@
                                                         </div>
                                                         <form action="{% url 'search_batch_no' %}" method="POST">
                                                             {% csrf_token %}
-                                                            <button type="submit" class="btn btn-default pull-right" name="kt_rk_batch_no" value={{ batch.batch_no }} ><i class="fa fa-eye"></i></button>
+                                                            <button type="submit" class="btn btn-default pull-right" name="kt_rk_batch_no" value={{ batch.batch_no }} >View</button>
                                                         </form>
                                                     </td> 
                                                   </tr>
@@ -175,11 +175,12 @@
                                                             <td class="none"> shift </td>
                                                             <td class="none"> visit_split_id </td>
                                                             <td class="none"> key_id </td>
+                                                            <td class="all"> </td>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {% for reconkey in reconkeys_arr %}
-                                                          <tr data-target="#modal{{ invoice.invoice_number }}" data-toggle="modal">
+                                                          <tr>
                                                             <td class="all"> {{ reconkey.batch_no }} </td>
                                                             <td class="all"> {{ reconkey.authorization }} </td>
                                                             <td class="min-tablet"> {{ reconkey.case_manager_first_name }} </td>
@@ -233,7 +234,76 @@
                                                             <td class="none"> {{ reconkey.shift }} </td>
                                                             <td class="none"> {{ reconkey.visit_split_id }} </td>
                                                             <td class="none"> {{ reconkey.key_id }} </td>
+                                                            <td class="all"><a class="pull-right btn btn-default" data-target="#modal-rk-kt{{ reconkey.visit_id }}" data-toggle="modal">View</a></td>
                                                           </tr>
+                                                          <div class="modal right fade" id="modal-rk-kt{{ reconkey.visit_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                        <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> ReconKey Data : {{ reconkey.visit_id }}</h4>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+                                                                       <ul class="list-group">
+                                                                            <li class="list-group-item"> <span class="property-name"> Batch Id : </span>  {{ reconkey.batch_no }} </li>
+                                                                            <li class="list-group-item">  <span class="property-name"> Authorization : </span>  {{ reconkey.authorization }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Case Manager First Name : </span>  {{ reconkey.case_manager_first_name }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Case Manager Last Name : </span>  {{ reconkey.case_manager_last_name }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Checkin Time : </span>  {{ reconkey.checkin_time }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Bill Mode : </span>  {{ reconkey.bill_mode }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Bill Rate : </span>  {{ reconkey.bill_rate }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Billable : </span>  {{ reconkey.billable }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Checkout Time : </span>  {{ reconkey.checkout_time }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Client First Name : </span>  {{ reconkey.client_first_name }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Client Last Name : </span>  {{ reconkey.client_last_name }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Client Dob : </span>  {{ reconkey.client_dob }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Clinician First Name : </span>  {{ reconkey.clinician_first_name }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Clinician Last Name : </span>  {{ reconkey.clinician_last_name }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> CLinician Id : </span>  {{ reconkey.clinician_id }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Clinician Payroll Group : </span>  {{ reconkey.clinician_payroll_group }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Clinician Payroll Id : </span>  {{ reconkey.clinician_payroll_id }} </td> 
+                                                                            <li class="list-group-item">  <span class="property-name"> Clinician Payroll Rule : </span>  {{ reconkey.clinician_payroll_rule }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Clinician Skills : </span>  {{ reconkey.clinician_skills }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Clinician SSN : </span>  {{ reconkey.clinician_ssn }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Cosign Staff First Name : </span>  {{ reconkey.cosign_staff_first_name }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Cosign Staff Last Name : </span>  {{ reconkey.cosign_staff_last_name }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Edited Hours : </span>  {{ reconkey.edited_hours }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Episode Duration : </span>  {{ reconkey.episode_duration }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Episode Number : </span>  {{ reconkey.episode_number }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Episode Start Date : </span>  {{ reconkey.episode_start_date }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Episode End Date : </span>  {{ reconkey.episode_end_date }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Has Split Schedules : </span>  {{ reconkey.has_split_schedules }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Hcpcs Code: </span>  {{ reconkey.hcpcs_code }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> location : </span>  {{ reconkey.location }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> material Status : </span>  {{ reconkey.material_status }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Medicaid : </span>  {{ reconkey.medicaid }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Patient Id : </span>  {{ reconkey.patient_id }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Payroll : </span>  {{ reconkey.payroll }} </td>  
+                                                                            <li class="list-group-item">  <span class="property-name"> Payroll Mode : </span>  {{ reconkey.payroll_mode }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Payroll Rate : </span>  {{ reconkey.payroll_rate }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Payrolled : </span>  {{ reconkey.payrolled }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Schedule Status : </span>  {{ reconkey.schedule_status }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Units : </span>  {{ reconkey.units }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Visit Date : </span>  {{ reconkey.visit_date }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Client Lob : </span>  {{ reconkey.client_lob }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Insurance Id : </span>  {{ reconkey.insurance_id }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Payer : </span>  {{ reconkey.payer }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Clinician Discipline : </span>  {{ reconkey.clinician_discipline }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Service : </span>  {{ reconkey.service }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Employment Type : </span>  {{ reconkey.employment_type }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Invoice No : </span>  {{ reconkey.invoice_no }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Miles : </span>  {{ reconkey.miles }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Payroll Visit Id : </span>  {{ reconkey.visit_id }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Payroll Batch Id : </span>  {{ reconkey.payroll_batch_id }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Shift : </span>  {{ reconkey.shift }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Visit Split Id : </span>  {{ reconkey.visit_split_id }} </td>
+                                                                            <li class="list-group-item">  <span class="property-name"> Key Id : </span>  {{ reconkey.key_id }} </td> 
+                                                                        </ul>
+                                                                    </div>
+                                                                </div><!-- modal-content -->
+                                                            </div>
+                                                        </div>
                                                         {% endfor %}
                                                     </tbody>
                                                 </table>

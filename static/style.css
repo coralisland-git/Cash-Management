@@ -10,11 +10,21 @@
 .list-group-item {
 	border: none;	
 	font-size: 18px;
-	color : #777;
+	color : #999;
 	line-height: 30px;
 }
 .list-group-item .property-name {
-	color : #333 !important;
+	word-wrap: break-word;
+	color : #111 !important;
+}
+
+.list-group {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.modal-title {
+	padding-left: 25px;
 }
 
 .dt-button.buttons-csv.buttons-html5{

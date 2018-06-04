@@ -140,11 +140,12 @@
                                                             <td class="none"> amount </td>
                                                             <td class="none"> balance </td>
                                                             <td class="none"> key_id </td>
+                                                            <td class="all"> </td>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {% for reconkey in reconkeys_hb_arr %}
-                                                          <tr data-target="#modal{{ invoice.invoice_number }}" data-toggle="modal">
+                                                          <tr>
                                                             <td class="all"> {{ reconkey.batch_no }}</td>
                                                             <td class="all"> {{ reconkey.row_id }}</td>
                                                             <td class="min-tablet"> {{ reconkey.branch }}</td>
@@ -163,7 +164,41 @@
                                                             <td class="none"> {{ reconkey.amount }}</td>
                                                             <td class="none"> {{ reconkey.balance }}</td>
                                                             <td class="none"> {{ reconkey.key_id }}</td>
+                                                            <td class="all"><a class="pull-right btn btn-default" data-target="#modal-rk{{ reconkey.row_id }}" data-toggle="modal">View</a></td>
                                                           </tr>
+                                                           <div class="modal right fade" id="modal-rk{{ reconkey.row_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                            <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Reconkey Data : {{ reconey.row_id }}</h4>
+                                                                        </div>
+
+                                                                        <div class="modal-body">
+                                                                           <ul class="list-group">
+                                                                                <li class="list-group-item"> <span class="property-name"> Batch Id : </span>  {{ reconkey.batch_no }}</li>
+                                                                                <li class="list-group-item"> <span class="property-name"> invoice_date : </span>  {{ reconkey.row_id }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> Branch : </span> {{ reconkey.branch }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Funding Source : </span> {{ reconkey.funding_source }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Post Date : </span> {{ reconkey.post_date }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Date Created : </span> {{ reconkey.date_created }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Client Facility Name: </span> {{ reconkey.client_facility_name }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name">  Shift Date : </span> {{ reconkey.shift_date }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Invoice : </span> {{ reconkey.invoice }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> description : </span> {{ reconkey.description }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Rev Code : </span> {{ reconkey.rev_code }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Hcpcs CPT Code : </span> {{ reconkey.hcpcs_cpt_code }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Quantity Uinits : </span> {{ reconkey.quantity_units }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Orig Charge : </span> {{ reconkey.orig_charge }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Adjustments : </span> {{ reconkey.adjustments }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Amount : </span> {{ reconkey.amount }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Balance : </span> {{ reconkey.balance }} </li>
+                                                                                <li class="list-group-item"> <span class="property-name"> Key Id: </span> {{ reconkey.key_id }} </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div><!-- modal-content -->
+                                                                </div>
+                                                            </div>
                                                         {% endfor %}
                                                     </tbody>
                                                 </table>

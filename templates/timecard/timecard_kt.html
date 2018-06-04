@@ -94,7 +94,7 @@
                                                         </div>
                                                         <form action="{% url 'search_batch_no' %}" method="POST">
                                                             {% csrf_token %}
-                                                            <button type="submit" class="btn btn-default pull-right" name="kt_tc_batch_no" value={{ batch.batch_no }} ><i class="fa fa-eye"></i></button>
+                                                            <button type="submit" class="btn btn-default pull-right" name="kt_tc_batch_no" value={{ batch.batch_no }} >View</button>
                                                         </form>
                                                     </td> 
                                                   </tr>
@@ -177,11 +177,12 @@
                                                           <td class="none"> bill_mode </td>
                                                           <td class="none"> shift </td>
                                                           <td class="none"> uid </td>
+                                                          <td class="all"></td>
                                                       </tr>
                                                   </thead>
                                                   <tbody>
                                                       {% for timecard in timecard_kt_arr %}
-                                                        <tr data-target="#modal{{ invoice.invoice_number }}" data-toggle="modal">
+                                                        <tr>
                                                           <td class="all"> {{ timecard.batch_no }} </td>
                                                            <td class="all"> {{ timecard.time_card_id }} </td>
                                                            <td class="min-tablet"> {{ timecard.authorization }} </td>
@@ -237,7 +238,75 @@
                                                            <td class="none"> {{ timecard.bill_mode }} </td>
                                                            <td class="none"> {{ timecard.shift }} </td>
                                                            <td class="none"> {{ timecard.uid }} </td>
+                                                           <td class="all"><a class="pull-right btn btn-default" data-target="#modal{{ timecard.time_card_id  }}" data-toggle="modal">View</a></td>
                                                         </tr>
+                                                        <div class="modal right fade" id="modal{{ timecard.time_card_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                          <div class="modal-dialog" role="document">
+                                                              <div class="modal-content">
+                                                                  <div class="modal-header">
+                                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                      <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> TimeCard Id : {{ timecard.time_card_id }}</h4>
+                                                                  </div>
+                                                                  <div class="modal-body">
+                                                                      <ul class="list-group">
+                                                                          <li class="list-group-item"> <span class="property-name"> Authorization :</span> {{ timecard.authorization }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Bill Mode :</span> {{ timecard.bill_mode }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name">  Bill Rate :</span> {{ timecard.bill_rate }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Billable :</span> {{ timecard.billable }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Case Manager First Name :</span> {{ timecard.case_manager_first_name }}  </li> 
+                                                                          <li class="list-group-item">  <span class="property-name"> Case Management Last Name :</span> {{ timecard.case_manager_last_name }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Checkin Time : </span> {{ timecard.checkin_time }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Checkout Time : </span> {{ timecard.checkout_time }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Client First Name : </span> {{ timecard.client_first_name }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> CLient Last Name : </span> {{ timecard.client_last_name }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> client_dob : </span> {{ timecard.client_dob }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> clinician_first_name  : </span> {{ timecard.clinician_first_name }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Clincian Last Name : </span> {{ timecard.clinician_last_name }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Clincian Id : </span> {{ timecard.clinician_id }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Clincian Payroll Group : </span> {{ timecard.clinician_payroll_group }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Clincian Payroll Id : </span> {{ timecard.clinician_payroll_id }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Clincian Payroll Rule : </span> {{ timecard.clinician_payroll_rule }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Clincian Skills : </span> {{ timecard.clinician_skills }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Clincian SSN : </span> {{ timecard.clinician_ssn }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Cosign Staff First Name : </span> {{ timecard.cosign_staff_first_name }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Cosign Staff Last Name : </span> {{ timecard.cosign_staff_last_name }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Edited Hours : </span> {{ timecard.edited_hours }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Episode Duration : </span> {{ timecard.episode_duration }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Episode Number : </span> {{ timecard.episode_number }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Episode Start Date : </span> {{ timecard.episode_start_date }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Episode End Date : </span> {{ timecard.episode_end_date }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Has Split Schedules : </span> {{ timecard.has_split_schedules }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Hcpcs Code : </span> {{ timecard.hcpcs_code }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Location : </span> {{ timecard.location }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Marital Status : </span> {{ timecard.marital_status }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Medicaid : </span> {{ timecard.medicaid }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Patient Id : </span> {{ timecard.patient_id }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Payroll : </span> {{ timecard.payroll }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Payroll Mode : </span> {{ timecard.payroll_mode }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Payroll Rate : </span> {{ timecard.payroll_rate }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Payrolled : </span> {{ timecard.payrolled }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Schedule Status : </span> {{ timecard.schedule_status }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Units : </span> {{ timecard.units }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Visit Date : </span> {{ timecard.visit_date }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Client Lob : </span> {{ timecard.client_lob }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Insurance Id : </span> {{ timecard.insurance_id }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Payer : </span> {{ timecard.payer }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Clinician Discipline : </span> {{ timecard.clinician_discipline }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Service : </span> {{ timecard.service }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Employment Type : </span> {{ timecard.employment_type }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Invoice No : </span> {{ timecard.invoice_no }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Miles : </span> {{ timecard.miles }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Visit Id : </span> {{ timecard.visit_id }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Payroll Batch Id : </span> {{ timecard.payroll_batch_id }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Authorization : </span> {{ timecard.authorization }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Bill Mode : </span> {{ timecard.bill_mode }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Shift : </span> {{ timecard.shift }}  </li> 
+                                                                          <li class="list-group-item"> <span class="property-name"> Uid : </span> {{ timecard.uid }}  </li> 
+                                                                      </ul>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                       </div>
                                                       {% endfor %}
                                                   </tbody>
                                                 </table>

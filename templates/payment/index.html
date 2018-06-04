@@ -78,7 +78,7 @@
                                                     <td class="min-tablet"> {{ batch.count }} </td> 
                                                     <td class="min-tablet"> {{ batch.uploaded_date }} </td> 
                                                     <td  class="all"> 
-                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> <i class="fa fa-trash"></i></a>
+                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;">Delete</a>
                                                         <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
                                                             <div class="modal-body" style="text-align: center;">
                                                                 <p style="font-size: 18px;"> Are you sure? </p>
@@ -94,7 +94,7 @@
                                                         </div>
                                                         <form action="{% url 'search_batch_no' %}" method="POST">
                                                             {% csrf_token %}
-                                                            <button type="submit" class="btn btn-default pull-right" name="payment_batch_no" value={{ batch.batch_no }} ><i class="fa fa-eye"></i></button>
+                                                            <button type="submit" class="btn btn-default pull-right" name="payment_batch_no" value={{ batch.batch_no }} >View</button>
                                                         </form>
                                                     </td> 
                                                   </tr>
@@ -127,17 +127,37 @@
                                                             <td classname="min-tablet"> check </td>
                                                             <td classname="min-tablet"> recon_key </td>
                                                             <td classname="min-tablet"> check_amount </td>
+                                                            <td classname="all"></td>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {% for payment in input_payment_arr %}
-                                                          <tr data-target="#modal{{ payment.payment_id  }}" data-toggle="modal">
-                                                            <td classname="all"> {{ payment.batch_no }} </td>
-                                                            <td classname="all"> {{ payment.payment_id }} </td>
-                                                            <td classname="min-tablet"> {{ payment.check }} </td>
-                                                            <td classname="min-tablet"> {{ payment.recon_key }} </td>
-                                                            <td classname="min-tablet"> ${{ payment.check_amount  | intcomma   }} </td>
-                                                          </tr>
+                                                            <tr>
+                                                                <td classname="all"> {{ payment.batch_no }} </td>
+                                                                <td classname="all"> {{ payment.payment_id }} </td>
+                                                                <td classname="min-tablet"> {{ payment.check }} </td>
+                                                                <td classname="min-tablet"> {{ payment.recon_key }} </td>
+                                                                <td classname="min-tablet"> ${{ payment.check_amount  | intcomma   }} </td>
+                                                                <td class="all"><a class="pull-right btn btn-default" data-target="#modal{{ payment.payment_id  }}" data-toggle="modal">view</a></td>
+                                                            </tr>
+                                                            <div class="modal right fade" id="modal{{ payment.payment_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                            <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Payment : {{ payment.payment_id }}</h4>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                           <ul class="list-group">
+                                                                                <li class="list-group-item"> <span class="property-name"> Bacth Id : </span>  {{ payment.batch_no }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> Payment Check : </span>  {{ payment.check }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> Recon Key : </span>  {{ payment.recon_key }} </li> 
+                                                                                <li class="list-group-item"> <span class="property-name"> Payment Check Amount : </span>  ${{ payment.check_amount }} </li> 
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         {% endfor %}
                                                     </tbody>
                                                 </table>
