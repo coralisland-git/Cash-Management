@@ -409,11 +409,74 @@ def search_batch_no(request):
 
             matching_by_recon_key_arr.append(model_to_dict(matching))
 
-        request.session['matching_by_recon_key_arr'] = json.dumps(matching_by_recon_key_arr)
 
         request.session['selected_cash_post_id'] = str(request.POST['selected_cash_post_id'])
             
-        return redirect('/matching_by_recon_key')
+        # return redirect('/matching_by_recon_key')
+
+        new_matching_arr = []
+
+        imported_payment_arr = json.loads(request.session.get('imported_payment_arr', '[]'))
+
+        imported_invoice_arr = json.loads(request.session.get('imported_invoice_arr', '[]'))
+
+        input_payment_arr = json.loads(request.session.get('input_payment_arr', '[]'))
+
+        for matching in matching_by_recon_key_arr:
+
+            child_invoice = []
+
+            child_payment = []
+
+            child_ori_payment = []
+
+            multiple = []
+
+            for invoice in imported_invoice_arr:            
+
+                if matching['recon_key'] in invoice['recon_key']:
+
+                    child_invoice.append(invoice)
+
+                    multiple = invoice['recon_key']
+
+            for recon in multiple:
+
+                for payment in imported_payment_arr:
+
+                    if recon in payment['recon_key']:
+
+                        child_payment.append(payment)
+
+                for payment in input_payment_arr:
+
+                    if recon in payment['recon_key'] and payment not in child_ori_payment:
+
+                        child_ori_payment.append(payment)
+
+
+            matching['child_invoice'] = child_invoice
+
+            matching['child_payment'] = child_payment
+
+            matching['child_ori_payment'] = child_ori_payment
+
+            new_matching_arr.append(matching)
+
+
+        request.session['matching_by_recon_key_arr'] = json.dumps(new_matching_arr)
+
+
+        return render(request, 'report/matching_by_recon_key.html',
+            {
+
+                'matching_by_recon_key_arr' : json.loads(request.session.get('matching_by_recon_key_arr', '[]')),
+
+                'cash_post_batch_no_arr' : request.session.get('cash_post_batch_no_arr', '[]'),
+
+                'selected_cash_post_id' : request.session.get('selected_cash_post_id', ''),
+
+            })
 
 
 def cash_post(request):
@@ -423,6 +486,18 @@ def cash_post(request):
     for cash_post in cash_post_arr:
 
         check = Cash_Post.objects.filter(recon_key = cash_post['recon_key'])
+
+        if 'child_invoice' in cash_post:
+
+            del cash_post['child_invoice']
+
+        if 'child_payment' in cash_post:
+
+            del cash_post['child_payment']
+
+        if 'child_ori_payment' in cash_post:
+
+            del cash_post['child_ori_payment']
 
         if len(check) == 0:
 
@@ -434,8 +509,25 @@ def cash_post(request):
 
             check.update(**cash_post)
 
-
     return redirect('/matching_by_recon_key')
+
+
+def save_comment(request):
+
+    cash_post_arr = json.loads(request.session.get('matching_by_recon_key_arr', '[]'))
+
+    pdb.set_trace()
+
+    for cash_post in cash_post_arr:
+
+        if cash_post['recon_key'] == request.POST['recon_key']:
+
+            cash_post['comment'] = request.POST['comment']
+
+    request.session['matching_by_recon_key_arr'] = cash_post_arr
+
+    return HttpResponse('success')
+
 
 
 def main(request):
@@ -2072,6 +2164,8 @@ def calculate(request):
 
         unique_recon_list = []
 
+        request.session['imported_invoice_arr'] = json.dumps(imported_invoice_arr)
+
         for invoice in imported_invoice_arr:
 
             if invoice['recon_key'][0] not in unique_recon_list:
@@ -2220,6 +2314,26 @@ def calculate(request):
 
             # cash_post_id = cash_post_id[:2]+num
 
+            a_r_status = ''
+
+
+            difference = float(sub_invoice - sub_payment)
+
+            if difference == 0 : 
+
+                a_r_status = 'paid in full'
+
+            elif difference > 0 and difference <= 0.5:
+
+                a_r_status = 'small balance'
+
+            elif difference == sub_payment :
+
+                a_r_status = 'unpaid'
+
+            else :
+
+                a_r_status = 'partial paid'
             
             matching = {
 
@@ -2245,9 +2359,16 @@ def calculate(request):
 
                 'child_payment' : child_payment,
 
-                'child_ori_payment' : child_ori_payment
+                'child_ori_payment' : child_ori_payment,
+
+                'comment' : '',
+
+                'a_r_status' : a_r_status,
+
+                'collection_status' : ''
 
             }
+
 
             check = Cash_Post.objects.filter(recon_key = ', '.join(multiple))
 
@@ -2397,7 +2518,6 @@ def signup(request):
 
     return render(request, 'signup.html')
 
-    # return render_to_response('signup.html', locals(), context_instance=RequestContext(request))
 
 def changePwd(request):
     if request.POST:

@@ -482,6 +482,12 @@ class Cash_Post(models.Model):
 
 	posted_date = models.CharField(max_length=255, blank=True, null=True)
 
+	a_r_status = models.CharField(max_length=255, blank=True, null=True)
+
+	collection_status = models.CharField(max_length=255, blank=True, null=True)
+
+	comment = models.CharField(max_length=255, blank=True, null=True)
+
 
 
 		

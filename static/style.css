@@ -9,7 +9,7 @@
 
 .list-group-item {
 	border: none;	
-	font-size: 18px;
+	font-size: 16px;
 	color : #999;
 	line-height: 30px;
 }
@@ -50,6 +50,33 @@
 	display: none;
 }
 
+.a_r_status span {
+	padding : 9px !important;
+	font-size: 13px !important;
+	color : #999;
+}
+
+.radio-group{
+	display: flex;
+	font-size: 16px;
+}
+
+.radio {
+	margin-top: 0px !important;
+
+	margin-right: 10px;
+}
+
+.radio-group input{
+	width : 20px;
+	height: 20px;
+	margin-top: 5px;
+}
+
+/*.cash-post {
+	width: 750px !important;
+}
+*/
 td:first-child:before {
 	display: none !important;
 }
@@ -82,7 +109,7 @@ td:first-child:before {
 	.modal.right .modal-dialog {
 		position: fixed;
 		margin: auto;
-		width: 600px;
+		width: 750px;
 		height: 100%;
 		-webkit-transform: translate3d(0%, 0, 0);
 		    -ms-transform: translate3d(0%, 0, 0);
@@ -100,6 +127,20 @@ td:first-child:before {
 	.modal.right .modal-body {
 		padding: 15px 15px 15px;
 	}
+
+/*Left*/
+    .modal.left.fade .modal-dialog{
+    	top: 0px;
+        left: -320px;
+        -webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+           -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+             -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+                transition: opacity 0.3s linear, left 0.3s ease-out;
+    }
+    
+    .modal.left.fade.in .modal-dialog{
+        left: 0;
+    }
         
 /*Right*/
 	.modal.right.fade .modal-dialog {
