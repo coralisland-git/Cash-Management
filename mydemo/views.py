@@ -1804,6 +1804,8 @@ def payment_board(request):
 
                         data['batch_no'] = check[0].batch_no
 
+                        data['cash_post_id_memo'] = check[0].cash_post_id_memo
+
                         check.update(**data)
 
                 payment_row += 1
