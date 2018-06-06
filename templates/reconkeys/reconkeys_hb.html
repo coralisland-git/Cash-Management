@@ -68,7 +68,7 @@
                                                     <td class="all"> batch_no</td>
                                                     <td class="min-tablet"> count </td>
                                                     <td class="min-tablet"> date/time created </td>
-                                                    <td class="all"> Actions </td>
+                                                    <td class="all"> actions </td>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -78,7 +78,7 @@
                                                     <td class="min-tablet"> {{ batch.count }} </td> 
                                                     <td class="min-tablet"> {{ batch.uploaded_date }} </td> 
                                                     <td  class="all"> 
-                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> <i class="fa fa-trash"></i></a>
+                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;">Delete</a>
                                                         <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
                                                             <div class="modal-body" style="text-align: center;">
                                                                 <p style="font-size: 18px;"> Are you sure? </p>
@@ -94,7 +94,7 @@
                                                         </div>
                                                         <form action="{% url 'search_batch_no' %}" method="POST">
                                                             {% csrf_token %}
-                                                            <button type="submit" class="btn btn-default pull-right" name="hb_rk_batch_no" value={{ batch.batch_no }} ><i class="fa fa-eye"></i></button>
+                                                            <button type="submit" class="btn btn-default pull-right" name="hb_rk_batch_no" value={{ batch.batch_no }} >View</button>
                                                         </form>
                                                     </td> 
                                                   </tr>
@@ -140,7 +140,7 @@
                                                             <td class="none"> amount </td>
                                                             <td class="none"> balance </td>
                                                             <td class="none"> key_id </td>
-                                                            <td class="all"> </td>
+                                                            <td class="all"> action </td>
                                                         </tr>
                                                     </thead>
                                                     <tbody>

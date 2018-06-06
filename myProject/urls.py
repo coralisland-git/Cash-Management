@@ -73,4 +73,6 @@ urlpatterns = [
 
     url(r'^save_comment/$', views.save_comment, name='save_comment'),
 
+    url(r'^calculate/$', views.calculate, name='calculate'),
+
 ]

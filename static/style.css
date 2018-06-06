@@ -3,8 +3,9 @@
 }
 
 
-.td {
-	text-align: center;
+td {
+	text-align: center !important;
+	vertical-align: middle !important;
 }
 
 .list-group-item {

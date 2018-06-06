@@ -461,6 +461,8 @@ class Payment(models.Model):
 
 	check_amount = models.CharField(max_length=255, blank=True, null=True)
 
+	cash_post_id_memo = models.CharField(max_length=255, blank=True, null=True)
+
 
 class Cash_Post(models.Model):
 

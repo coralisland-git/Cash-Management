@@ -38,7 +38,7 @@
                               <tbody>
                                   {% for payment in unused_payment_arr %}
                                     <tr>
-                                      <td classname="all"> {{ payment_id }} </td>
+                                      <td classname="all"> {{ payment.payment_id }} </td>
                                       <td classname="all"> {{ payment.check }} </td>
                                       <td classname="min-tablet"> {{ payment.recon_key }} </td>
                                       <td classname="min-tablet"> ${{ payment.check_amount | intcomma   }}</td>
