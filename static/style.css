@@ -82,6 +82,17 @@ td {
 	margin-top: 5px;
 }
 
+.modal-header {
+	position: fixed;
+    width: 100%;
+    z-index: 10;
+}
+
+.modal-body {
+	position: relative;
+	top: 60px;
+}
+
 /*.cash-post {
 	width: 750px !important;
 }
