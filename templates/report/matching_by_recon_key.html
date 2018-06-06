@@ -25,17 +25,9 @@
                                     Cash Posting {{ uploaded }}
                                 </span>
                             </div>
-                            <form action="{% url 'cash_post' %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-default pull-right" name="refresh" value="clear" id="" style="position: relative; right : 65px;">POST</button>
-                            </form>
-                            <form action="{% url 'calculate' %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-default pull-right" name="calculate" value="clear" id="" style="position: relative; right : 65px;">Calculate</button>
-                            </form>
                             <form action="{% url 'search_batch_no' %}" method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
-                                <div class="col-md-3 col-sm-4 col-xs-10 pull-right" style="position: relative; right : 65px;">
+                                <div class="col-md-3 col-sm-4 col-xs-10 pull-right" style="position: relative; right : 40px;">
                                     <div class="input-group select2-bootstrap-append">
                                         <select id="single-append-text" class="form-control select2-allow-clear" name="selected_cash_post_id">
                                             <option></option>
@@ -52,6 +44,14 @@
                                     </div>
                                 </div>
                             </form>
+                            <form action="{% url 'cash_post' %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-default pull-right green" name="refresh" value="clear" id="" style="position: relative; right : 33px;">POST</button>
+                            </form>
+                            <form action="{% url 'calculate' %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-default pull-right" name="calculate" value="clear" id="" style="position: relative; right : 40px;">Calculate</button>
+                            </form>
                         </div>
                         <div class="portlet-body">
                             <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_3">
@@ -59,8 +59,8 @@
                                     <tr>
                                         <td class="all"> cash_post_id </td>
                                         <td class="all"> recon_key </td>
-                                        <td class="min-tablet"> invoice_amount </td>
-                                        <td class="min-tablet"> payment_amount  </td>
+                                        <td class="min-laptop"> invoice_amount </td>
+                                        <td class="min-laptop"> payment_amount  </td>
                                         <td class="min-tablet"> difference  </td>
                                         <td class="none"> invoice </td>
                                         <td class="none"> payment </td>
@@ -73,8 +73,8 @@
                                       <tr>
                                         <td class="all"> {{ matching.cash_post_id }} </td>
                                         <td class="all"> {{ matching.recon_key }} </td>
-                                        <td class="min-tablet"> ${{ matching.invoice_amount  | intcomma  }} </td>
-                                        <td class="min-tablet"> ${{ matching.payment_amount  | intcomma  }}</td>
+                                        <td class="min-laptop"> ${{ matching.invoice_amount  | intcomma  }} </td>
+                                        <td class="min-laptop"> ${{ matching.payment_amount  | intcomma  }}</td>
                                         <td class="min-tablet"> ${{ matching.difference | intcomma   }}</td>
                                         <td class="none"> {{ matching.invoice }} </td>
                                         <td class="none"> {{ matching.payment }}</td>
@@ -87,7 +87,7 @@
 
                                                 <form action="{% url 'save_comment' %}" method="POST" enctype="multipart/form-data">
                                                     <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
                                                         <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-tasks font-red"></i> 
                                                         Cash Posting ID : {{ matching.cash_post_id }}</h4>
                                                     </div>
@@ -146,7 +146,7 @@
                                                                                     <div class="modal-dialog" role="document">
                                                                                         <div class="modal-content">
                                                                                             <div class="modal-header">
-                                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                                <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
                                                                                                 <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Invoice : {{ invoice.invoice_number }}</h4>
                                                                                             </div>
 
@@ -231,7 +231,7 @@
                                                                                       <div class="modal-dialog" role="document">
                                                                                           <div class="modal-content">
                                                                                               <div class="modal-header">
-                                                                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                                  <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
                                                                                                   <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> TimeCard Id : {{ timecard.time_card_id }}</h4>
                                                                                               </div>
                                                                                               <div class="modal-body">
@@ -324,7 +324,7 @@
                                                                                         <div class="modal-dialog" role="document">
                                                                                             <div class="modal-content">
                                                                                                   <div class="modal-header">
-                                                                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                                      <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
                                                                                                       <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> TimeCard Id: {{ timecard.time_card_id }}</h4>
                                                                                                   </div>
                                                                                                   <div class="modal-body">
@@ -423,7 +423,7 @@
                                                                                             <div class="modal-dialog" role="document">
                                                                                                 <div class="modal-content">
                                                                                                     <div class="modal-header">
-                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                                        <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
                                                                                                         <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Payment : {{ payment.payment_id }}</h4>
                                                                                                     </div>
                                                                                                     <div class="modal-body">
@@ -489,7 +489,7 @@
                                                                                             <div class="modal-dialog" role="document">
                                                                                                 <div class="modal-content">
                                                                                                     <div class="modal-header">
-                                                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                                        <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
                                                                                                         <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Payment : {{ payment.payment_id }}</h4>
                                                                                                     </div>
                                                                                                     <div class="modal-body">
@@ -524,8 +524,8 @@
                                                             </li>
                                                             <li class="list-group-item">
                                                                 <div class="portlet light" style="height: 54px;">
-                                                                    <span class="caption-subject font-green bold uppercase" style="margin-right: 60px; float: left;">Collection Status</span>
-                                                                    <div class="radio-group">
+                                                                    <div class="caption-subject font-green bold uppercase col-xs-12 col-sm-4" style="margin-right: 30px; float: left;">Collection Status</div>
+                                                                    <div class="radio-group col-xs-12 col-sm-7">
                                                                         <div class="radio">
                                                                             <label><input type="radio" name="collection_status" value="in appeal" {% ifequal matching.collection_status 'appeal' %} checked {% endifequal %} >In Appeal</label>
                                                                         </div>
