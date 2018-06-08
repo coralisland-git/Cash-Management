@@ -89,7 +89,7 @@ td {
 }
 
 .modal-detail {
-	position: relative;
+	position: relative !important;
 	top: 60px;
 }
 
@@ -101,6 +101,23 @@ td:first-child:before {
 	display: none !important;
 }
 
+
+.radio-group .btn {
+	font-size: 13px !important;
+	color : #999;
+	border-color : #eee;
+}
+
+.radio-group .active {
+	color : white !important;
+	background-color : #31c7d3 !important;
+	border : none
+}
+
+.media-body p{
+	margin-bottom: 5px;
+	width : 515px;
+}
 
 /*@media (max-width: 780px) {
 	.modal.left .modal-dialog,

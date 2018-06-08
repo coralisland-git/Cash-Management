@@ -27,12 +27,7 @@
                             {% csrf_token %}
                             <div class="col-md-3 col-sm-4 col-xs-10 pull-right">
                                 <div class="input-group select2-bootstrap-append">
-                                    <select id="single-append-text" class="form-control select2-allow-clear" name="kt_tc_batch_no">
-                                        <option></option>
-                                        {% for batch in kt_tc_batch_no_arr %}
-                                            <option value="{{ batch.batch_no}}">{{ batch.batch_no }}</option>
-                                        {% endfor %}
-                                    </select>
+                                    <input type="text" class="form-control" placeholder="Search" name="kt_tc_search_key" value="{{ kt_tc_search_key }}">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" type="submit">
                                             <span class="glyphicon glyphicon-search"></span>

@@ -464,6 +464,8 @@ class Payment(models.Model):
 	cash_post_id_memo = models.CharField(max_length=255, blank=True, null=True)
 
 
+
+
 class Cash_Post(models.Model):
 
 	cash_post_id = models.CharField(max_length=255, blank=True, null=True)
@@ -487,8 +489,19 @@ class Cash_Post(models.Model):
 	a_r_status = models.CharField(max_length=255, blank=True, null=True)
 
 	collection_status = models.CharField(max_length=255, blank=True, null=True)
+		
 
-	comment = models.CharField(max_length=255, blank=True, null=True)
+class Comment(models.Model):
+
+	recon_key = models.CharField(max_length=255, blank=True, null=True)
+
+	content = models.CharField(max_length=255, blank=True, null=True)
+
+	posted_timestamp = models.CharField(max_length=255, blank=True, null=True)
+
+	posted_by = models.CharField(max_length=255, blank=True, null=True)
+
+
 
 
 

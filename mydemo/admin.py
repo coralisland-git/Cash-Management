@@ -35,6 +35,10 @@ class Cash_PostAdmin(admin.ModelAdmin):
     list_display = ['cash_post_id', 'recon_key', 'invoice_amount', 'payment_amount', 'difference', 'posted_date']
     search_fields = ['cash_post_id', 'recon_key', 'invoice_amount', 'payment_amount', 'difference', 'posted_date']
 
+class Comment_Admin(admin.ModelAdmin):
+    list_display = ['recon_key', 'content', 'posted_timestamp', 'posted_by']
+    search_fields = ['recon_key', 'content', 'posted_timestamp', 'posted_by']
+
 
 admin.site.register(Account, AccountAdmin)
 
@@ -51,3 +55,5 @@ admin.site.register(ReconKeys_KT,ReconKeys_KTAdmin)
 admin.site.register(ReconKeys_HB,ReconKeys_HBAdmin)
 
 admin.site.register(Cash_Post,Cash_PostAdmin)
+
+admin.site.register(Comment, Comment_Admin)

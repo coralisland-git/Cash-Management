@@ -29,13 +29,7 @@
                                 {% csrf_token %}
                                 <div class="col-md-3 col-sm-4 col-xs-10 pull-right" style="position: relative; right : 40px;">
                                     <div class="input-group select2-bootstrap-append">
-                                        <select id="single-append-text" class="form-control select2-allow-clear" name="selected_cash_post_id">
-                                            <option></option>
-                                            <option value="ALL">ALL</option>
-                                            {% for batch in cash_post_batch_no_arr %}
-                                                <option value="{{ batch.cash_post_id}}">{{ batch.cash_post_id }}</option>
-                                            {% endfor %}
-                                        </select>
+                                        <input type="text" class="form-control" placeholder="Search" name="cash_post_search_key" value="{{ cash_post_search_key }}">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default" type="submit">
                                                 <span class="glyphicon glyphicon-search"></span>
@@ -44,14 +38,14 @@
                                     </div>
                                 </div>
                             </form>
-                            <form action="{% url 'cash_post' %}" method="POST">
+                            <form action="{% url 'calculate' %}" method="POST">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-default pull-right green" name="refresh" value="clear" id="" style="position: relative; right : 33px;">POST</button>
                             </form>
-                            <form action="{% url 'calculate' %}" method="POST">
+                            <!-- <form action="{% url 'calculate' %}" method="POST">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-default pull-right" name="calculate" value="clear" id="" style="position: relative; right : 40px;">Calculate</button>
-                            </form>
+                            </form> -->
                         </div>
                         <div class="portlet-body">
                             <table class="table table-striped table-bordered table-hover dt-responsive data_table" width="100%" id="sample_3">
@@ -84,57 +78,140 @@
                                        <div class="modal left fade cash-post" id="modal{{ matching.recon_key }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
                                         <div class="modal-dialog cash-post" role="document">
                                             <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
+                                                    <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-tasks font-red"></i> 
+                                                    Cash Posting ID : {{ matching.cash_post_id }}</h4>
+                                                </div>
 
-                                                <form action="{% url 'save_comment' %}" method="POST" enctype="multipart/form-data">
-                                                    <div class="modal-header">
-                                                        <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
-                                                        <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-tasks font-red"></i> 
-                                                        Cash Posting ID : {{ matching.cash_post_id }}</h4>
-                                                    </div>
-
-                                                    <div class="modal-body  modal-detail">
-                                                       <ul class="list-group">
-                                                            <li class="list-group-item">
-                                                                <div class="portlet light ">
-                                                                    <span class="caption-subject font-green bold uppercase" style="margin-right: 30px;">Recon Keys</span> {{ matching.recon_key }}
+                                                <div class="modal-body  modal-detail">
+                                                   <ul class="list-group">
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <span class="caption-subject font-green bold uppercase" style="margin-right: 30px;">Recon Keys</span> {{ matching.recon_key }}
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption-subject font-green bold uppercase">
+                                                                        Invoice Data
+                                                                    </div>
                                                                 </div>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                <div class="portlet light ">
-                                                                    <div class="portlet-title">
-                                                                        <div class="caption-subject font-green bold uppercase">
-                                                                            Invoice Data
+                                                                <div class="data-header">
+                                                                        <div class="property-name col-xs-4">
+                                                                            Batch Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-3">
+                                                                            Invoice Number
+                                                                        </div>
+                                                                        <div class="property-name col-xs-5">
+                                                                            Total Bill Amount
                                                                         </div>
                                                                     </div>
-                                                                    <div class="data-header">
-                                                                            <div class="property-name col-xs-4">
-                                                                                Batch Id
+                                                                <div class="portlet-body">
+                                                                    <div class="mt-comments">
+                                                                        {% for invoice in matching.child_invoice %}
+                                                                            <div class="mt-comment" style="padding : 0px;">
+                                                                                <div class="mt-comment-body" style="padding-left: 0px;">
+                                                                                    <div class="mt-comment-text">
+                                                                                        <div class="col-xs-4">
+                                                                                            {{ invoice.batch_no}}
+                                                                                        </div>
+                                                                                        <div class="col-xs-3">
+                                                                                            {{ invoice.invoice_number}}
+                                                                                        </div>
+                                                                                        <div class="col-xs-4">
+                                                                                            ${{ invoice.total_bill_amount}}
+                                                                                        </div>
+                                                                                        <div class="mt-comment-details col-xs-1">
+                                                                                            <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px">
+                                                                                                <li data-target="#modal-detail{{ invoice.invoice_number }}" data-toggle="modal">
+                                                                                                    <a href="#">View</a>
+                                                                                                </li>
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
-                                                                            <div class="property-name col-xs-3">
-                                                                                Invoice Number
+                                                                            <div class="modal right fade" id="modal-detail{{ invoice.invoice_number }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                                                <div class="modal-dialog" role="document">
+                                                                                    <div class="modal-content">
+                                                                                        <div class="modal-header">
+                                                                                            <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
+                                                                                            <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Invoice : {{ invoice.invoice_number }}</h4>
+                                                                                        </div>
+
+                                                                                        <div class="modal-body  modal-detail">
+                                                                                           <ul class="list-group">
+                                                                                                <li class="list-group-item"> <span class="property-name"> invoice_date : </span>  {{ invoice.invoice_date }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> total_bill_amount : </span>  ${{ invoice.total_bill_amount }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> company : </span> {{ invoice.company }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> branch_id : </span>  {{ invoice.branch_id }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> employee_short_name : </span>  {{ invoice.employee_short_name }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> cust_alph : </span>  {{ invoice.cust_alph }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> customer_name : </span>{{ invoice.customer_name }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> straight_time_hours : </span> {{ invoice.straight_time_hours }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> hourly_bill_rate : </span> {{ invoice.hourly_bill_rate }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> overtime_hours : </span>{{ invoice.overtime_hours }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> sp_bill : </span> {{ invoice.sp_bill }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> week_ending_date : </span> {{ invoice.week_ending_date }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> workers_comp_code : </span>{{ invoice.workers_comp_code }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> job_description : </span>  {{ invoice.job_description }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> customer_po : </span> {{ invoice.customer_po }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> b_w_location_code : </span>  {{ invoice.b_w_location_code }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> address_1 : </span> {{ invoice.address_1 }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> spcl_paybill_de_code : </span>{{ invoice.spcl_paybill_de_code }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> special_paybill_qty : </span>{{ invoice.special_paybill_qty }} </li> 
+                                                                                                <li class="list-group-item"> <span class="property-name"> special_bill_rate : </span> {{ invoice.special_bill_rate }} </li>
+                                                                                                <li class="list-group-item"> <span class="property-name"> invoice_reference : </span>  {{ invoice.invoice_reference }} </li> 
+                                                                                            </ul>
+                                                                                        </div>
+                                                                                    </div><!-- modal-content -->
+                                                                                </div>
                                                                             </div>
-                                                                            <div class="property-name col-xs-5">
-                                                                                Total Bill Amount
-                                                                            </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption-subject font-green bold uppercase">
+                                                                        TimeCard Data
+                                                                    </div>
+                                                                </div>
+                                                                <div class="data-header">
+                                                                        <div class="property-name col-xs-4">
+                                                                            Batch Id
                                                                         </div>
-                                                                    <div class="portlet-body">
-                                                                        <div class="mt-comments">
-                                                                            {% for invoice in matching.child_invoice %}
-                                                                                <div class="mt-comment" style="padding : 0px;">
+                                                                        <div class="property-name col-xs-3">
+                                                                            TimeCard Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-4">
+                                                                            Date
+                                                                        </div>
+                                                                    </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="mt-comments">
+                                                                        {% for invoice in matching.child_invoice %}
+                                                                            {% for timecard in invoice.timecard_kt %}
+                                                                                <div class="mt-comment" data-target="#modal-detail{{ timecard.time_card_id }}" data-toggle="modal" style="padding : 0px;">
                                                                                     <div class="mt-comment-body" style="padding-left: 0px;">
                                                                                         <div class="mt-comment-text">
                                                                                             <div class="col-xs-4">
-                                                                                                {{ invoice.batch_no}}
+                                                                                                {{ timecard.batch_no}}
                                                                                             </div>
                                                                                             <div class="col-xs-3">
-                                                                                                {{ invoice.invoice_number}}
+                                                                                                {{ timecard.time_card_id}}
                                                                                             </div>
                                                                                             <div class="col-xs-4">
-                                                                                                ${{ invoice.total_bill_amount}}
+                                                                                                {{ timecard.visit_date}}
                                                                                             </div>
                                                                                             <div class="mt-comment-details col-xs-1">
                                                                                                 <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px">
-                                                                                                    <li data-target="#modal-detail{{ invoice.invoice_number }}" data-toggle="modal">
+                                                                                                    <li>
                                                                                                         <a href="#">View</a>
                                                                                                     </li>
                                                                                                 </ul>
@@ -142,424 +219,366 @@
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="modal right fade" id="modal-detail{{ invoice.invoice_number }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
-                                                                                    <div class="modal-dialog" role="document">
-                                                                                        <div class="modal-content">
-                                                                                            <div class="modal-header">
-                                                                                                <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
-                                                                                                <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Invoice : {{ invoice.invoice_number }}</h4>
+                                                                                <div class="modal right fade" id="modal-detail{{ timecard.time_card_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                                                  <div class="modal-dialog" role="document">
+                                                                                      <div class="modal-content">
+                                                                                          <div class="modal-header">
+                                                                                              <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
+                                                                                              <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> TimeCard Id : {{ timecard.time_card_id }}</h4>
+                                                                                          </div>
+                                                                                          <div class="modal-body  modal-detail">
+                                                                                              <ul class="list-group">
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Authorization :</span> {{ timecard.authorization }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Bill Mode :</span> {{ timecard.bill_mode }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name">  Bill Rate :</span> {{ timecard.bill_rate }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Billable :</span> {{ timecard.billable }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Case Manager First Name :</span> {{ timecard.case_manager_first_name }}  </li> 
+                                                                                                  <li class="list-group-item">  <span class="property-name"> Case Management Last Name :</span> {{ timecard.case_manager_last_name }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Checkin Time : </span> {{ timecard.checkin_time }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Checkout Time : </span> {{ timecard.checkout_time }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Client First Name : </span> {{ timecard.client_first_name }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> CLient Last Name : </span> {{ timecard.client_last_name }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> client_dob : </span> {{ timecard.client_dob }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> clinician_first_name  : </span> {{ timecard.clinician_first_name }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Clincian Last Name : </span> {{ timecard.clinician_last_name }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Clincian Id : </span> {{ timecard.clinician_id }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Clincian Payroll Group : </span> {{ timecard.clinician_payroll_group }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Clincian Payroll Id : </span> {{ timecard.clinician_payroll_id }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Clincian Payroll Rule : </span> {{ timecard.clinician_payroll_rule }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Clincian Skills : </span> {{ timecard.clinician_skills }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Clincian SSN : </span> {{ timecard.clinician_ssn }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Cosign Staff First Name : </span> {{ timecard.cosign_staff_first_name }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Cosign Staff Last Name : </span> {{ timecard.cosign_staff_last_name }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Edited Hours : </span> {{ timecard.edited_hours }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Episode Duration : </span> {{ timecard.episode_duration }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Episode Number : </span> {{ timecard.episode_number }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Episode Start Date : </span> {{ timecard.episode_start_date }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Episode End Date : </span> {{ timecard.episode_end_date }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Has Split Schedules : </span> {{ timecard.has_split_schedules }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Hcpcs Code : </span> {{ timecard.hcpcs_code }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Location : </span> {{ timecard.location }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Marital Status : </span> {{ timecard.marital_status }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Medicaid : </span> {{ timecard.medicaid }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Patient Id : </span> {{ timecard.patient_id }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Payroll : </span> {{ timecard.payroll }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Payroll Mode : </span> {{ timecard.payroll_mode }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Payroll Rate : </span> {{ timecard.payroll_rate }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Payrolled : </span> {{ timecard.payrolled }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Schedule Status : </span> {{ timecard.schedule_status }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Units : </span> {{ timecard.units }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Visit Date : </span> {{ timecard.visit_date }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Client Lob : </span> {{ timecard.client_lob }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Insurance Id : </span> {{ timecard.insurance_id }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Payer : </span> {{ timecard.payer }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Clinician Discipline : </span> {{ timecard.clinician_discipline }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Service : </span> {{ timecard.service }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Employment Type : </span> {{ timecard.employment_type }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Invoice No : </span> {{ timecard.invoice_no }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Miles : </span> {{ timecard.miles }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Visit Id : </span> {{ timecard.visit_id }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Payroll Batch Id : </span> {{ timecard.payroll_batch_id }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Authorization : </span> {{ timecard.authorization }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Bill Mode : </span> {{ timecard.bill_mode }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Shift : </span> {{ timecard.shift }}  </li> 
+                                                                                                  <li class="list-group-item"> <span class="property-name"> Uid : </span> {{ timecard.uid }}  </li> 
+                                                                                              </ul>
+                                                                                          </div>
+                                                                                      </div>
+                                                                                  </div>
+                                                                               </div>
+                                                                            {% endfor%}
+                                                                        {% endfor %}
+                                                                        {% for invoice in matching.child_invoice %}
+                                                                            {% for timecard in invoice.timecard_hb %}
+                                                                                <div class="mt-comment" data-target="#modal-detail{{ timecard.time_card_id }}" data-toggle="modal" style="padding : 0px;">
+                                                                                    <div class="mt-comment-body" style="padding-left: 0px;">
+                                                                                        <div class="mt-comment-text">
+                                                                                            <div class="col-xs-4">
+                                                                                                {{ timecard.batch_no}}
                                                                                             </div>
-
-                                                                                            <div class="modal-body  modal-detail">
-                                                                                               <ul class="list-group">
-                                                                                                    <li class="list-group-item"> <span class="property-name"> invoice_date : </span>  {{ invoice.invoice_date }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> total_bill_amount : </span>  ${{ invoice.total_bill_amount }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> company : </span> {{ invoice.company }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> branch_id : </span>  {{ invoice.branch_id }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> employee_short_name : </span>  {{ invoice.employee_short_name }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> cust_alph : </span>  {{ invoice.cust_alph }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> customer_name : </span>{{ invoice.customer_name }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> straight_time_hours : </span> {{ invoice.straight_time_hours }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> hourly_bill_rate : </span> {{ invoice.hourly_bill_rate }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> overtime_hours : </span>{{ invoice.overtime_hours }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> sp_bill : </span> {{ invoice.sp_bill }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> week_ending_date : </span> {{ invoice.week_ending_date }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> workers_comp_code : </span>{{ invoice.workers_comp_code }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> job_description : </span>  {{ invoice.job_description }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> customer_po : </span> {{ invoice.customer_po }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> b_w_location_code : </span>  {{ invoice.b_w_location_code }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> address_1 : </span> {{ invoice.address_1 }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> spcl_paybill_de_code : </span>{{ invoice.spcl_paybill_de_code }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> special_paybill_qty : </span>{{ invoice.special_paybill_qty }} </li> 
-                                                                                                    <li class="list-group-item"> <span class="property-name"> special_bill_rate : </span> {{ invoice.special_bill_rate }} </li>
-                                                                                                    <li class="list-group-item"> <span class="property-name"> invoice_reference : </span>  {{ invoice.invoice_reference }} </li> 
+                                                                                            <div class="col-xs-3">
+                                                                                                {{ timecard.time_card_id}}
+                                                                                            </div>
+                                                                                            <div class="col-xs-4">
+                                                                                                {{ timecard.service_date}}
+                                                                                            </div>
+                                                                                            <div class="mt-comment-details col-xs-1">
+                                                                                                <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px">
+                                                                                                    <li>
+                                                                                                        <a href="#">View</a>
+                                                                                                    </li>
                                                                                                 </ul>
                                                                                             </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="modal right fade" id="modal-detail{{ timecard.time_card_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                                                    <div class="modal-dialog" role="document">
+                                                                                        <div class="modal-content">
+                                                                                              <div class="modal-header">
+                                                                                                  <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
+                                                                                                  <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> TimeCard Id: {{ timecard.time_card_id }}</h4>
+                                                                                              </div>
+                                                                                              <div class="modal-body  modal-detail">
+                                                                                                 <ul class="list-group">
+                                                                                                    <li class="list-group-item"> <span class="property-name"> Batch Id : </span>  {{ timecard.batch_no }} </li> 
+                                                                                                    <li class="list-group-item"> <span class="property-name"> Batch  : </span>  {{ timecard.batch  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Worker Name  : </span> {{ timecard.worker_name  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Primary Job Desc : </span> {{ timecard.primary_job_desc  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Standard Pay Method : </span> {{ timecard.standard_pay_method  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Payroll Branch  : </span> {{ timecard.payroll_branch  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Client Branch  : </span> {{ timecard.client_branch  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Client Name  : </span> {{ timecard.client_name  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Client State  : </span> {{ timecard.client_state  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Servic Date  : </span> {{ timecard.service_date  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Shift  : </span> {{ timecard.shift  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Drive Start Time  : </span> {{ timecard.drive_start_time  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> In Home NVA Start Time  : </span> {{ timecard.in_home_nva_start_time  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> In Home NVA End Time  : </span> {{ timecard.in_home_nva_end_time  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Service Type  : </span> {{ timecard.service_type  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Rate  : </span> {{ timecard.rate  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Service Code Rate Type : </span> {{ timecard.service_code_rate_type  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Total Time  : </span> {{ timecard.total_time  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> QTY  : </span> {{ timecard.qty  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Payroll Trnsmittal Group  : </span> {{ timecard.payroll_transmittal_group  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Prod Points  : </span> {{ timecard.prod_points  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Travel AM  : </span> {{ timecard.travel_am  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Travel TF : </span> {{ timecard.travel_tf  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Travel CV  : </span> {{ timecard.travel_cv  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Mileage Payment Method  : </span> {{ timecard.mileage_payment_method  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Service Payable  : </span> {{ timecard.service_payable  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Service Payment Method  : </span> {{ timecard.service_payment_method  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Worker Id  : </span> {{ timecard.worker_id  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Full Time  : </span> {{ timecard.full_time  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Default Mileage Payment Method  : </span> {{ timecard.default_milleage_payment_method  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Worker Class : </span> {{ timecard.worker_class  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Worker Category  : </span> {{ timecard.worker_category  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Payroll Department  : </span> {{ timecard.payroll_department  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Payroll Number  : </span> {{ timecard.payroll_number  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Expected Prod Points  : </span> {{ timecard.expected_prod_points  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Team  : </span> {{ timecard.team  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Municipality Code  : </span> {{ timecard.municipality_code  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Date of Hire  : </span> {{ timecard.date_of_hire  }} </li>
+                                                                                                    <li class="list-group-item">  <span class="property-name"> Uid  : </span> {{ timecard.uid  }} </li> 
+                                                                                                  </ul>
+                                                                                              </div>
                                                                                         </div><!-- modal-content -->
                                                                                     </div>
                                                                                 </div>
-                                                                            {% endfor %}
-                                                                        </div>
+                                                                            {% endfor%}
+                                                                        {% endfor %}
                                                                     </div>
                                                                 </div>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                <div class="portlet light ">
-                                                                    <div class="portlet-title">
-                                                                        <div class="caption-subject font-green bold uppercase">
-                                                                            TimeCard Data
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption-subject font-green bold uppercase">
+                                                                        Payment Data
+                                                                    </div>
+                                                                </div>
+                                                                <div class="data-header">
+                                                                        <div class="property-name col-xs-4">
+                                                                            Batch Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-3">
+                                                                            Payment Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-5">
+                                                                            Check Amount
                                                                         </div>
                                                                     </div>
-                                                                    <div class="data-header">
-                                                                            <div class="property-name col-xs-4">
-                                                                                Batch Id
-                                                                            </div>
-                                                                            <div class="property-name col-xs-3">
-                                                                                TimeCard Id
-                                                                            </div>
-                                                                            <div class="property-name col-xs-4">
-                                                                                Date
-                                                                            </div>
-                                                                        </div>
-                                                                    <div class="portlet-body">
-                                                                        <div class="mt-comments">
-                                                                            {% for invoice in matching.child_invoice %}
-                                                                                {% for timecard in invoice.timecard_kt %}
-                                                                                    <div class="mt-comment" data-target="#modal-detail{{ timecard.time_card_id }}" data-toggle="modal" style="padding : 0px;">
-                                                                                        <div class="mt-comment-body" style="padding-left: 0px;">
-                                                                                            <div class="mt-comment-text">
-                                                                                                <div class="col-xs-4">
-                                                                                                    {{ timecard.batch_no}}
-                                                                                                </div>
-                                                                                                <div class="col-xs-3">
-                                                                                                    {{ timecard.time_card_id}}
-                                                                                                </div>
-                                                                                                <div class="col-xs-4">
-                                                                                                    {{ timecard.visit_date}}
-                                                                                                </div>
-                                                                                                <div class="mt-comment-details col-xs-1">
-                                                                                                    <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px">
-                                                                                                        <li>
-                                                                                                            <a href="#">View</a>
-                                                                                                        </li>
-                                                                                                    </ul>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="mt-comments">
+                                                                        {% for payment in matching.child_ori_payment %}
+                                                                        <div class="mt-comment" style="padding : 0px;">
+                                                                            <div class="mt-comment-body" style="padding-left: 0px;">
+                                                                                <div class="mt-comment-text">
+                                                                                    <div class="col-xs-4">
+                                                                                        {{ payment.batch_no}}
                                                                                     </div>
-                                                                                    <div class="modal right fade" id="modal-detail{{ timecard.time_card_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
-                                                                                      <div class="modal-dialog" role="document">
-                                                                                          <div class="modal-content">
-                                                                                              <div class="modal-header">
-                                                                                                  <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
-                                                                                                  <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> TimeCard Id : {{ timecard.time_card_id }}</h4>
-                                                                                              </div>
-                                                                                              <div class="modal-body  modal-detail">
-                                                                                                  <ul class="list-group">
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Authorization :</span> {{ timecard.authorization }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Bill Mode :</span> {{ timecard.bill_mode }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name">  Bill Rate :</span> {{ timecard.bill_rate }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Billable :</span> {{ timecard.billable }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Case Manager First Name :</span> {{ timecard.case_manager_first_name }}  </li> 
-                                                                                                      <li class="list-group-item">  <span class="property-name"> Case Management Last Name :</span> {{ timecard.case_manager_last_name }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Checkin Time : </span> {{ timecard.checkin_time }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Checkout Time : </span> {{ timecard.checkout_time }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Client First Name : </span> {{ timecard.client_first_name }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> CLient Last Name : </span> {{ timecard.client_last_name }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> client_dob : </span> {{ timecard.client_dob }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> clinician_first_name  : </span> {{ timecard.clinician_first_name }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Clincian Last Name : </span> {{ timecard.clinician_last_name }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Clincian Id : </span> {{ timecard.clinician_id }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Clincian Payroll Group : </span> {{ timecard.clinician_payroll_group }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Clincian Payroll Id : </span> {{ timecard.clinician_payroll_id }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Clincian Payroll Rule : </span> {{ timecard.clinician_payroll_rule }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Clincian Skills : </span> {{ timecard.clinician_skills }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Clincian SSN : </span> {{ timecard.clinician_ssn }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Cosign Staff First Name : </span> {{ timecard.cosign_staff_first_name }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Cosign Staff Last Name : </span> {{ timecard.cosign_staff_last_name }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Edited Hours : </span> {{ timecard.edited_hours }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Episode Duration : </span> {{ timecard.episode_duration }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Episode Number : </span> {{ timecard.episode_number }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Episode Start Date : </span> {{ timecard.episode_start_date }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Episode End Date : </span> {{ timecard.episode_end_date }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Has Split Schedules : </span> {{ timecard.has_split_schedules }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Hcpcs Code : </span> {{ timecard.hcpcs_code }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Location : </span> {{ timecard.location }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Marital Status : </span> {{ timecard.marital_status }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Medicaid : </span> {{ timecard.medicaid }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Patient Id : </span> {{ timecard.patient_id }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Payroll : </span> {{ timecard.payroll }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Payroll Mode : </span> {{ timecard.payroll_mode }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Payroll Rate : </span> {{ timecard.payroll_rate }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Payrolled : </span> {{ timecard.payrolled }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Schedule Status : </span> {{ timecard.schedule_status }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Units : </span> {{ timecard.units }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Visit Date : </span> {{ timecard.visit_date }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Client Lob : </span> {{ timecard.client_lob }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Insurance Id : </span> {{ timecard.insurance_id }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Payer : </span> {{ timecard.payer }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Clinician Discipline : </span> {{ timecard.clinician_discipline }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Service : </span> {{ timecard.service }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Employment Type : </span> {{ timecard.employment_type }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Invoice No : </span> {{ timecard.invoice_no }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Miles : </span> {{ timecard.miles }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Visit Id : </span> {{ timecard.visit_id }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Payroll Batch Id : </span> {{ timecard.payroll_batch_id }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Authorization : </span> {{ timecard.authorization }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Bill Mode : </span> {{ timecard.bill_mode }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Shift : </span> {{ timecard.shift }}  </li> 
-                                                                                                      <li class="list-group-item"> <span class="property-name"> Uid : </span> {{ timecard.uid }}  </li> 
-                                                                                                  </ul>
-                                                                                              </div>
-                                                                                          </div>
-                                                                                      </div>
-                                                                                   </div>
-                                                                                {% endfor%}
-                                                                            {% endfor %}
-                                                                            {% for invoice in matching.child_invoice %}
-                                                                                {% for timecard in invoice.timecard_hb %}
-                                                                                    <div class="mt-comment" data-target="#modal-detail{{ timecard.time_card_id }}" data-toggle="modal" style="padding : 0px;">
-                                                                                        <div class="mt-comment-body" style="padding-left: 0px;">
-                                                                                            <div class="mt-comment-text">
-                                                                                                <div class="col-xs-4">
-                                                                                                    {{ timecard.batch_no}}
-                                                                                                </div>
-                                                                                                <div class="col-xs-3">
-                                                                                                    {{ timecard.time_card_id}}
-                                                                                                </div>
-                                                                                                <div class="col-xs-4">
-                                                                                                    {{ timecard.service_date}}
-                                                                                                </div>
-                                                                                                <div class="mt-comment-details col-xs-1">
-                                                                                                    <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px">
-                                                                                                        <li>
-                                                                                                            <a href="#">View</a>
-                                                                                                        </li>
-                                                                                                    </ul>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div class="col-xs-3">
+                                                                                        {{ payment.payment_id}}
                                                                                     </div>
-                                                                                    <div class="modal right fade" id="modal-detail{{ timecard.time_card_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                                                    <div class="col-xs-4">
+                                                                                        ${{ payment.check_amount}}
+                                                                                    </div>
+                                                                                    <div class="mt-comment-details col-xs-1">
+                                                                                        <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px;">
+                                                                                            <li data-target="#modal-detail{{ payment.payment_id }}" data-toggle="modal">
+                                                                                                <a href="#">View</a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                    <div class="modal right fade" id="modal-detail{{ payment.payment_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
                                                                                         <div class="modal-dialog" role="document">
                                                                                             <div class="modal-content">
-                                                                                                  <div class="modal-header">
-                                                                                                      <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
-                                                                                                      <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> TimeCard Id: {{ timecard.time_card_id }}</h4>
-                                                                                                  </div>
-                                                                                                  <div class="modal-body  modal-detail">
-                                                                                                     <ul class="list-group">
-                                                                                                        <li class="list-group-item"> <span class="property-name"> Batch Id : </span>  {{ timecard.batch_no }} </li> 
-                                                                                                        <li class="list-group-item"> <span class="property-name"> Batch  : </span>  {{ timecard.batch  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Worker Name  : </span> {{ timecard.worker_name  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Primary Job Desc : </span> {{ timecard.primary_job_desc  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Standard Pay Method : </span> {{ timecard.standard_pay_method  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Payroll Branch  : </span> {{ timecard.payroll_branch  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Client Branch  : </span> {{ timecard.client_branch  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Client Name  : </span> {{ timecard.client_name  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Client State  : </span> {{ timecard.client_state  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Servic Date  : </span> {{ timecard.service_date  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Shift  : </span> {{ timecard.shift  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Drive Start Time  : </span> {{ timecard.drive_start_time  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> In Home NVA Start Time  : </span> {{ timecard.in_home_nva_start_time  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> In Home NVA End Time  : </span> {{ timecard.in_home_nva_end_time  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Service Type  : </span> {{ timecard.service_type  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Rate  : </span> {{ timecard.rate  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Service Code Rate Type : </span> {{ timecard.service_code_rate_type  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Total Time  : </span> {{ timecard.total_time  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> QTY  : </span> {{ timecard.qty  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Payroll Trnsmittal Group  : </span> {{ timecard.payroll_transmittal_group  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Prod Points  : </span> {{ timecard.prod_points  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Travel AM  : </span> {{ timecard.travel_am  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Travel TF : </span> {{ timecard.travel_tf  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Travel CV  : </span> {{ timecard.travel_cv  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Mileage Payment Method  : </span> {{ timecard.mileage_payment_method  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Service Payable  : </span> {{ timecard.service_payable  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Service Payment Method  : </span> {{ timecard.service_payment_method  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Worker Id  : </span> {{ timecard.worker_id  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Full Time  : </span> {{ timecard.full_time  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Default Mileage Payment Method  : </span> {{ timecard.default_milleage_payment_method  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Worker Class : </span> {{ timecard.worker_class  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Worker Category  : </span> {{ timecard.worker_category  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Payroll Department  : </span> {{ timecard.payroll_department  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Payroll Number  : </span> {{ timecard.payroll_number  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Expected Prod Points  : </span> {{ timecard.expected_prod_points  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Team  : </span> {{ timecard.team  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Municipality Code  : </span> {{ timecard.municipality_code  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Date of Hire  : </span> {{ timecard.date_of_hire  }} </li>
-                                                                                                        <li class="list-group-item">  <span class="property-name"> Uid  : </span> {{ timecard.uid  }} </li> 
-                                                                                                      </ul>
-                                                                                                  </div>
-                                                                                            </div><!-- modal-content -->
-                                                                                        </div>
-                                                                                    </div>
-                                                                                {% endfor%}
-                                                                            {% endfor %}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                <div class="portlet light ">
-                                                                    <div class="portlet-title">
-                                                                        <div class="caption-subject font-green bold uppercase">
-                                                                            Payment Data
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="data-header">
-                                                                            <div class="property-name col-xs-4">
-                                                                                Batch Id
-                                                                            </div>
-                                                                            <div class="property-name col-xs-3">
-                                                                                Payment Id
-                                                                            </div>
-                                                                            <div class="property-name col-xs-5">
-                                                                                Check Amount
-                                                                            </div>
-                                                                        </div>
-                                                                    <div class="portlet-body">
-                                                                        <div class="mt-comments">
-                                                                            {% for payment in matching.child_ori_payment %}
-                                                                            <div class="mt-comment" style="padding : 0px;">
-                                                                                <div class="mt-comment-body" style="padding-left: 0px;">
-                                                                                    <div class="mt-comment-text">
-                                                                                        <div class="col-xs-4">
-                                                                                            {{ payment.batch_no}}
-                                                                                        </div>
-                                                                                        <div class="col-xs-3">
-                                                                                            {{ payment.payment_id}}
-                                                                                        </div>
-                                                                                        <div class="col-xs-4">
-                                                                                            ${{ payment.check_amount}}
-                                                                                        </div>
-                                                                                        <div class="mt-comment-details col-xs-1">
-                                                                                            <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px;">
-                                                                                                <li data-target="#modal-detail{{ payment.payment_id }}" data-toggle="modal">
-                                                                                                    <a href="#">View</a>
-                                                                                                </li>
-                                                                                            </ul>
-                                                                                        </div>
-                                                                                        <div class="modal right fade" id="modal-detail{{ payment.payment_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
-                                                                                            <div class="modal-dialog" role="document">
-                                                                                                <div class="modal-content">
-                                                                                                    <div class="modal-header">
-                                                                                                        <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
-                                                                                                        <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Payment : {{ payment.payment_id }}</h4>
-                                                                                                    </div>
-                                                                                                    <div class="modal-body  modal-detail">
-                                                                                                       <ul class="list-group">
-                                                                                                            <li class="list-group-item"> <span class="property-name"> Bacth Id : </span>  {{ payment.batch_no }} </li> 
-                                                                                                            <li class="list-group-item"> <span class="property-name"> Payment Check : </span>  {{ payment.check }} </li> 
-                                                                                                            <li class="list-group-item"> <span class="property-name"> Recon Key : </span>  {{ payment.recon_key }} </li> 
-                                                                                                            <li class="list-group-item"> <span class="property-name"> Payment Check Amount : </span>  ${{ payment.check_amount }} </li> 
-                                                                                                        </ul>
-                                                                                                    </div>
+                                                                                                <div class="modal-header">
+                                                                                                    <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
+                                                                                                    <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Payment : {{ payment.payment_id }}</h4>
+                                                                                                </div>
+                                                                                                <div class="modal-body  modal-detail">
+                                                                                                   <ul class="list-group">
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Bacth Id : </span>  {{ payment.batch_no }} </li> 
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Payment Check : </span>  {{ payment.check }} </li> 
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Recon Key : </span>  {{ payment.recon_key }} </li> 
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Payment Check Amount : </span>  ${{ payment.check_amount }} </li> 
+                                                                                                    </ul>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            {% endfor %}
                                                                         </div>
+                                                                        {% endfor %}
                                                                     </div>
                                                                 </div>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                <div class="portlet light ">
-                                                                    <div class="portlet-title">
-                                                                        <div class="caption-subject font-green bold uppercase">
-                                                                            Payment Imports
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light ">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption-subject font-green bold uppercase">
+                                                                        Payment Imports
+                                                                    </div>
+                                                                </div>
+                                                                <div class="data-header">
+                                                                        <div class="property-name col-xs-4">
+                                                                            Batch Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-3">
+                                                                            Payment Id
+                                                                        </div>
+                                                                        <div class="property-name col-xs-5">
+                                                                            Check Amount
                                                                         </div>
                                                                     </div>
-                                                                    <div class="data-header">
-                                                                            <div class="property-name col-xs-4">
-                                                                                Batch Id
-                                                                            </div>
-                                                                            <div class="property-name col-xs-3">
-                                                                                Payment Id
-                                                                            </div>
-                                                                            <div class="property-name col-xs-5">
-                                                                                Check Amount
-                                                                            </div>
-                                                                        </div>
-                                                                    <div class="portlet-body">
-                                                                        <div class="mt-comments">
-                                                                            {% for payment in matching.child_payment %}
-                                                                            <div class="mt-comment" style="padding : 0px;">
-                                                                                <div class="mt-comment-body" style="padding-left: 0px;">
-                                                                                    <div class="mt-comment-text">
-                                                                                        <div class="col-xs-4">
-                                                                                            {{ payment.batch_no}}
-                                                                                        </div>
-                                                                                        <div class="col-xs-3">
-                                                                                            {{ payment.payment_id}}
-                                                                                        </div>
-                                                                                        <div class="col-xs-4">
-                                                                                            ${{ payment.check_amount}}
-                                                                                        </div>
-                                                                                        <div class="mt-comment-details col-xs-1">
-                                                                                            <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px;">
-                                                                                                <li data-target="#modal-detail-ori{{ payment.payment_id }}" data-toggle="modal">
-                                                                                                    <a href="#">View</a>
-                                                                                                </li>
-                                                                                            </ul>
-                                                                                        </div>
-                                                                                        <div class="modal right fade" id="modal-detail-ori{{ payment.payment_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
-                                                                                            <div class="modal-dialog" role="document">
-                                                                                                <div class="modal-content">
-                                                                                                    <div class="modal-header">
-                                                                                                        <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
-                                                                                                        <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Payment : {{ payment.payment_id }}</h4>
-                                                                                                    </div>
-                                                                                                    <div class="modal-body  modal-detail">
-                                                                                                       <ul class="list-group">
-                                                                                                            <li class="list-group-item"> <span class="property-name"> Bacth Id : </span>  {{ payment.batch_no }} </li> 
-                                                                                                            <li class="list-group-item"> <span class="property-name"> Payment Check : </span>  {{ payment.check }} </li> 
-                                                                                                            <li class="list-group-item"> <span class="property-name"> Recon Key : </span>  {{ payment.recon_key }} </li> 
-                                                                                                            <li class="list-group-item"> <span class="property-name"> Payment Check Amount : </span>  ${{ payment.check_amount }} </li> 
-                                                                                                        </ul>
-                                                                                                    </div>
+                                                                <div class="portlet-body">
+                                                                    <div class="mt-comments">
+                                                                        {% for payment in matching.child_payment %}
+                                                                        <div class="mt-comment" style="padding : 0px;">
+                                                                            <div class="mt-comment-body" style="padding-left: 0px;">
+                                                                                <div class="mt-comment-text">
+                                                                                    <div class="col-xs-4">
+                                                                                        {{ payment.batch_no}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-3">
+                                                                                        {{ payment.payment_id}}
+                                                                                    </div>
+                                                                                    <div class="col-xs-4">
+                                                                                        ${{ payment.check_amount}}
+                                                                                    </div>
+                                                                                    <div class="mt-comment-details col-xs-1">
+                                                                                        <ul class="mt-comment-actions" style="top: -10px; position: relative; height: 10px;">
+                                                                                            <li data-target="#modal-detail-ori{{ payment.payment_id }}" data-toggle="modal">
+                                                                                                <a href="#">View</a>
+                                                                                            </li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                    <div class="modal right fade" id="modal-detail-ori{{ payment.payment_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                                                                                        <div class="modal-dialog" role="document">
+                                                                                            <div class="modal-content">
+                                                                                                <div class="modal-header">
+                                                                                                    <a type="button" class="exit_modal pull-right" data-dismiss="modal" aria-label="Close"><i class="fa fa-remove"></i></a>
+                                                                                                    <h4 class="modal-title font-red bold uppercase" id="myModalLabel2"><i class="fa fa-life-ring font-red"></i> Payment : {{ payment.payment_id }}</h4>
+                                                                                                </div>
+                                                                                                <div class="modal-body  modal-detail">
+                                                                                                   <ul class="list-group">
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Bacth Id : </span>  {{ payment.batch_no }} </li> 
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Payment Check : </span>  {{ payment.check }} </li> 
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Recon Key : </span>  {{ payment.recon_key }} </li> 
+                                                                                                        <li class="list-group-item"> <span class="property-name"> Payment Check Amount : </span>  ${{ payment.check_amount }} </li> 
+                                                                                                    </ul>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                            {% endfor %}
                                                                         </div>
+                                                                        {% endfor %}
                                                                     </div>
                                                                 </div>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                <div class="portlet light" style="height: 54px;">
-                                                                    <span class="caption-subject font-green bold uppercase" style="margin-right: 60px; float: left;">A/R Status</span>
-                                                                    <span class="a_r_status">
-                                                                        <span class="label label-lg {% ifequal matching.a_r_status 'unpaid' %} label-success {% endifequal %} col-xs-2 "> UnPaid </span>
-                                                                        <span class="label {% ifequal matching.a_r_status 'small balance' %} label-success {% endifequal %} col-xs-3">Small Balance </span>       
-                                                                        <span class="label {% ifequal matching.a_r_status 'partial paid' %} label-success {% endifequal %} label-lg col-xs-2" style="color : white;">Partial Paid </span>
-                                                                        <span class="label {% ifequal matching.a_r_status 'paid in full' %} label-success {% endifequal %} col-xs-2">Paid In Full </span> 
-                                                                    </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light" style="height: 54px;">
+                                                                <span class="caption-subject font-green bold uppercase" style="margin-right: 60px; float: left;">A/R Status</span>
+                                                                <span class="a_r_status">
+                                                                    <span class="label label-lg {% ifequal matching.a_r_status 'unpaid' %} label-success {% endifequal %} col-xs-2 "> UnPaid </span>
+                                                                    <span class="label {% ifequal matching.a_r_status 'small balance' %} label-success {% endifequal %} col-xs-3">Small Balance </span>       
+                                                                    <span class="label {% ifequal matching.a_r_status 'partial paid' %} label-success {% endifequal %} label-lg col-xs-2" style="color : white;">Partial Paid </span>
+                                                                    <span class="label {% ifequal matching.a_r_status 'paid in full' %} label-success {% endifequal %} col-xs-2">Paid In Full </span> 
+                                                                </span>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light" style="height: 60px;">
+                                                                <span class="caption-subject font-green bold uppercase" style="margin-right: 30px; float: left;">Collection Status</span>
+                                                                <div class="btn-group radio-group col-xs-12 col-sm-7" data-toggle="buttons">
+                                                                    <label class="btn btn-default {% ifequal matching.collection_status 'in appeal' %} active {% endifequal %} " onClick="add_collection_status({{ matching.recon_key }}, 'in appeal' )"><input type="radio" name="collection_status" value="in appeal" {% ifequal matching.collection_status 'in appeal' %} checked {% endifequal %} >In Appeal</label>
+                                                                    <label class="btn btn-default {% ifequal matching.collection_status 'secondary' %} active {% endifequal %}" onClick="add_collection_status({{ matching.recon_key }}, 'secondary' )"><input type="radio" name="collection_status" value="secondary" {% ifequal matching.collection_status 'secondary' %} checked {% endifequal %}>Secondary</label>
+                                                                    <label class="btn btn-default {% ifequal matching.collection_status 'rebill' %} active {% endifequal %}" onClick="add_collection_status({{ matching.recon_key }}, 'rebill' )"><input type="radio" name="collection_status" value="rebill" {% ifequal matching.collection_status 'rebill' %} checked {% endifequal %}>Rebill</label>
                                                                 </div>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                <div class="portlet light" style="height: 54px;">
-                                                                    <div class="caption-subject font-green bold uppercase col-xs-12 col-sm-4" style="margin-right: 30px; float: left;">Collection Status</div>
-                                                                    <div class="radio-group col-xs-12 col-sm-7">
-                                                                        <div class="radio">
-                                                                            <label><input type="radio" name="collection_status" value="in appeal" {% ifequal matching.collection_status 'appeal' %} checked {% endifequal %} >In Appeal</label>
-                                                                        </div>
-                                                                        <div class="radio">
-                                                                            <label><input type="radio" name="collection_status" value="secondary" {% ifequal matching.collection_status 'secondary' %} checked {% endifequal %}>Secondary</label>
-                                                                        </div>
-                                                                        <div class="radio">
-                                                                            <label><input type="radio" name="collection_status" value="rebill" {% ifequal matching.collection_status 'rebill' %} checked {% endifequal %}>Rebill</label>
-                                                                        </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="portlet light" style="height: 420px;">
+                                                                <div class="portlet-title">
+                                                                    <div class="caption-subject font-green bold uppercase">
+                                                                        Comments
                                                                     </div>
                                                                 </div>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                <div class="portlet light" style="height: 250px;">
-                                                                    <div class="portlet-title">
-                                                                        <div class="caption-subject font-green bold uppercase">
-                                                                            Comments
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="portlet-body">
-                                                                        <div class="mt-comments">
-                                                                            {% csrf_token %}
-                                                                            <div class="form-group">
-                                                                                <textarea class="form-control" rows="4" style="max-width: 610px; font-size: 16px;" name="comment_area">{{ matching.comment}}</textarea>
-                                                                                <input type="hidden" name="recon_key" value="{{ matching.recon_key}}" />
+                                                                <div class="portlet-body">
+                                                                    <div class="mt-comments">
+                                                                        <div class="form-group">
+                                                                            <div class="col-md-12" style="height: 160px; overflow-y: scroll;">
+                                                                                <ul class="media-list" id="previous_comments_{{matching.recon_key}}">
+                                                                                    <li class="media">
+                                                                                        <div class="media-body todo-comment" style="text-align: center;padding-top: 20px;">
+                                                                                            <p class="todo-text-color"> Please add comment here </p>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    {% for item in matching.comment%}
+                                                                                    <li class="media" style="margin-top: 0px;">
+                                                                                        <a class="pull-left" href="javascript:;">
+                                                                                            <img alt="" class="img-circle" src="{% static 'pages/img/avatars/team16.jpg' %}" style="width: 40px;"></a>
+                                                                                        <div class="media-body todo-comment">
+                                                                                            <p class="todo-comment-head">
+                                                                                                 <span class="property-name">{{ item.posted_by }}</span> &nbsp;
+                                                                                                <span class="todo-comment-date">{{ item.posted_timestamp}}</span>
+                                                                                            </p>
+                                                                                            <p class="todo-text-color"> {{ item.content }}</p>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    {% endfor %}
+                                                                                </ul>
                                                                             </div>
-                                                                            <button type="submit" class="btn green pull-right">Save</button>
+                                                                        </div>
+                                                                        <!-- END TASK COMMENTS -->
+                                                                        <!-- TASK COMMENT FORM -->
+                                                                        <div class="form-group">
+                                                                            <div class="col-md-12" style="margin-top: 30px;">
+                                                                                <ul class="media-list">
+                                                                                    <li class="media" style="display: flex;">
+                                                                                        <div class="media-body">
+                                                                                            <!-- <form action="{% url 'add_comment' %}" method="POST" enctype="multipart/form-data"> -->
+                                                                                                <textarea class="form-control todo-taskbody-taskdesc " rows="3" placeholder="Type comment..." value="sdfdsf" id="comment_area_{{ matching.recon_key}}" style="max-width : 583px;" onkeydown="add_comment({{ matching.recon_key }}, event)"></textarea>
+                                                                                             <!-- </form> -->
+                                                                                        </div>
+                                                                                    </li>
+                                                                                </ul>
+                                                                                <button type="button" class="pull-right btn btn-sm btn-circle green " style="margin-top: 15px;" id="add_comment_{{ matching.recon_key }}" onclick="add_comment({{ matching.recon_key }})"> &nbsp; Add Comment &nbsp; </button>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </form>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div><!-- modal-content -->
                                         </div>
                                     </div>
@@ -576,6 +595,47 @@
 {% endblock %}
 {% block extra_js %}
 <script type="text/javascript">
+
+    function add_comment(param, event) {
+
+        if ( event == null || ( event != null && (event.keyCode == 13 && (event.keyCode == 13 && !event.shiftKey)) )) {
+            
+            selector = "#comment_area_"+param;
+            var comment = $(selector).val();
+            $.ajax({
+                url: '{% url "add_comment" %}',
+                data: {
+                  'recon_key': param,
+                  'comment' : comment
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $('#previous_comments_'+param).append(data['content']);
+                    $(selector).val('');
+
+                },
+                error : function (data) {
+                }
+              });
+            }
+    }
+
+    function add_collection_status(param, status) {
+        $.ajax({
+            url: '{% url "set_collection_status" %}',
+            data: {
+              'recon_key': param,
+              'collection_status' : status
+            },
+            dataType: 'json',
+                success: function (data) {
+            },
+                error : function (data) {
+            }
+          });
+    }
+
+
     $(document).ready(function() {
 
         Dropzone.options.myDropzone = {
@@ -613,6 +673,27 @@
                 });
             }            
         }
+
+        // $("#{{ recon_key }}add_comment").click(function () {
+
+        //     var comment = $(".comment_area").val();
+        //     alert(comment);
+
+          // $.ajax({
+          //   url: '/ajax/validate_username/',
+          //   data: {
+          //     'username': username
+          //   },
+          //   dataType: 'json',
+          //   success: function (data) {
+          //     if (data.is_taken) {
+          //       alert("A user with this username already exists.");
+          //     }
+          //   }
+          // });
+
+        // });
+
     });
 
 </script>

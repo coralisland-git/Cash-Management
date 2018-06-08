@@ -8,6 +8,7 @@ from functools import wraps
 from django.shortcuts import render
 import datetime
 from django.http import HttpResponse
+from django.http import JsonResponse
 from myProject import settings
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -290,9 +291,41 @@ def search_batch_no(request):
 
         request.session['invoice_batch_no'] = str(request.POST['invoice_batch_no'])
 
+        request.session['invoice_search_key'] = ''
+
         request.session['invoice_view'] = 'detail'
             
         return redirect('/invoice_board')
+
+
+    if 'invoice_search_key' in request.POST:
+
+        selected_invoices = []
+
+        if str(request.POST['invoice_search_key']) == '' :
+
+            selected_invoices = Invoice.objects.all()
+
+        else:
+
+            selected_invoices = Invoice.objects.filter( Q(batch_no=str(request.POST['invoice_search_key'])) |  Q(invoice_number=str(request.POST['invoice_search_key']))
+                
+            | Q(total_bill_amount=str(request.POST['invoice_search_key'])) | Q(cust_alph=str(request.POST['invoice_search_key'])))
+
+        invoice_arr = []
+
+        for invoice in selected_invoices:
+
+            invoice_arr.append(model_to_dict(invoice))
+
+        request.session['invoice_arr'] = json.dumps(invoice_arr)
+
+        request.session['invoice_search_key'] = str(request.POST['invoice_search_key'])
+
+        request.session['invoice_view'] = 'detail'
+            
+        return redirect('/invoice_board')
+
 
 
     if 'kt_tc_batch_no' in request.POST:
@@ -308,6 +341,36 @@ def search_batch_no(request):
         request.session['timecard_kt_arr'] = json.dumps(kt_tc_arr)
 
         request.session['kt_tc_batch_no'] = str(request.POST['kt_tc_batch_no'])
+
+        request.session['kt_tc_search_key'] = ''
+
+        request.session['kt_tc_view'] = 'detail'
+            
+        return redirect('/timecard_board')
+
+
+    if 'kt_tc_search_key' in request.POST:
+
+        selected_kt_tcs = []
+
+        if str(request.POST['kt_tc_search_key']) == '' :
+
+            selected_kt_tcs = TimeCard_KT.objects.all()
+
+        else:
+
+            selected_kt_tcs = TimeCard_KT.objects.filter( Q(batch_no=str(request.POST['kt_tc_search_key'])) |  Q(time_card_id=str(request.POST['kt_tc_search_key'])))
+
+
+        kt_tc_arr = []
+
+        for kt_tc in selected_kt_tcs:
+
+            kt_tc_arr.append(model_to_dict(kt_tc))
+
+        request.session['timecard_kt_arr'] = json.dumps(kt_tc_arr)
+
+        request.session['kt_tc_search_key'] = str(request.POST['kt_tc_search_key'])
 
         request.session['kt_tc_view'] = 'detail'
             
@@ -328,6 +391,35 @@ def search_batch_no(request):
 
         request.session['hb_tc_batch_no'] = str(request.POST['hb_tc_batch_no'])
 
+        request.session['hb_tc_search_key'] = ''
+
+        request.session['hb_tc_view'] = 'detail'
+            
+        return redirect('/timecard_hb_board')
+
+
+    if 'hb_tc_search_key' in request.POST:
+
+        selected_hb_tcs = []
+
+        if str(request.POST['hb_tc_search_key']) == '' :
+
+            selected_hb_tcs = TimeCard_HB.objects.all()
+
+        else:
+
+            selected_hb_tcs = TimeCard_HB.objects.filter( Q(batch_no=str(request.POST['hb_tc_search_key'])) |  Q(time_card_id=str(request.POST['hb_tc_search_key'])))
+
+        hb_tc_arr = []
+
+        for hb_tc in selected_hb_tcs:
+
+            hb_tc_arr.append(model_to_dict(hb_tc))
+
+        request.session['timecard_hb_arr'] = json.dumps(hb_tc_arr)
+
+        request.session['hb_tc_search_key'] = str(request.POST['hb_tc_search_key'])
+
         request.session['hb_tc_view'] = 'detail'
             
         return redirect('/timecard_hb_board')
@@ -346,6 +438,35 @@ def search_batch_no(request):
         request.session['reconkeys_arr'] = json.dumps(kt_rk_arr)
 
         request.session['kt_rk_batch_no'] = str(request.POST['kt_rk_batch_no'])
+
+        request.session['kt_rk_search_key'] = ''
+
+        request.session['kt_rk_view'] = 'detail'
+            
+        return redirect('/reconkeys_board')
+
+
+    if 'kt_rk_search_key' in request.POST:
+
+        selected_kt_rks = []
+
+        if str(request.POST['kt_rk_search_key']) == '' :
+
+            selected_kt_rks = ReconKeys_KT.objects.all()
+
+        else:
+
+            selected_kt_rks = ReconKeys_KT.objects.filter( Q(batch_no=str(request.POST['kt_rk_search_key'])) |  Q( authorization=str(request.POST['kt_rk_search_key'])))
+
+        kt_rk_arr = []
+
+        for kt_rk in selected_kt_rks:
+
+            kt_rk_arr.append(model_to_dict(kt_rk))
+
+        request.session['reconkeys_arr'] = json.dumps(kt_rk_arr)
+
+        request.session['kt_rk_search_key'] = str(request.POST['kt_rk_search_key'])
 
         request.session['kt_rk_view'] = 'detail'
             
@@ -366,9 +487,39 @@ def search_batch_no(request):
 
         request.session['hb_rk_batch_no'] = str(request.POST['hb_rk_batch_no'])
 
+        request.session['hb_rk_search_key'] = ''
+
         request.session['hb_rk_view'] = 'detail'
             
         return redirect('/reconkeys_hb_board')
+
+
+    if 'hb_rk_search_key' in request.POST:
+
+        selected_hb_rks = []
+
+        if str(request.POST['hb_rk_search_key']) == '' :
+
+            selected_hb_rks = ReconKeys_HB.objects.all()
+
+        else:
+
+            selected_hb_rks = ReconKeys_HB.objects.filter( Q(batch_no=str(request.POST['hb_rk_search_key'])) |  Q( row_id=str(request.POST['hb_rk_search_key'])))
+
+        hb_rk_arr = []
+
+        for hb_rk in selected_hb_rks:
+
+            hb_rk_arr.append(model_to_dict(hb_rk))
+
+        request.session['reconkeys_hb_arr'] = json.dumps(hb_rk_arr)
+
+        request.session['hb_rk_search_key'] = str(request.POST['hb_rk_search_key'])
+
+        request.session['hb_rk_view'] = 'detail'
+            
+        return redirect('/reconkeys_hb_board')
+
 
 
     if 'payment_batch_no' in request.POST:
@@ -385,23 +536,53 @@ def search_batch_no(request):
 
         request.session['payment_batch_no'] = str(request.POST['payment_batch_no'])
 
+        request.session['payment_search_key'] = ''
+
         request.session['payment_view'] = 'detail'
             
         return redirect('/payment_board')
 
 
-    if 'selected_cash_post_id' in request.POST:
+    if 'payment_search_key' in request.POST:
 
-        cash_response = str(request.POST['selected_cash_post_id'])
+        selected_payments = []
+
+        if str(request.POST['payment_search_key']) == '' :
+
+            selected_payments = Payment.objects.all()
+
+        else:
+
+            selected_payments = Payment.objects.filter( Q(batch_no=str(request.POST['payment_search_key'])) |  Q( payment_id=str(request.POST['payment_search_key'])))
+
+        
+        input_payment_arr = []
+
+        for payment in selected_payments:
+
+            input_payment_arr.append(model_to_dict(payment))
+
+        request.session['input_payment_arr'] = json.dumps(input_payment_arr)
+
+        request.session['payment_search_key'] = str(request.POST['payment_search_key'])
+
+        request.session['payment_view'] = 'detail'
+            
+        return redirect('/payment_board')
+
+
+    if 'cash_post_search_key' in request.POST:
+
+        cash_response = str(request.POST['cash_post_search_key'])
 
         selected_cash_posts = []
 
-        if 'ALL' in cash_response :
+        if cash_response == '' :
 
             selected_cash_posts = Cash_Post.objects.all()
         else :
 
-            selected_cash_posts = Cash_Post.objects.filter(cash_post_id=cash_response)
+            selected_cash_posts = Cash_Post.objects.filter( Q(cash_post_id=cash_response) | Q(recon_key=cash_response) )
 
         matching_by_recon_key_arr = []
 
@@ -410,7 +591,7 @@ def search_batch_no(request):
             matching_by_recon_key_arr.append(model_to_dict(matching))
 
 
-        request.session['selected_cash_post_id'] = str(request.POST['selected_cash_post_id'])
+        request.session['cash_post_search_key'] = str(request.POST['cash_post_search_key'])
             
         # return redirect('/matching_by_recon_key')
 
@@ -474,7 +655,7 @@ def search_batch_no(request):
 
                 'cash_post_batch_no_arr' : request.session.get('cash_post_batch_no_arr', '[]'),
 
-                'selected_cash_post_id' : request.session.get('selected_cash_post_id', ''),
+                'cash_post_search_key' : request.session.get('cash_post_search_key', ''),
 
             })
 
@@ -498,6 +679,10 @@ def cash_post(request):
         if 'child_ori_payment' in cash_post:
 
             del cash_post['child_ori_payment']
+
+        if 'comment' in cash_post:
+
+            del cash_post['comment']
 
         if len(check) == 0:
 
@@ -523,34 +708,106 @@ def cash_post(request):
     # return redirect('/matching_by_recon_key')
 
 
-def save_comment(request):
+def add_comment(request):
 
-    cash_post_arr = json.loads(request.session.get('matching_by_recon_key_arr', '[]'))
+    now = datetime.datetime.now()
 
-    # pdb.set_trace()
+    if request.GET['comment'] != '':
 
-    for cash_post in cash_post_arr:
+        data_table = Template("""
+            <li class="media">
+            <a class="pull-left" href="javascript:;">
+                <img alt="" class="img-circle" src="/static/pages/img/avatars/team16.jpg" style="width: 40px;"></a>
+            <div class="media-body todo-comment">
+                <p class="todo-comment-head">
+                     <span class="property-name">{{ user }}</span> &nbsp;
+                    <span class="todo-comment-date"> {{ date }}</span>
+                </p>
+                <p class="todo-text-color"> {{ comment }}</p>
+            </div>
+            </li>
+                """)
 
-        if cash_post['recon_key'] == request.POST['recon_key']:
+        html = data_table.render(Context({
 
-            cash_post['comment'] = request.POST['comment_area']
+            'comment': request.GET['comment'], 
 
-            cash_post['collection_status'] = request.POST['collection_status']   
+            'date' : '{0.month}/{0.day}/{0.year} at {0.hour}:{0.minute}'.format(now),
 
-    request.session['matching_by_recon_key_arr'] = json.dumps(cash_post_arr)
+            'user' : request.session['user']['username']
 
-    # return redirect('/matching_by_recon_key')
+            }))
 
-    return render(request, 'report/matching_by_recon_key.html',
-    {
 
-        'matching_by_recon_key_arr' : json.loads(request.session.get('matching_by_recon_key_arr', '[]')),
+        data = {
 
-        'cash_post_batch_no_arr' : request.session.get('cash_post_batch_no_arr', '[]'),
+            'content' : request.GET['comment'],
 
-        'selected_cash_post_id' : request.session.get('selected_cash_post_id', ''),
+            'recon_key' : request.GET['recon_key'],
 
-    })
+            'posted_timestamp' : '{0.month}/{0.day}/{0.year} at {0.hour}:{0.minute}'.format(now),
+
+            'posted_by' : request.session['user']['username']
+        }
+
+        # check = Comment.objects.filter(recon_key = data['recon_key'], posted_timestamp = data['posted_timestamp'], posted_by = data['posted_by'])    
+
+        # if len(check) == 0:
+
+        comment_model = Comment(**data)
+
+        comment_model.save()
+
+        # else : 
+
+        #     check.update(**data)
+
+        # return HttpResponse(html)
+        return JsonResponse({ 'content' : html })
+
+    return HttpResponse('success')
+
+    # print('~~~~~~~~~~~~~~~', request.POST)
+
+    # cash_post_arr = json.loads(request.session.get('matching_by_recon_key_arr', '[]'))
+
+    # # pdb.set_trace()
+
+    # for cash_post in cash_post_arr:
+
+    #     if cash_post['recon_key'] == request.POST['recon_key']:
+
+    #         cash_post['comment'] = request.POST['comment_area']
+
+    #         cash_post['collection_status'] = request.POST['collection_status']   
+
+    # request.session['matching_by_recon_key_arr'] = json.dumps(cash_post_arr)
+
+    # # return redirect('/matching_by_recon_key')
+
+    # return render(request, 'report/matching_by_recon_key.html',
+    # {
+
+    #     'matching_by_recon_key_arr' : json.loads(request.session.get('matching_by_recon_key_arr', '[]')),
+
+    #     'cash_post_batch_no_arr' : request.session.get('cash_post_batch_no_arr', '[]'),
+
+    #     'selected_cash_post_id' : request.session.get('selected_cash_post_id', ''),
+
+    # })
+
+
+def set_collection_status(request):
+
+    check = Cash_Post.objects.filter(recon_key = request.GET['recon_key'])
+
+    data = model_to_dict(check[0])
+
+    data['collection_status'] = request.GET['collection_status']
+
+    check.update(**data)
+
+    return HttpResponse('success')
 
 
 def main(request):
@@ -725,6 +982,8 @@ def invoice_board(request):
 
         request.session['invoice_arr'] = json.dumps(invoice_arr)
 
+        request.session['invoice_search_key'] = ''
+
         # data_table = Template("""
         #     """)
         # html = data_table.render(Context({'invoice_arr': json.loads(request.session.get('invoice_arr', '[]'))}))
@@ -743,7 +1002,9 @@ def invoice_board(request):
 
                 'invoice_batch_no' : request.session.get('invoice_batch_no', ''),
 
-                'view' : request.session.get('invoice_view', 'batch')
+                'view' : request.session.get('invoice_view', 'batch'),
+
+                'invoice_search_key' : request.session.get('invoice_search_key', '')
 
             })
 
@@ -1038,6 +1299,7 @@ def timecard_board(request):
 
         request.session['timecard_kt_arr'] = json.dumps(timecard_kt_arr)
 
+        request.session['kt_tc_search_key'] = ''
 
         # data_table = Template("""
         #     """)
@@ -1054,7 +1316,7 @@ def timecard_board(request):
 
                 'kt_tc_batch_no_arr' : request.session.get('kt_tc_batch_no_arr', '[]'),
 
-                'kt_tc_batch_no' : request.session.get('kt_tc_batch_no', ''),
+                'kt_tc_search_key' : request.session.get('kt_tc_search_key', ''),
 
                 'view' : request.session.get('kt_tc_view', 'batch')
 
@@ -1233,7 +1495,7 @@ def timecard_hb_board(request):
 
         request.session['timecard_hb_arr'] = json.dumps(timecard_hb_arr)
 
-
+        request.session['hb_tc_search_key'] = ''
         # data_table = Template("""
         #     """)
         # html = data_table.render(Context({'timecard_kt_arr': json.loads(request.session.get('timecard_kt_arr', '[]'))}))
@@ -1249,7 +1511,7 @@ def timecard_hb_board(request):
 
                 'hb_tc_batch_no_arr' : request.session.get('hb_tc_batch_no_arr', '[]'),
 
-                'hb_tc_batch_no' : request.session.get('hb_tc_batch_no', ''),
+                'hb_tc_search_key' : request.session.get('hb_tc_search_key', ''),
 
                 'view' : request.session.get('hb_tc_view', 'batch')
 
@@ -1445,6 +1707,8 @@ def reconkeys_board(request):
 
         request.session['reconkeys_arr'] = json.dumps(reconkeys_arr)
 
+        request.session['kt_rk_search_key'] = ''
+
         # data_table = Template("""
         #     """)
 
@@ -1469,7 +1733,7 @@ def reconkeys_board(request):
 
                 'kt_rk_batch_no_arr' : request.session.get('kt_rk_batch_no_arr', '[]'),
 
-                'kt_rk_batch_no' : request.session.get('kt_rk_batch_no', ''),
+                'kt_rk_search_key' : request.session.get('kt_rk_search_key', ''),
 
                 'view' : request.session.get('kt_rk_view', 'batch')
 
@@ -1628,6 +1892,8 @@ def reconkeys_hb_board(request):
 
         request.session['reconkeys_hb_arr'] = json.dumps(reconkeys_hb_arr)
 
+        request.session['hb_rk_search_key'] = ''
+
 
         # data_table = Template("""
         #     """)
@@ -1653,7 +1919,7 @@ def reconkeys_hb_board(request):
 
                 'hb_rk_batch_no_arr' : request.session.get('hb_rk_batch_no_arr', '[]'),
 
-                'hb_rk_batch_no' : request.session.get('hb_rk_batch_no', ''),
+                'hb_rk_search_key' : request.session.get('hb_rk_search_key', ''),
 
                 'view' : request.session.get('hb_rk_view', 'batch')
 
@@ -1817,6 +2083,8 @@ def payment_board(request):
 
         request.session['input_payment_arr'] = json.dumps(payment_arr)
 
+        request.session['payment_search_key'] = ''
+
         # data_table = Template("""
         # """)
         # html = data_table.render(Context({'payment_arr': json.loads(request.session.get('payment_arr', '[]'))}))
@@ -1833,7 +2101,7 @@ def payment_board(request):
 
                 'payment_batch_no_arr' : request.session.get('payment_batch_no_arr', '[]'),
 
-                'payment_batch_no' : request.session.get('payment_batch_no', ''),
+                'payment_search_key' : request.session.get('payment_search_key', ''),
 
                 'view' : request.session.get('payment_view', 'batch')
 
@@ -2362,7 +2630,7 @@ def calculate(request):
 
             # cash_post_id = cash_post_id[:2]+num
 
-            comment = ''
+            comment = []
 
             collection_status = ''
 
@@ -2370,19 +2638,23 @@ def calculate(request):
 
             if len(current_cash_post) == 0 :
 
-                comment = ''
+                # comment = ''
 
                 collection_status = ''
 
             else :
 
-                comment = current_cash_post[0].comment
+                # comment = current_cash_post[0].comment
 
                 collection_status = current_cash_post[0].collection_status
 
+            comment_list = Comment.objects.filter(recon_key=', '.join(multiple))
+
+            for rec in comment_list:
+
+                comment.append(model_to_dict(rec))
 
             a_r_status = ''
-
 
             difference = float(sub_invoice - sub_payment)
 
@@ -2473,6 +2745,44 @@ def calculate(request):
 
                 matching_by_recon_key_arr.append(matching)
 
+                data_db = {
+
+                    'cash_post_id' : latest_cash_post_id,
+
+                    'recon_key' : ', '.join(multiple),
+
+                    'invoice' : ', '.join(sub_invoice_arr),
+
+                    'payment' : ', '.join(sub_payment_arr),
+
+                    'payment_id' : ', '.join(sub_check_arr),
+
+                    'invoice_amount' : str(sub_invoice),
+
+                    'payment_amount' : str(sub_payment),
+
+                    'difference' : str(difference),
+
+                    'posted_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now),
+
+                    'a_r_status' : a_r_status,
+
+                    'collection_status' : collection_status
+
+                }
+
+                check = Cash_Post.objects.filter(recon_key = data_db['recon_key'])
+
+                if len(check) == 0:
+
+                    cash_post_model = Cash_Post(**data_db)
+
+                    cash_post_model.save()
+
+                else :
+
+                    check.update(**data_db)
+
     except:
 
         pass
@@ -2545,12 +2855,22 @@ def matching_by_recon_key(request):
 
                     child_ori_payment.append(payment)
 
+        comment = []
+
+        comment_list = Comment.objects.filter(recon_key=matching['recon_key'])
+
+        for rec in comment_list:
+
+            comment.append(model_to_dict(rec))
+
 
         matching['child_invoice'] = child_invoice
 
         matching['child_payment'] = child_payment
 
         matching['child_ori_payment'] = child_ori_payment
+
+        matching['comment'] = comment
 
         new_matching_arr.append(matching)
 

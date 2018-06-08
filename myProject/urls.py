@@ -71,8 +71,10 @@ urlpatterns = [
 
     url(r'^cash_post/$', views.cash_post, name='cash_post'),
 
-    url(r'^save_comment/$', views.save_comment, name='save_comment'),
+    url(r'^add_comment/$', views.add_comment, name='add_comment'),
 
     url(r'^calculate/$', views.calculate, name='calculate'),
 
+    url(r'^set_collection_status/$', views.set_collection_status, name='set_collection_status'),
+    
 ]

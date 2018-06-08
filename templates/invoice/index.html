@@ -27,13 +27,15 @@
                             {% csrf_token %}
                             <div class="col-md-3 col-sm-4 col-xs-10 pull-right">
                                 <div class="input-group select2-bootstrap-append">
-                                    <select id="single-append-text" class="form-control select2-allow-clear" name="invoice_batch_no">
+                                    <!-- <select id="single-append-text" class="form-control select2-allow-clear" name="invoice_batch_no">
                                         <option></option>
                                         {% for batch in invoice_batch_no_arr%}
                                             <option value="{{ batch.batch_no}}">{{ batch.batch_no }}</option>
                                         {% endfor %}
-                                    </select>
+                                    </select> -->
+                                    <input type="text" class="form-control" placeholder="Search" name="invoice_search_key" value="{{ invoice_search_key }}">
                                     <span class="input-group-btn">
+                                        <tbuttno></tbutton>
                                         <button class="btn btn-default" type="submit">
                                             <span class="glyphicon glyphicon-search"></span>
                                         </button>
@@ -78,8 +80,8 @@
                                                     <td class="min-tablet"> {{ batch.count }} </td> 
                                                     <td class="min-tablet"> {{ batch.uploaded_date }} </td> 
                                                     <td  class="all"> 
-                                                        <a class="btn btn-default pull-right" data-target="#static" data-toggle="modal" style="margin-left: 5px;"> Delete</a>
-                                                        <div id="static" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+                                                        <a class="btn btn-default pull-right" data-target="#static{{batch.batch_no}}" data-toggle="modal" style="margin-left: 5px;"> Delete</a>
+                                                        <div id="static{{batch.batch_no}}" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
                                                             <div class="modal-body" style="text-align: center;">
                                                                 <p style="font-size: 18px;"> Are you sure? </p>
                                                             </div>
