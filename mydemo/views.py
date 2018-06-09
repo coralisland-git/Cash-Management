@@ -61,7 +61,11 @@ def login(request):
                 # "id": user[0].id,
                 "username": settings.ADMIN_NAME, #user[0].email,
                 "password": settings.ADMIN_PASSWORD, #user[0].name.split(" ")[0],
-                "role": "admin"
+                "image": '',
+                "firstname" : settings.ADMIN_FIRSTNAME ,
+                'lastname' : settings.ADMIN_LASTNAME,
+                "role": "admin",
+                "logo" : settings.ADMIN_FIRSTNAME[0].upper() + settings.ADMIN_LASTNAME[0].upper()
             }
 
             return redirect("/home")
@@ -79,7 +83,8 @@ def login(request):
                 "email": user[0].email,
                 "password": user[0].password,
                 "image" : user[0].image,
-                "role" : "client",
+                "role" : "user",
+                "logo" : settings.ADMIN_FIRSTNAME[0].upper() + settings.ADMIN_LASTNAME[0].upper()
             }
 
             return redirect("/home")

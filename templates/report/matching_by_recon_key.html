@@ -542,9 +542,14 @@
                                                                                         </div>
                                                                                     </li>
                                                                                     {% for item in matching.comment%}
-                                                                                    <li class="media" style="margin-top: 0px; display: flex !important;">
+                                                                                    <li class="media comment-line">
                                                                                         <a class="pull-left" href="javascript:;">
-                                                                                            <img alt="" class="img-circle" src="{% static 'pages/img/avatars/team16.jpg' %}" style="width: 40px;"></a>
+                                                                                        {% ifequal user.image '' %}
+                                                                                         <p class="font-bold item-pic rounded title-logo">{{ user.logo }}</p> 
+                                                                                         {% else %}
+                                                                                         <img alt="" class="img-circle" src="{% static 'pages/img/avatars/team16.jpg' %}" style="width: 40px;">
+                                                                                         {% endifequal %}
+                                                                                        </a>
                                                                                         <div class="media-body todo-comment">
                                                                                             <p class="todo-comment-head">
                                                                                                  <span class="property-name">{{ item.posted_by }}</span> &nbsp;
@@ -605,9 +610,14 @@
             if (comment.trim() != '') {
                     var now = new Date();
                     var posted_timestamp = moment(now).format('MMMM D, YYYY | hh:mm A')
-                    item = '<li class="media" style="margin-top: 0px; display : flex !important;"> \
-                                <a class="pull-left" href="javascript:;"> \
-                                    <img alt="" class="img-circle" src="'+ '{% static "pages/img/avatars/team16.jpg" %}'+'" style="width: 40px;"></a> \
+                    item = '<li class="media comment-line" > \
+                                <a class="pull-left" href="javascript:;">\
+                                {% ifequal user.image '' %}\
+                                 <p class="font-bold item-pic rounded title-logo">{{ user.logo }}</p> \
+                                 {% else %}\
+                                 <img alt="" class="img-circle" src="{% static "pages/img/avatars/team16.jpg" %}" style="width: 40px;">\
+                                 {% endifequal %}\
+                                </a> \
                                 <div class="media-body todo-comment"> \
                                     <p class="todo-comment-head"> \
                                          <span class="property-name">'+ '{{ user.username }}'+'</span> &nbsp; \

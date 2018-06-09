@@ -123,4 +123,6 @@ MEDIA_URL = '/uploaded_files/'
 
 ADMIN_NAME = "andrew"
 ADMIN_PASSWORD = "andrew12345"
+ADMIN_FIRSTNAME = "Andrew"
+ADMIN_LASTNAME = "Rodgers"
 ALLOWED_HOSTS = [ '144.217.242.199']

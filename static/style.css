@@ -119,6 +119,27 @@ td:first-child:before {
 	width : 515px;
 }
 
+.title-logo {
+	width : 40px;
+	height: 40px;
+	font-weight: bold;
+	background-color: #999;
+	text-align: center;
+	padding: 5px;
+	margin : 0px;
+	color : white;
+}
+
+.comment-line {
+	margin-top: 5px; 
+	padding: 6px;
+	display: flex !important;
+}
+
+.comment-line:hover {
+	background-color: #eee;
+}
+
 /*@media (max-width: 780px) {
 	.modal.left .modal-dialog,
 	.modal.right .modal-dialog {

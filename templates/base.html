@@ -84,10 +84,14 @@
                                 </div>
                                 <div class="hor-menu  ">
                                     <ul class="nav navbar-nav">
-                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown " style="width : 70px;">
+                                        <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown ">
                                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" style="padding: 5px;">
-                                                <img alt="" class="img-circle" src="{% static 'pages/img/avatars/team16.jpg' %}" style="width: 40px;">
-                                                <span class="username username-hide-mobile">{{request.session.user.firstname}} {{request.session.user.firstname }}</span>
+                                                {% ifequal request.session.user.image '' %}
+                                                 <label class="font-bold item-pic rounded title-logo green" style="margin-right: 10px; background-color: white; font-size : 20px; color : #666; padding-top: 8px;">{{ request.session.user.logo }}</label> 
+                                                 {% else %}
+                                                 <img alt="" class="img-circle" src="{% static 'pages/img/avatars/team16.jpg' %}" style="width: 40px; margin-right : 10px;">
+                                                 {% endifequal %}
+                                                <span class="username username-hide-mobile">{{request.session.user.firstname}} {{request.session.user.lastname }}</span>
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-default">
                                                 <li>
