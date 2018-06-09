@@ -605,7 +605,7 @@
             if (comment.trim() != '') {
                     var now = new Date();
                     var posted_timestamp = moment(now).format('MMMM D, YYYY | hh:mm A')
-                    item = '<li class="media" style="margin-top: 0px;"> \
+                    item = '<li class="media" style="margin-top: 0px; display : flex !important;"> \
                                 <a class="pull-left" href="javascript:;"> \
                                     <img alt="" class="img-circle" src="'+ '{% static "pages/img/avatars/team16.jpg" %}'+'" style="width: 40px;"></a> \
                                 <div class="media-body todo-comment"> \
