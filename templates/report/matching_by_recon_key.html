@@ -534,7 +534,7 @@
                                                                 <div class="portlet-body">
                                                                     <div class="mt-comments">
                                                                         <div class="form-group">
-                                                                            <div class="col-md-12" style="height: 160px; overflow-y: scroll;">
+                                                                            <div class="col-md-12" id="comment_history_{{ matching.recon_key}}" style="height: 160px; overflow-y: scroll;">
                                                                                 <ul class="media-list" id="previous_comments_{{matching.recon_key}}">
                                                                                     <li class="media">
                                                                                         <div class="media-body todo-comment" style="text-align: center;padding-top: 20px;">
@@ -565,7 +565,7 @@
                                                                                     <li class="media" style="display: flex;">
                                                                                         <div class="media-body">
                                                                                             <!-- <form action="{% url 'add_comment' %}" method="POST" enctype="multipart/form-data"> -->
-                                                                                                <textarea class="form-control todo-taskbody-taskdesc " rows="3" placeholder="Type comment..." value="sdfdsf" id="comment_area_{{ matching.recon_key}}" style="max-width : 583px;" onkeydown="add_comment({{ matching.recon_key }}, event)"></textarea>
+                                                                                                <textarea class="form-control todo-taskbody-taskdesc " rows="3" placeholder="" value="sdfdsf" id="comment_area_{{ matching.recon_key}}" style="max-width : 583px;" onkeydown="add_comment({{ matching.recon_key }}, event)"></textarea>
                                                                                              <!-- </form> -->
                                                                                         </div>
                                                                                     </li>
@@ -599,24 +599,49 @@
     function add_comment(param, event) {
 
         if ( event == null || ( event != null && (event.keyCode == 13 && (event.keyCode == 13 && !event.shiftKey)) )) {
-            
             selector = "#comment_area_"+param;
             var comment = $(selector).val();
-            $.ajax({
-                url: '{% url "add_comment" %}',
-                data: {
-                  'recon_key': param,
-                  'comment' : comment
-                },
-                dataType: 'json',
-                success: function (data) {
-                    $('#previous_comments_'+param).append(data['content']);
-                    $(selector).val('');
 
-                },
-                error : function (data) {
+            if (comment.trim() != '') {
+                    var now = new Date();
+                    var posted_timestamp = moment(now).format('MMMM D, YYYY | hh:mm A')
+                    item = '<li class="media" style="margin-top: 0px;"> \
+                                <a class="pull-left" href="javascript:;"> \
+                                    <img alt="" class="img-circle" src="'+ '{% static "pages/img/avatars/team16.jpg" %}'+'" style="width: 40px;"></a> \
+                                <div class="media-body todo-comment"> \
+                                    <p class="todo-comment-head"> \
+                                         <span class="property-name">'+ '{{ user.username }}'+'</span> &nbsp; \
+                                        <span class="todo-comment-date">'+ posted_timestamp +'</span> \
+                                    </p> \
+                                    <p class="todo-text-color">'+comment+'</p> \
+                                </div>\
+                            </li>'
+
+                    $('#previous_comments_'+param).append(item);
+
+                    $.ajax({
+                        url: '{% url "add_comment" %}',
+                        data: {
+                          'recon_key': param,
+                          'comment' : comment,
+                          'posted_timestamp' : posted_timestamp,
+                          'posted_by' : '{{ user.username }}'
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            // $('#previous_comments_'+param).append(data['content']);
+                            // $(selector).val('');
+                        },
+                        error : function (data) {
+                        }
+                      });
+
+                    comment_history = "#comment_history_"+param;
+                    $(comment_history).scrollTop($(comment_history)[0].scrollHeight);
+
                 }
-              });
+
+                $(selector).val('');
             }
     }
 

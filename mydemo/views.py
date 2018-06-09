@@ -712,89 +712,47 @@ def add_comment(request):
 
     now = datetime.datetime.now()
 
-    if request.GET['comment'] != '':
+        # data_table = Template("""
+        #     <li class="media">
+        #     <a class="pull-left" href="javascript:;">
+        #         <img alt="" class="img-circle" src="/static/pages/img/avatars/team16.jpg" style="width: 40px;"></a>
+        #     <div class="media-body todo-comment">
+        #         <p class="todo-comment-head">
+        #              <span class="property-name">{{ user }}</span> &nbsp;
+        #             <span class="todo-comment-date"> {{ date }}</span>
+        #         </p>
+        #         <p class="todo-text-color"> {{ comment }}</p>
+        #     </div>
+        #     </li>
+        #         """)
 
-        data_table = Template("""
-            <li class="media">
-            <a class="pull-left" href="javascript:;">
-                <img alt="" class="img-circle" src="/static/pages/img/avatars/team16.jpg" style="width: 40px;"></a>
-            <div class="media-body todo-comment">
-                <p class="todo-comment-head">
-                     <span class="property-name">{{ user }}</span> &nbsp;
-                    <span class="todo-comment-date"> {{ date }}</span>
-                </p>
-                <p class="todo-text-color"> {{ comment }}</p>
-            </div>
-            </li>
-                """)
+        # html = data_table.render(Context({
 
-        html = data_table.render(Context({
+        #     'comment': request.GET['comment'], 
 
-            'comment': request.GET['comment'], 
+        #     'date' : '{0.month}/{0.day}/{0.year} at {0.hour}:{0.minute}'.format(now),
 
-            'date' : '{0.month}/{0.day}/{0.year} at {0.hour}:{0.minute}'.format(now),
+        #     'user' : request.session['user']['username']
 
-            'user' : request.session['user']['username']
-
-            }))
+        #     }))
 
 
-        data = {
+    data = {
 
-            'content' : request.GET['comment'],
+        'content' : request.GET['comment'],
 
-            'recon_key' : request.GET['recon_key'],
+        'recon_key' : request.GET['recon_key'],
 
-            'posted_timestamp' : '{0.month}/{0.day}/{0.year} at {0.hour}:{0.minute}'.format(now),
+        'posted_timestamp' : request.GET['posted_timestamp'],
 
-            'posted_by' : request.session['user']['username']
-        }
+        'posted_by' : request.GET['posted_by']
+    }
 
-        # check = Comment.objects.filter(recon_key = data['recon_key'], posted_timestamp = data['posted_timestamp'], posted_by = data['posted_by'])    
+    comment_model = Comment(**data)
 
-        # if len(check) == 0:
+    comment_model.save()
 
-        comment_model = Comment(**data)
-
-        comment_model.save()
-
-        # else : 
-
-        #     check.update(**data)
-
-        # return HttpResponse(html)
-        return JsonResponse({ 'content' : html })
-
-    return HttpResponse('success')
-
-    # print('~~~~~~~~~~~~~~~', request.POST)
-
-    # cash_post_arr = json.loads(request.session.get('matching_by_recon_key_arr', '[]'))
-
-    # # pdb.set_trace()
-
-    # for cash_post in cash_post_arr:
-
-    #     if cash_post['recon_key'] == request.POST['recon_key']:
-
-    #         cash_post['comment'] = request.POST['comment_area']
-
-    #         cash_post['collection_status'] = request.POST['collection_status']   
-
-    # request.session['matching_by_recon_key_arr'] = json.dumps(cash_post_arr)
-
-    # # return redirect('/matching_by_recon_key')
-
-    # return render(request, 'report/matching_by_recon_key.html',
-    # {
-
-    #     'matching_by_recon_key_arr' : json.loads(request.session.get('matching_by_recon_key_arr', '[]')),
-
-    #     'cash_post_batch_no_arr' : request.session.get('cash_post_batch_no_arr', '[]'),
-
-    #     'selected_cash_post_id' : request.session.get('selected_cash_post_id', ''),
-
-    # })
+    return JsonResponse({ 'status' : 'success' })
 
 
 def set_collection_status(request):
@@ -2798,6 +2756,8 @@ def calculate(request):
 
             'selected_cash_post_id' : request.session.get('selected_cash_post_id', ''),
 
+            'user' : request.session.get('user')
+
         })
 
 
@@ -2883,7 +2843,9 @@ def matching_by_recon_key(request):
 
             'matching_by_recon_key_arr' : json.loads(request.session.get('matching_by_recon_key_arr', '[]')),
 
-            'cash_post_batch_no_arr' : request.session.get('cash_post_batch_no_arr', '[]')
+            'cash_post_batch_no_arr' : request.session.get('cash_post_batch_no_arr', '[]'),
+
+            'user' : request.session.get('user')
 
         })
 
