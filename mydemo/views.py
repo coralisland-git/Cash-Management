@@ -890,7 +890,7 @@ def invoice_board(request):
 
                     'batch_no' : batch_no,
 
-                    'uploaded_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now)
+                    'uploaded_date' : '{0.month}/{0.day}/{0.year}'.format(now)
 
                 }
 
@@ -1190,7 +1190,7 @@ def timecard_board(request):
 
                     'batch_no' : batch_no,
 
-                    'uploaded_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now)
+                    'uploaded_date' : '{0.month}/{0.day}/{0.year}'.format(now)
 
                 } 
 
@@ -1402,7 +1402,7 @@ def timecard_hb_board(request):
 
                     'batch_no' : batch_no,
 
-                    'uploaded_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now)
+                    'uploaded_date' : '{0.month}/{0.day}/{0.year}'.format(now)
 
                 } 
 
@@ -1610,7 +1610,7 @@ def reconkeys_board(request):
 
                     'batch_no' : batch_no,
 
-                    'uploaded_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now)
+                    'uploaded_date' : '{0.month}/{0.day}/{0.year}'.format(now)
 
                 } 
 
@@ -1797,7 +1797,7 @@ def reconkeys_hb_board(request):
 
                     'batch_no' : batch_no,
 
-                    'uploaded_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now)
+                    'uploaded_date' : '{0.month}/{0.day}/{0.year}'.format(now)
 
                 } 
 
@@ -2005,7 +2005,7 @@ def payment_board(request):
 
                         'check_amount' : str(payment[2].value).replace('$',''),
 
-                        'uploaded_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now)
+                        'uploaded_date' : '{0.month}/{0.day}/{0.year}'.format(now)
 
                     }
 
@@ -2160,6 +2160,9 @@ def default_module(request):
 
     unused_hb_key_data = []
 
+    now = datetime.datetime.now()
+
+    today = '{0.month}/{0.day}/{0.year}'.format(now)
 
     invoice_db = Invoice.objects.all()
 
@@ -2205,15 +2208,13 @@ def default_module(request):
 
         hb_key_raw_arr.append(model_to_dict(reconkeys_hb))
 
-
-    payment_db = Payment.objects.all()
+    payment_db = Payment.objects.filter(uploaded_date__icontains=today)
 
     input_payment_arr = []
 
     for payment in payment_db:
 
         input_payment_arr.append(model_to_dict(payment))
-
 
     for invoice_data in invoice_data_arr:
 
@@ -2436,7 +2437,9 @@ def default_module(request):
 
                         'recon_key' : payment['recon_key'],
 
-                        'cash_post_id_memo' : payment['cash_post_id_memo']
+                        'cash_post_id_memo' : payment['cash_post_id_memo'],
+
+                        'uploaded_date' : payment['uploaded_date']
 
                     }
 
@@ -2526,6 +2529,9 @@ def calculate(request):
         latest_cash_post_id = latest_cash_post_id[:2] + num
 
         now = datetime.datetime.now()
+
+        cash_post_id = latest_cash_post_id
+
 
         for unique_recon in unique_recon_list:
 
@@ -2631,7 +2637,31 @@ def calculate(request):
 
             a_r_status = ''
 
-            difference = float(sub_invoice - sub_payment)
+
+            balance_arr = []
+
+            balance_db = Outstanding_Balance.objects.filter(cash_post_id=cash_post_id)
+
+            for balance_row in balance_db:
+
+                balance_arr.append(model_to_dict(balance_row))
+
+
+            previous_balance = 0
+
+            try:
+
+                previous_balance_db = Outstanding_Balance.objects.filter(cash_post_id=cash_post_id).latest('posted_date')
+
+                if previous_balance_db['posted_date'] == '{0.month}/{0.day}/{0.year}'.format(now):
+
+                    previous_balance = float(previous_balance_db['amount'])
+
+            except:
+
+                previous_balance = sub_invoice
+
+            difference = float(previous_balance - sub_payment)
 
             if difference == 0 : 
 
@@ -2648,10 +2678,11 @@ def calculate(request):
             else :
 
                 a_r_status = 'partial paid'
+
             
             matching = {
 
-                'cash_post_id' : latest_cash_post_id,
+                'cash_post_id' : cash_post_id,
 
                 'recon_key' : ', '.join(multiple),
 
@@ -2667,7 +2698,7 @@ def calculate(request):
 
                 'difference' : str(difference),
 
-                'posted_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now),
+                'posted_date' : '{0.month}/{0.day}/{0.year}'.format(now),
 
                 'child_invoice' : child_invoice,
 
@@ -2679,14 +2710,16 @@ def calculate(request):
 
                 'a_r_status' : a_r_status,
 
-                'collection_status' : collection_status
+                'collection_status' : collection_status,
+
+                'balance_arr' : balance_arr
 
             }
 
             if difference > 0:
 
 
-                check = Cash_Post.objects.filter(recon_key = ', '.join(multiple))
+                check = Cash_Post.objects.filter(recon_key = ', '.join(multiple), posted_date__icontains='{0.month}/{0.day}/{0.year}'.format(now))
 
                 if len(check) > 0:
 
@@ -2697,7 +2730,7 @@ def calculate(request):
 
                     if unique_recon in imported_payment['recon_key']:
 
-                        imported_payment['cash_post_id_memo'] = latest_cash_post_id +'^'+imported_payment['recon_key']
+                        imported_payment['cash_post_id_memo'] = cash_post_id +'^'+imported_payment['recon_key']
 
                         check = Payment.objects.filter(payment_id=imported_payment['payment_id'])
 
@@ -2722,7 +2755,7 @@ def calculate(request):
 
                 data_db = {
 
-                    'cash_post_id' : latest_cash_post_id,
+                    'cash_post_id' : cash_post_id,
 
                     'recon_key' : ', '.join(multiple),
 
@@ -2738,7 +2771,7 @@ def calculate(request):
 
                     'difference' : str(difference),
 
-                    'posted_date' : '{0.month}/{0.day}/{0.year}  {0.hour}:{0.minute}'.format(now),
+                    'posted_date' : '{0.month}/{0.day}/{0.year}'.format(now),
 
                     'a_r_status' : a_r_status,
 
@@ -2757,6 +2790,41 @@ def calculate(request):
                 else :
 
                     check.update(**data_db)
+
+
+                balance_data = {
+
+                    'cash_post_id' : cash_post_id,
+
+                    'posted_date' : '{0.month}/{0.day}/{0.year}'.format(now),
+
+                    'amount' : difference
+                }
+
+
+
+                check = Outstanding_Balance.objects.filter(cash_post_id = cash_post_id, posted_date=balance_data['posted_date'])
+
+                if len(check) == 0:
+
+                    balance_model = Outstanding_Balance(**balance_data)
+
+                    balance_model.save()
+
+                else :
+
+                    check.update(**balance_data)
+
+
+                num_temp = str(int(cash_post_id[2:])+1)
+
+                if len(num_temp) < 4:
+
+                    for ind in range(0, 4-len(num_temp)):
+
+                        num_temp = '0'+num_temp
+
+                cash_post_id = cash_post_id[:2] + num_temp
 
     except:
 
@@ -2859,6 +2927,17 @@ def matching_by_recon_key(request):
         matching['child_payment'] = child_payment
 
         matching['child_ori_payment'] = child_ori_payment
+
+
+        balance_arr = []
+
+        balance_db = Outstanding_Balance.objects.filter(cash_post_id=matching['cash_post_id'])
+
+        for balance_row in balance_db:
+
+            balance_arr.append(model_to_dict(balance_row))
+
+        matching['balance_arr'] = balance_arr
 
         matching['comment'] = comment
 

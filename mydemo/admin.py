@@ -39,6 +39,10 @@ class Comment_Admin(admin.ModelAdmin):
     list_display = ['recon_key', 'content', 'posted_timestamp', 'posted_by']
     search_fields = ['recon_key', 'content', 'posted_timestamp', 'posted_by']
 
+class Outstanding_Balance_Admin(admin.ModelAdmin):
+    list_display = ['cash_post_id', 'amount', 'posted_date']
+    search_fields = ['cash_post_id', 'amount', 'posted_date']
+
 
 admin.site.register(Account, AccountAdmin)
 
@@ -57,3 +61,5 @@ admin.site.register(ReconKeys_HB,ReconKeys_HBAdmin)
 admin.site.register(Cash_Post,Cash_PostAdmin)
 
 admin.site.register(Comment, Comment_Admin)
+
+admin.site.register(Outstanding_Balance, Outstanding_Balance_Admin)

@@ -502,6 +502,19 @@ class Comment(models.Model):
 	posted_by = models.CharField(max_length=255, blank=True, null=True)
 
 
+class Outstanding_Balance(models.Model):
+
+	cash_post_id = models.CharField(max_length=255, blank=True, null=True)
+
+	amount = models.CharField(max_length=255, blank=True, null=True)
+
+	posted_date = models.CharField(max_length=255, blank=True, null=True)
+
+
+
+
+
+
 
 
 
