@@ -544,11 +544,11 @@
                                                                                     {% for item in matching.comment%}
                                                                                     <li class="media comment-line">
                                                                                         <a class="pull-left" href="javascript:;">
-                                                                                        {% ifequal user.image '' %}
-                                                                                         <p class="font-bold item-pic rounded title-logo">{{ user.logo }}</p> 
-                                                                                         {% else %}
-                                                                                         <img alt="" class="img-circle" src="{% static 'pages/img/avatars/team16.jpg' %}" style="width: 40px;">
-                                                                                         {% endifequal %}
+                                                                                        <!-- {% ifequal user.image '' %} -->
+                                                                                         <p class="font-bold item-pic rounded title-logo">{{ item.logo }}</p> 
+                                                                                        <!--  {% else %} -->
+                                                                                        <!--  <img alt="" class="img-circle" src="{% static 'pages/img/avatars/team16.jpg' %}" style="width: 40px;"> -->
+                                                                                         <!-- {% endifequal %} -->
                                                                                         </a>
                                                                                         <div class="media-body todo-comment">
                                                                                             <p class="todo-comment-head">
@@ -620,7 +620,7 @@
                                 </a> \
                                 <div class="media-body todo-comment"> \
                                     <p class="todo-comment-head"> \
-                                         <span class="property-name">'+ '{{ user.username }}'+'</span> &nbsp; \
+                                         <span class="property-name">'+ '{{ user.firstname }}'+' '+'{{ user.lastname }}'+'</span> &nbsp; \
                                         <span class="todo-comment-date">'+ posted_timestamp +'</span> \
                                     </p> \
                                     <p class="todo-text-color">'+comment+'</p> \
@@ -635,7 +635,7 @@
                           'recon_key': param,
                           'comment' : comment,
                           'posted_timestamp' : posted_timestamp,
-                          'posted_by' : '{{ user.username }}'
+                          'posted_by' : '{{ user.firstname }}'+' '+'{{user.lastname}}'
                         },
                         dataType: 'json',
                         success: function (data) {

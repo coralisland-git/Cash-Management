@@ -84,7 +84,7 @@ def login(request):
                 "password": user[0].password,
                 "image" : user[0].image,
                 "role" : "user",
-                "logo" : settings.ADMIN_FIRSTNAME[0].upper() + settings.ADMIN_LASTNAME[0].upper()
+                "logo" : user[0].firstname[0].upper() + user[0].lastname[0].upper()
             }
 
             return redirect("/home")
@@ -2527,7 +2527,6 @@ def calculate(request):
 
         now = datetime.datetime.now()
 
-
         for unique_recon in unique_recon_list:
 
             matching = {}
@@ -2611,11 +2610,24 @@ def calculate(request):
 
                 collection_status = current_cash_post[0].collection_status
 
-            comment_list = Comment.objects.filter(recon_key=', '.join(multiple))
+            comment_list = Comment.objects.filter(recon_key=', '.join(multiple)).order_by('posted_timestamp')
 
             for rec in comment_list:
 
-                comment.append(model_to_dict(rec))
+                temp = model_to_dict(rec)
+
+                logo_temp = temp['posted_by'].split(' ')[0][0].upper()
+
+                try:
+                    logo_temp += temp['posted_by'].split(' ')[1][0].upper()
+
+                except:
+
+                    pass
+
+                temp['logo'] = logo_temp
+
+                comment.append(temp) 
 
             a_r_status = ''
 
@@ -2822,11 +2834,24 @@ def matching_by_recon_key(request):
 
         comment = []
 
-        comment_list = Comment.objects.filter(recon_key=matching['recon_key'])
+        comment_list = Comment.objects.filter(recon_key=matching['recon_key']).order_by('posted_timestamp')
 
         for rec in comment_list:
 
-            comment.append(model_to_dict(rec))
+            temp = model_to_dict(rec)
+
+            logo_temp = temp['posted_by'].split(' ')[0][0].upper()
+
+            try:
+                logo_temp += temp['posted_by'].split(' ')[1][0].upper()
+
+            except:
+
+                pass
+
+            temp['logo'] = logo_temp
+
+            comment.append(temp)
 
 
         matching['child_invoice'] = child_invoice
