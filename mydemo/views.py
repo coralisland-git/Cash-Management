@@ -2208,7 +2208,9 @@ def default_module(request):
 
         hb_key_raw_arr.append(model_to_dict(reconkeys_hb))
 
-    payment_db = Payment.objects.filter(uploaded_date__icontains=today)
+    # payment_db = Payment.objects.filter(uploaded_date__icontains=today)
+
+    payment_db = Payment.objects.all()
 
     input_payment_arr = []
 
@@ -2616,7 +2618,7 @@ def calculate(request):
 
                 collection_status = current_cash_post[0].collection_status
 
-            comment_list = Comment.objects.filter(recon_key=', '.join(multiple)).order_by('posted_timestamp')
+            comment_list = Comment.objects.filter(recon_key=', '.join(multiple)).order_by('-posted_timestamp')
 
             for rec in comment_list:
 
@@ -2902,7 +2904,7 @@ def matching_by_recon_key(request):
 
         comment = []
 
-        comment_list = Comment.objects.filter(recon_key=matching['recon_key']).order_by('posted_timestamp')
+        comment_list = Comment.objects.filter(recon_key=matching['recon_key']).order_by('-posted_timestamp')
 
         for rec in comment_list:
 
