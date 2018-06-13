@@ -511,6 +511,50 @@ class Outstanding_Balance(models.Model):
 	posted_date = models.CharField(max_length=255, blank=True, null=True)
 
 
+class Payment_All(models.Model):
+
+	batch_no = models.CharField(max_length=255, blank=True, null=True)
+
+	uploaded_date = models.CharField(max_length=255, blank=True, null=True)
+
+	payment_id = models.CharField(max_length=255, blank=True, null=True)
+
+	cash_post_id_memo = models.CharField(max_length=255, blank=True, null=True)
+
+	check = models.CharField(max_length=255, blank=True, null=True)
+
+	recon_key = models.CharField(max_length=255, blank=True, null=True)
+
+	check_amount = models.CharField(max_length=255, blank=True, null=True)
+
+	payment_type = models.CharField(max_length=255, blank=True, null=True)	
+
+	patient_name = models.CharField(max_length=255, blank=True, null=True)
+
+	visit_date = models.CharField(max_length=255, blank=True, null=True)
+
+	claim_id = models.CharField(max_length=255, blank=True, null=True)
+
+	payment_date = models.CharField(max_length=255, blank=True, null=True)
+
+	explanation_code = models.CharField(max_length=255, blank=True, null=True)
+
+	external_file_name = models.CharField(max_length=255, blank=True, null=True)
+
+	extra = models.CharField(max_length=255, blank=True, null=True)
+
+
+   	# paymnet type : my suggestion
+    # patient name
+    # visit date
+    # claim id
+    # rk
+    # payment #
+    # payment date
+    # payment amount
+    # explanation code
+    # file name
+
 
 
 

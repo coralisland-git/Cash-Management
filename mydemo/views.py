@@ -20,10 +20,73 @@ from openpyxl.styles import colors
 from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
 from django.db.models import Count
 from django.forms.models import model_to_dict
+import PyPDF2
+
 import os
 import pdb
 
 # Create your views here.
+
+
+def getvalue(in_str, first, last):
+
+    ret = ''
+
+    try:
+
+        ret = in_str.split(first)[1].split(last)[0].strip()
+
+    except:
+
+        ret = ''
+
+    return ret
+
+
+def capitalize(item):
+
+    try:
+
+        item = item.replace('_', ' ').title()
+
+        return item
+
+    except:
+
+        pass
+
+def getPrice(item):
+
+    try:
+
+        item = float(item.strip().replace('$', ''))
+
+        return item
+
+    except :
+
+        return 0
+
+def getIndex(item, arr): 
+
+    try:
+
+        res = 0
+
+        for ind in range(0, len(arr)):
+
+            if arr[ind].strip().replace(':','') == item:
+
+                res = ind
+
+                break
+
+        return res
+
+    except :
+
+        return 0
+
 
 def index(request):
     return HttpResponse("Welcome visit our page")
@@ -841,7 +904,7 @@ def invoice_board(request):
 
         fs = FileSystemStorage()
 
-        filename = fs.save('uploaded_files/'+myfile.name, myfile)
+        filename = fs.save('data/csv/invoice/'+myfile.name, myfile)
 
         uploaded_file_url = fs.url(filename)
 
@@ -1109,7 +1172,7 @@ def timecard_board(request):
 
         fs = FileSystemStorage()
 
-        filename = fs.save('uploaded_files/'+myfile.name, myfile)
+        filename = fs.save('data/csv/timecard/'+myfile.name, myfile)
 
         uploaded_file_url = fs.url(filename)
 
@@ -1336,7 +1399,7 @@ def timecard_hb_board(request):
 
         fs = FileSystemStorage()
 
-        filename = fs.save('uploaded_files/'+myfile.name, myfile)
+        filename = fs.save('data/csv/timecard/'+myfile.name, myfile)
 
         uploaded_file_url = fs.url(filename)
 
@@ -1531,7 +1594,7 @@ def reconkeys_board(request):
 
         fs = FileSystemStorage()
 
-        filename = fs.save('uploaded_files/'+myfile.name, myfile)
+        filename = fs.save('data/csv/reconkey/'+myfile.name, myfile)
 
         uploaded_file_url = fs.url(filename)
 
@@ -1753,7 +1816,7 @@ def reconkeys_hb_board(request):
 
         fs = FileSystemStorage()
 
-        filename = fs.save('uploaded_files/'+myfile.name, myfile)
+        filename = fs.save('data/csv/reconkey/'+myfile.name, myfile)
 
         uploaded_file_url = fs.url(filename)
 
@@ -1961,88 +2024,100 @@ def payment_board(request):
 
         fs = FileSystemStorage()
 
-        filename = fs.save('uploaded_files/'+myfile.name, myfile)
+        if '.pdf' in myfile.name.lower():
 
-        uploaded_file_url = fs.url(filename)
+            filename = fs.save('data/pdf/'+myfile.name, myfile)
 
-        workbook = load_workbook( myfile )
+            items = []
+            items.append(filename)
 
-        input_payment_data_sheet = workbook[workbook.sheetnames[0]]
-
-        payment_arr = []
-
-        payment_header = [
-
-            'check',
-
-            'recon_key',
-
-            'check_amount'
-
-        ]
-
-        payment_row = 1
-
-        now = datetime.datetime.now()
-
-        payment_id = start_payment_id
-
-        for payment in input_payment_data_sheet.rows:
-
-            try:
-
-                if payment_row > 1:
-
-                    data = {
-
-                        'batch_no' : batch_no,
-
-                        'payment_id' : payment_id,
-
-                        'check' : str(payment[0].value),
-
-                        'recon_key' : str(payment[1].value).replace(' ', '').replace('-', '').strip(),
-
-                        'check_amount' : str(payment[2].value).replace('$',''),
-
-                        'uploaded_date' : '{0.month}/{0.day}/{0.year}'.format(now)
-
-                    }
-
-                    payment_arr.append( data )
-
-                    num = str(int(payment_id[3:])+1)
-
-                    if len(num) < 4:
-
-                        for ind in range(0, 4-len(num)):
-
-                            num = '0'+num
-
-                    payment_id = payment_id[:3]+num
-
-                    check = Payment.objects.filter(check=data['check'], recon_key=data['recon_key'], check_amount=data['check_amount'])
-
-                    if len(check) == 0:
-
-                        payment_model = Payment(**data)
-
-                        payment_model.save()
-
-                    else :
-
-                        data['batch_no'] = check[0].batch_no
-
-                        data['cash_post_id_memo'] = check[0].cash_post_id_memo
-
-                        check.update(**data)
-
-                payment_row += 1
+            parse_superior_template(request, items)
 
 
-            except:
+        else:
 
-                pass
+            filename = fs.save('data/csv/payment/'+myfile.name, myfile)
+
+            uploaded_file_url = fs.url(filename)
+
+            workbook = load_workbook( myfile )
+
+            input_payment_data_sheet = workbook[workbook.sheetnames[0]]
+
+            payment_arr = []
+
+            payment_header = [
+
+                'check',
+
+                'recon_key',
+
+                'check_amount'
+
+            ]
+
+            payment_row = 1
+
+            now = datetime.datetime.now()
+
+            payment_id = start_payment_id
+
+            for payment in input_payment_data_sheet.rows:
+
+                try:
+
+                    if payment_row > 1:
+
+                        data = {
+
+                            'batch_no' : batch_no,
+
+                            'payment_id' : payment_id,
+
+                            'check' : str(payment[0].value),
+
+                            'recon_key' : str(payment[1].value).replace(' ', '').replace('-', '').strip(),
+
+                            'check_amount' : str(payment[2].value).replace('$',''),
+
+                            'uploaded_date' : '{0.month}/{0.day}/{0.year}'.format(now)
+
+                        }
+
+                        payment_arr.append( data )
+
+                        num = str(int(payment_id[3:])+1)
+
+                        if len(num) < 4:
+
+                            for ind in range(0, 4-len(num)):
+
+                                num = '0'+num
+
+                        payment_id = payment_id[:3]+num
+
+                        check = Payment.objects.filter(check=data['check'], recon_key=data['recon_key'], check_amount=data['check_amount'])
+
+                        if len(check) == 0:
+
+                            payment_model = Payment(**data)
+
+                            payment_model.save()
+
+                        else :
+
+                            data['batch_no'] = check[0].batch_no
+
+                            data['cash_post_id_memo'] = check[0].cash_post_id_memo
+
+                            check.update(**data)
+
+                    payment_row += 1
+
+
+                except:
+
+                    pass
 
         request.session['input_payment_arr'] = json.dumps(payment_arr)
 
@@ -3065,3 +3140,292 @@ def forgot(request):
             return redirect("login") 
 
     return render(request, 'forgot.html')
+
+
+def parse_superior_template(request, items):
+
+    serial_number = 'XXXXXXXXXXX'
+
+    parsed_payment_arr = []
+
+    main_table_headers = [
+
+        'payment_id', 'insured_name', 'nbr_no', 'mrn', 'clain_ctrl_no', 'patient_name', 'svc_prov_no',
+
+        'carrier', 'pat_ctrl_no', 'servicing_provider', 'npi', 'group', 'serv', 'date',
+
+        'proc #', 'modifiers', 'days_ct_qty', 'charged', 'allowed', 'deduct', 'copay', 'coinsur', 'disallow', 'addtl_pay',
+
+        'discount', 'interest', 'med_allow', 'med_paid', 'third_party_payer', 'denied', 'expl_codes',
+
+        'payment', 'withheld', 'file_name'
+    ]
+
+    input_files = items
+    
+    main_table_row = 2
+
+    print('-------- Failed PDF files ---------\n')  
+
+    for input_file_name in input_files:
+
+        input_file_name = 'uploaded_files/'+input_file_name
+
+        pdfFileObj = open( input_file_name, 'rb' )
+
+
+        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+
+        num = pdfReader.numPages
+
+        data = ''
+
+        template = { }
+
+        start_page = pdfReader.getPage(0).extractText()
+
+        if 'superior' in start_page.lower():
+
+            various_type = 'edge1'
+
+            edge1 = 'ServDateProc#ModifiersDays/Ct/QtyCharged/AllowedDeductCoPayCoinsurDiscount/InterestMedAllow/MedPaidThirdPartyPayerDeniedEXPLCodesPayment/Withheld'
+
+            edge2 = "ServDateProc#ModifiersDays/Ct/QtyChargedAllowedDeduct/CoPayDisallow/Add'tlPayInterest/DiscountMedAllow/MedPaidThirdPartyPayerDeniedEXPLCodesPayment/Withheld"
+
+            if edge1 in pdfReader.getPage(0).extractText():
+
+                various_type = 'edge1'
+
+            if edge2 in pdfReader.getPage(0).extractText():
+
+                various_type = 'edge2'
+
+            data = 'InsuredName'+'InsuredName'.join(pdfReader.getPage(0).extractText().split('InsuredName')[1:]).replace(edge1, '').replace(edge2, '')
+
+            for ind in range(1, num):
+
+                edge = ''
+
+                page = pdfReader.getPage(ind).extractText()
+
+                if 'ServDate' in page[page.find('PaymentAmt'):page.find('PaymentAmt') + 50] : 
+
+                    edge = page.split('ServDate')[0]
+
+                if 'InsuredName' in page[page.find('PaymentAmt'):page.find('PaymentAmt') + 50] : 
+
+                    edge = page.split('InsuredName')[0]
+
+                data += pdfReader.getPage(ind).extractText().replace(edge, '').replace(edge1, '').replace(edge2,'')
+
+
+            paragraph_list = data.split('InsuredName')
+
+            for paragraph in paragraph_list[1:]:
+                template['insured_name'] = getvalue(paragraph, ':', 'MbrNo')
+                template['nbr_no'] = getvalue(paragraph, 'MbrNo:', 'MRN:')
+                template['mrn'] = getvalue(paragraph, 'MRN:', 'Claim/CtrlNo:')
+                template['clain_ctrl_no'] = getvalue(paragraph, 'Claim/CtrlNo:', 'PatientName:')
+                template['patient_name'] = getvalue(paragraph, 'PatientName:', 'SvcProvNo:')
+                template['svc_prov_no'] = getvalue(paragraph, 'SvcProvNo:', 'Carrier:')
+                template['carrier'] = getvalue(paragraph, 'Carrier:', 'PatCtrlNo:')
+                template['pat_ctrl_no'] = getvalue(paragraph, 'PatCtrlNo:', 'ServicingProvider:')
+                template['servicing_provider'] = getvalue(paragraph, 'ServicingProvider:', 'NPI:')
+                template['npi'] = getvalue(paragraph, 'NPI:', 'Group:')
+                template['group'] = getvalue(paragraph, 'Group:', '010')
+
+                paragraph = paragraph.replace('.000B', '.00 0B')
+
+                record_list = paragraph.split('.000')
+
+                if len(record_list) > 1:
+                    for r_ind in range(0, len(record_list)):
+                        try:
+
+                            template['payment_id'] = 'EOB' + str( serial_number )
+
+                            items = []
+                            if r_ind == 0:
+                                items = record_list[r_ind].split(template['group'])[1].split('$')
+                                try:
+                                    template['serv']=items[0].split('  ')[0][:4]
+                                    template['date']=items[0].split('  ')[0][4:-7].split('/')[0] + '/' + items[0].split('  ')[0][4:-7].split('/')[1] + '/' + items[0].split('  ')[0][4:-7].split('/')[2][:4]
+                                except:
+                                    template['serv']=items[0].split(' ')[0][:4]
+                                    template['date']=items[0].split('  ')[0][4:-9].split('/')[0] + '/' + items[0].split('  ')[0][4:-9].split('/')[1] + '/' + items[0].split('  ')[0][4:-9].split('/')[2][:4]
+                                
+                            else :
+                                items = record_list[r_ind].split('$')
+                                try:
+                                    template['serv']='0'+items[0].split('  ')[0][:3]
+                                    template['date']=items[0].split('  ')[0][3:-7].split('/')[0] + '/' + items[0].split('  ')[0][3:-7].split('/')[1] + '/' + items[0].split('  ')[0][3:-7].split('/')[2][:4]
+                                except:
+                                    template['serv']='0'+items[0].split(' ')[0][:3]
+                                    template['date']=items[0].split('  ')[0][4:-8].split('/')[0] + '/' + items[0].split('  ')[0][4:-8].split('/')[1] + '/' + items[0].split('  ')[0][4:-8].split('/')[2][:4]
+
+                            try:
+                                template['proc #']=items[0].split('  ')[0][-7:-2]
+                                template['modifiers']=items[0].split('  ')[0][-2:]
+                                template['days_ct_qty']=items[0].split('  ')[1]
+                            except:
+                                template['proc #']=items[0].split(' ')[0][-9:-4]
+                                template['modifiers']=items[0].split(' ')[0][-4:]
+                                template['days_ct_qty']=items[0].split(' ')[1]
+
+
+                            if various_type == 'edge1':
+                                template['charged']='$'+items[1]
+                                template['allowed']='$'+items[2]
+                                template['deduct']='$'+items[3]
+                                template['copay']='$'+items[4]
+                                template['coinsur']='$'+items[5]
+                                template['discount']='$'+items[6]
+                                template['interest']='$'+items[7]
+                                template['med_allow']='$'+items[8]
+                                template['med_paid']='$'+items[9]
+                                template['third_party_payer']='$'+items[10]
+                                template['denied']='$'+items[11].strip()[:-2]
+                                template['expl_codes']=items[11].strip()[-2:]
+                                if 'JA' in template['denied']:
+                                    template['denied'] = template['denied'].replace('JA', '')
+                                    template['expl_codes'] = 'JA'+template['expl_codes']
+                                template['payment']='$'+items[12]
+                                template['withheld']='$'+items[13][:4]
+
+                            if various_type == 'edge2' :
+                                template['charged']='$'+items[1]
+                                template['allowed']='$'+items[2]
+                                template['deduct']='$'+items[3]
+                                template['copay']='$'+items[4]
+                                template['disallow']='$'+items[5]
+                                template['addtl_pay']='$'+items[6]
+                                template['interest']='$'+items[7]
+                                template['discount']='$'+items[8]
+                                template['med_allow']='$'+items[9]
+                                template['med_paid']='$'+items[10]
+                                template['third_party_payer']='$'+items[11]
+                                template['denied']='$'+items[12].strip()[:-2]
+                                template['expl_codes']=items[12].strip()[-2:]
+                                if 'JA' in template['denied']:
+                                    template['denied'] = template['denied'].replace('JA', '')
+                                    template['expl_codes'] = 'JA'+template['expl_codes']
+                                template['payment']='$'+items[13]
+                                template['withheld']='$'+items[14][:4]
+
+
+                            template['file_name'] = input_file_name.split('/')[1] 
+
+                            parsed_payment_arr.append(template)
+
+                            # for key, value in template.items():
+
+                            #     if '$' in  value and '.pdf' not in value.lower():
+
+                            #         try:
+
+                            #             value = float(value.replace('$', ''))
+
+                            #         except :
+
+                            #             value = 0
+
+                            #     main_table_sheet.cell( column = main_table_headers.index(key) + 1, row = main_table_row , value = value).number_format = '$#,##0.00'
+
+                        except :
+
+                            pass
+
+                else:
+
+                    template['payment_id'] = 'EOB' + str( serial_number )
+
+                    items = paragraph.split(template['group'])[1].split('Sub-total')[0].split('$')
+
+                    try:
+                        template['serv']=items[0].split('  ')[0][:4]
+                        template['date']=items[0].split('  ')[0][4:-7]
+                        template['proc #']=items[0].split('  ')[0][-7:-2]
+                        template['modifiers']=items[0].split('  ')[0][-2:]
+                        template['days_ct_qty']=items[0].split('  ')[1]
+
+                    except:
+
+                        template['serv']=items[0].split(' ')[0][:4]
+                        template['date']=items[0].split(' ')[0][4:-9]
+                        template['proc #']=items[0].split(' ')[0][-9:-4]
+                        template['modifiers']=items[0].split(' ')[0][-4:]
+                        template['days_ct_qty']=items[0].split(' ')[1]
+
+                    if various_type == 'edge1':
+                        template['charged']='$'+items[1]
+                        template['allowed']='$'+items[2]
+                        template['deduct']='$'+items[3]
+                        template['copay']='$'+items[4]
+                        template['coinsur']='$'+items[5]
+                        template['discount']='$'+items[6]
+                        template['interest']='$'+items[7]
+                        template['med_allow']='$'+items[8]
+                        template['med_paid']='$'+items[9]
+                        template['third_party_payer']='$'+items[10]
+                        template['denied']='$'+items[11].strip()[:-2]
+                        template['expl_codes']=items[11].strip()[-2:]
+                        if 'JA' in template['denied']:
+                            template['denied'] = template['denied'].replace('JA', '')
+                            template['expl_codes'] = 'JA'+template['expl_codes']
+                        template['payment']='$'+items[12]
+                        template['withheld']='$'+items[13][:4]
+
+                    if various_type == 'edge2' :
+                        template['charged']='$'+items[1]
+                        template['allowed']='$'+items[2]
+                        template['deduct']='$'+items[3]
+                        template['copay']='$'+items[4]
+                        template['disallow']='$'+items[5]
+                        template['addtl_pay']='$'+items[6]
+                        template['interest']='$'+items[7]
+                        template['discount']='$'+items[8]
+                        template['med_allow']='$'+items[9]
+                        template['med_paid']='$'+items[10]
+                        template['third_party_payer']='$'+items[11]
+                        template['denied']='$'+items[12].strip()[:-2]
+                        template['expl_codes']=items[12].strip()[-2:]
+                        if 'JA' in template['denied']:
+                            template['denied'] = template['denied'].replace('JA', '')
+                            template['expl_codes'] = 'JA'+template['expl_codes']
+                        template['payment']='$'+items[13]
+                        template['withheld']='$'+items[14][:4]
+
+
+                    template['file_name'] = input_file_name.split('/')[1]
+
+                    parsed_payment_arr.append(template)
+
+                    # for key, value in template.items():
+
+                    #     if '$' in  value and '.pdf' not in value.lower():
+
+                    #         try:
+
+                    #             value = float(value.replace('$', ''))
+
+                    #         except :
+
+                    #             value = 0
+
+
+
+                        # main_table_sheet.cell( column = main_table_headers.index(key) + 1, row = main_table_row , value = value).number_format = '$#,##0.00'
+
+        else :
+
+            print( input_file_name.split('/')[1])
+
+    print('-----------------------------------')
+
+    print('Finished successfully.')
+
+    print('-----------------------------------')
+
+    print('End Payment ID is EOB' + str(serial_number-1))
+
+    print('-----------------------------------')
