@@ -541,7 +541,7 @@ class Payment_All(models.Model):
 
 	external_file_name = models.CharField(max_length=255, blank=True, null=True)
 
-	extra = models.CharField(max_length=255, blank=True, null=True)
+	extra = models.CharField(max_length=1000, blank=True, null=True)
 
 
    	# paymnet type : my suggestion

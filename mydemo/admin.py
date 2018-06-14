@@ -43,6 +43,10 @@ class Outstanding_Balance_Admin(admin.ModelAdmin):
     list_display = ['cash_post_id', 'amount', 'posted_date']
     search_fields = ['cash_post_id', 'amount', 'posted_date']
 
+class Payment_All_Admin(admin.ModelAdmin):
+    list_display = ['batch_no', 'payment_id','check', 'recon_key', 'check_amount']
+    search_fields = ['batch_no', 'payment_id', 'recon_key', 'check_amount']
+
 
 admin.site.register(Account, AccountAdmin)
 
@@ -63,3 +67,5 @@ admin.site.register(Cash_Post,Cash_PostAdmin)
 admin.site.register(Comment, Comment_Admin)
 
 admin.site.register(Outstanding_Balance, Outstanding_Balance_Admin)
+
+admin.site.register(Payment_All, Payment_All_Admin)

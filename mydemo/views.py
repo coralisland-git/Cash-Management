@@ -2019,6 +2019,7 @@ def payment_board(request):
 
         start_payment_id = latest_payment_id[:3]+num
 
+        payment_arr = []
 
         myfile = request.FILES['file']
 
@@ -2031,7 +2032,7 @@ def payment_board(request):
             items = []
             items.append(filename)
 
-            parse_superior_template(request, items)
+            payment_arr = parse_superior_template(request, items)
 
 
         else:
@@ -2043,8 +2044,6 @@ def payment_board(request):
             workbook = load_workbook( myfile )
 
             input_payment_data_sheet = workbook[workbook.sheetnames[0]]
-
-            payment_arr = []
 
             payment_header = [
 
@@ -2118,6 +2117,8 @@ def payment_board(request):
                 except:
 
                     pass
+
+        temp_data = payment_arr
 
         request.session['input_payment_arr'] = json.dumps(payment_arr)
 
@@ -3148,18 +3149,11 @@ def parse_superior_template(request, items):
 
     parsed_payment_arr = []
 
-    main_table_headers = [
+    primary_cols = ['payment_id', 'check', 'recon_key', 'check_amount', 'payment_type', 'patient_name', 
 
-        'payment_id', 'insured_name', 'nbr_no', 'mrn', 'clain_ctrl_no', 'patient_name', 'svc_prov_no',
+        'visit_date', 'claim_id', 'payment_date', 'explanation_code', 'external_file_name', 'extra'
 
-        'carrier', 'pat_ctrl_no', 'servicing_provider', 'npi', 'group', 'serv', 'date',
-
-        'proc #', 'modifiers', 'days_ct_qty', 'charged', 'allowed', 'deduct', 'copay', 'coinsur', 'disallow', 'addtl_pay',
-
-        'discount', 'interest', 'med_allow', 'med_paid', 'third_party_payer', 'denied', 'expl_codes',
-
-        'payment', 'withheld', 'file_name'
-    ]
+        ]
 
     input_files = items
     
@@ -3315,7 +3309,41 @@ def parse_superior_template(request, items):
 
                             template['file_name'] = input_file_name.split('/')[1] 
 
-                            parsed_payment_arr.append(template)
+                            data = {
+
+                                'batch_no' : '',
+
+                                'uploaded_date' : '',
+
+                                'payment_id' : '',
+                            
+                                'cash_post_id_memo' : '',
+
+                                'check' : '',
+
+                                'recon_key' : template['pat_ctrl_no'],
+
+                                'check_amount' : template['payment'],
+
+                                'payment_type' : '',
+
+                                'patient_name' : template['patient_name'],
+
+                                'visit_date' : template['date'],
+
+                                'claim_id' : template['clain_ctrl_no'],
+
+                                'payment_date' : '',
+
+                                'explanation_code' : template['expl_codes'],
+
+                                'external_file_name' : input_file_name,
+
+                                'extra' : template
+
+                            }
+
+                            parsed_payment_arr.append(data)
 
                             # for key, value in template.items():
 
@@ -3398,7 +3426,58 @@ def parse_superior_template(request, items):
 
                     template['file_name'] = input_file_name.split('/')[1]
 
-                    parsed_payment_arr.append(template)
+                    data = {
+
+                        'batch_no' : 'XXXXXXXXXXXXXXXXXXXx',
+
+                        'uploaded_date' : 'VVVVVVVVVVVVVVV',
+
+                        'payment_id' : 'CCCCCCCCCC',
+                    
+                        'cash_post_id_memo' : 'bBBBBBBBBBBB',
+
+                        'check' : '',
+
+                        'recon_key' : template['pat_ctrl_no'],
+
+                        'check_amount' : template['payment'],
+
+                        'payment_type' : '',
+
+                        'patient_name' : template['patient_name'],
+
+                        'visit_date' : template['date'],
+
+                        'claim_id' : template['clain_ctrl_no'],
+
+                        'payment_date' : '',
+
+                        'explanation_code' : template['expl_codes'],
+
+                        'external_file_name' : input_file_name,
+
+                        'extra' : json.dumps(template)
+
+                    }
+
+
+                    parsed_payment_arr.append(data)
+
+                    # check = Payment_All.objects.filter(check=data['check'], recon_key=data['recon_key'], check_amount=data['check_amount'])
+
+                    # if len(check) == 0:
+
+                    payment_model = Payment_All(**data)
+
+                    payment_model.save()
+
+                    # else :
+
+                    #     data['batch_no'] = check[0].batch_no
+
+                    #     data['cash_post_id_memo'] = check[0].cash_post_id_memo
+
+                    #     check.update(**data)
 
                     # for key, value in template.items():
 
@@ -3420,12 +3499,5 @@ def parse_superior_template(request, items):
 
             print( input_file_name.split('/')[1])
 
-    print('-----------------------------------')
 
-    print('Finished successfully.')
-
-    print('-----------------------------------')
-
-    print('End Payment ID is EOB' + str(serial_number-1))
-
-    print('-----------------------------------')
+        return parsed_payment_arr
